@@ -1,0 +1,36 @@
+{
+  "item.hemomancy.blood_altar": "Кровавый Алтарь",
+
+  "item.hemomancy.rune": "Руна",
+  "item.hemomancy.speed_rune": "Руна Скорости",
+  "item.hemomancy.sacrifices_rune": "Руна Жертвоприношения",
+  "item.hemomancy.capacity_rune": "Руна Ёмкости",
+  "item.hemomancy.resonant_capacity_rune": "Руна Резонирующей Ёмкости",
+  "item.hemomancy.relations_rune": "Руна Связи",
+  "item.hemomancy.chimeric_rune": "Химерическая Руна",
+
+  "item.hemomancy.weak_blood_orb": "Слабый Кровавый Шар",
+  "item.hemomancy.apprentice_blood_orb": "Кровавый Шар Ученика",
+  "item.hemomancy.magician_blood_orb": "Кровавый Шар Мага",
+  "item.hemomancy.master_blood_orb": "Кровавый Шар Мастера",
+  "item.hemomancy.archmage_blood_orb": "Кровавый Шар Архимага",
+  "item.hemomancy.transcendental_blood_orb": "Трансцендентальный Кровавый Шар",
+  "item.hemomancy.infinity_blood_orb": "Бесконечный Кровавый Шар",
+
+  "item.hemomancy.sacrificial_dagger": "Жертвенный Кинжал",
+  "item.hemomancy.transcendental_crystal": "Трансцендентальный Кристалл",
+  "item.hemomancy.blood_ornament": "Кровавый Орнамент",
+
+  "item.hemomancy.statistical_sigil": "Сигил Статистики",
+  "item.hemomancy.water_sigil": "Сигил Водного Контроля",
+  "item.hemomancy.lava_sigil": "Сигил Магматического Натиска",
+
+  "rune.hemomancy.speed": "Скорости",
+  "rune.hemomancy.sacrifices": "Жертвоприношению",
+  "rune.hemomancy.capacity": "Ёмкости",
+  "rune.hemomancy.resonantCapacity": "Резонирующей Ёмкости",
+  "rune.hemomancy.relations": "Связи",
+
+  "tooltip.hemomancy.rune": "▶ +%s к %s",
+  "message.hemomancy.statistical": "Цель содержит %s LP из %s LP"
+}

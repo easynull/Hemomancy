@@ -1,0 +1,13 @@
+{
+  "type": "hemomancy:altar",
+
+  "input": {
+    "count": 1,
+    "id": "minecraft:glass_bottle"
+  },
+  "output": {
+    "item": "minecraft:grass"
+  },
+  "lp": 200,
+  "tier": 1
+}

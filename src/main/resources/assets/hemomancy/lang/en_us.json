@@ -1,0 +1,38 @@
+{
+  "tab.hemomancy": "Hemomancy",
+
+  "item.hemomancy.blood_altar": "Blood Altar",
+
+  "item.hemomancy.rune": "Rune",
+  "item.hemomancy.speed_rune": "Speed Rune",
+  "item.hemomancy.sacrifices_rune": "Sacrifices Rune",
+  "item.hemomancy.capacity_rune": "Capacity Rune",
+  "item.hemomancy.resonant_capacity_rune": "Resonant Capacity Rune",
+  "item.hemomancy.relations_rune": "Relations Rune",
+  "item.hemomancy.chimeric_rune": "Chimeric Rune",
+
+  "item.hemomancy.weak_blood_orb": "Weak Blood Orb",
+  "item.hemomancy.apprentice_blood_orb": "Apprentice Blood Orb",
+  "item.hemomancy.magician_blood_orb": "Magician Blood Orb",
+  "item.hemomancy.master_blood_orb": "Master Blood Orb",
+  "item.hemomancy.archmage_blood_orb": "Archmage Blood Orb",
+  "item.hemomancy.transcendental_blood_orb": "Transcendental Blood Orb",
+  "item.hemomancy.infinity_blood_orb": "Infinity Blood Orb",
+
+  "item.hemomancy.sacrificial_dagger": "Sacrificial Dagger",
+  "item.hemomancy.transcendental_crystal": "Transcendental Crystal",
+  "item.hemomancy.blood_ornament": "Blood Ornament",
+
+  "item.hemomancy.statistical_sigil": "Sigil of Statistics",
+  "item.hemomancy.water_sigil": "Sigil of Aquatic Dominion",
+  "item.hemomancy.lava_sigil": "Sigil of Magmatic Surge",
+
+  "rune.hemomancy.speed": "Speed",
+  "rune.hemomancy.sacrifices": "Sacrifices",
+  "rune.hemomancy.capacity": "Capacity",
+  "rune.hemomancy.resonantCapacity": "Resonant Capacity",
+  "rune.hemomancy.relations": "Relations",
+
+  "tooltip.hemomancy.rune": "▶ +%s of %s",
+  "message.hemomancy.statistical": "Цель содержит %s LP из %s LP"
+}
