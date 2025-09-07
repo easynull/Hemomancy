@@ -1,0 +1,11 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:netherite_block"
+  ],
+  "result": {
+    "id": "hemomancy:magician_blood_orb"
+  },
+  "lp": 15000,
+  "tier": 3
+}

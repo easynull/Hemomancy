@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public interface LpElement {
     default long getLp(Object target) {
         if (target instanceof ItemStack stack) return stack.getOrDefault(HcComponents.lp, 0L);
-        else if (target instanceof BlockEntity be) return be.getPersistentData().getInt("lp");
+        else if (target instanceof BlockEntity be) return be.getPersistentData().getLong("lp");
         return 0;
     }
 
@@ -24,9 +24,7 @@ public interface LpElement {
         } else if (target instanceof BlockEntity be) {
             CompoundTag nbt = be.getPersistentData();
             nbt.putLong("lp", amount);
-            if (!be.getLevel().isClientSide) {
-                Utils.Block.updateBlockEntity(be);
-            }
+            Utils.Block.updateBlockEntity(be);
         }
         return amount != getMaxLp();
     }

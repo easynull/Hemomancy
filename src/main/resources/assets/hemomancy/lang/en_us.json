@@ -1,9 +1,7 @@
 {
   "tab.hemomancy": "Hemomancy",
 
-  "item.hemomancy.blood_altar": "Blood Altar",
-
-  "item.hemomancy.rune": "Rune",
+  "item.hemomancy.rune": "Blank Rune",
   "item.hemomancy.speed_rune": "Speed Rune",
   "item.hemomancy.sacrifices_rune": "Sacrifices Rune",
   "item.hemomancy.capacity_rune": "Capacity Rune",
@@ -19,20 +17,41 @@
   "item.hemomancy.transcendental_blood_orb": "Transcendental Blood Orb",
   "item.hemomancy.infinity_blood_orb": "Infinity Blood Orb",
 
+  "item.hemomancy.blood_altar": "Blood Altar",
+  "item.hemomancy.pedestal": "Pedestal ???",
   "item.hemomancy.sacrificial_dagger": "Sacrificial Dagger",
+  "item.hemomancy.crimson_ornament": "Crimson Ornament",
   "item.hemomancy.transcendental_crystal": "Transcendental Crystal",
-  "item.hemomancy.blood_ornament": "Blood Ornament",
 
-  "item.hemomancy.statistical_sigil": "Sigil of Statistics",
+  "item.hemomancy.hemostatic_controller": "Hemostatic controller",
   "item.hemomancy.water_sigil": "Sigil of Aquatic Dominion",
   "item.hemomancy.lava_sigil": "Sigil of Magmatic Surge",
+  "item.hemomancy.air_sigil": "Sigil of Stratosphere",
+  "item.hemomancy.resistance_sigil": "Sigil of Resistance",
+  "item.hemomancy.movement_sigil": "Sigil of Movement",
+  "item.hemomancy.space_sigil": "Sigil of Space",
+
+  "item.hemomancy.blank_glyph": "Blank Glyph",
+  "item.hemomancy.fortified_glyph": "Fortified Glyph",
+  "item.hemomancy.crimson_glyph": "Crimson Glyph",
+  "item.hemomancy.filled_glyph": "Filled Glyph",
+  "item.hemomancy.demonic_glyph": "Demonic Glyph",
+  "item.hemomancy.infernal_glyph": "Infernal Glyph",
+  "item.hemomancy.cosmic_glyph": "Cosmic Glyph",
+
+  "tooltip.hemomancy.rune": "▶ +%s of %s ◀",
+  "tooltip.hemomancy.tier": "Tier %s",
+  "tooltip.hemomancy.orb.desc": "▶ Can hold up to %s LP",
+  "tooltip.hemomancy.water_sigil.desc": "◆ Allows you to control water flows",
+  "tooltip.hemomancy.lava_sigil.desc": "◆ Allows you to control magma flows",
+  "tooltip.hemomancy.air_sigil.desc": "◆ Allows you to control airspace",
+  "tooltip.hemomancy.resistance_sigil.desc": "◆ Creates protective barriers of condensed blood to repel attacks",
+  "tooltip.hemomancy.movement_sigil.desc": "◆ Allows you to move any block without having to break it",
+  "tooltip.hemomancy.space_sigil.desc": "◆ Allows you to move to a position saved by the player. To clear the buffer [Shift] + [RMB]",
 
   "rune.hemomancy.speed": "Speed",
   "rune.hemomancy.sacrifices": "Sacrifices",
   "rune.hemomancy.capacity": "Capacity",
   "rune.hemomancy.resonantCapacity": "Resonant Capacity",
-  "rune.hemomancy.relations": "Relations",
-
-  "tooltip.hemomancy.rune": "▶ +%s of %s",
-  "message.hemomancy.statistical": "Цель содержит %s LP из %s LP"
+  "rune.hemomancy.relations": "Relations"
 }

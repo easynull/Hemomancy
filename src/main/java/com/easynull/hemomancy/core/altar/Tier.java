@@ -63,10 +63,10 @@ public final class Tier {
                 components.accept(Component.of(-5, i, -5));
                 components.accept(Component.of(-5, i, 5));
             }
-            components.accept(Component.of(5, 2, 5, HcElements.bloodOrnament));
-            components.accept(Component.of(5, 2, -5, HcElements.bloodOrnament));
-            components.accept(Component.of(-5, 2, -5, HcElements.bloodOrnament));
-            components.accept(Component.of(-5, 2, 5, HcElements.bloodOrnament));
+            components.accept(Component.of(5, 2, 5, HcElements.crimsonOrnament));
+            components.accept(Component.of(5, 2, -5, HcElements.crimsonOrnament));
+            components.accept(Component.of(-5, 2, -5, HcElements.crimsonOrnament));
+            components.accept(Component.of(-5, 2, 5, HcElements.crimsonOrnament));
 
             for (int i = -3; i <= 3; i++) {
                 components.accept(Component.of(5, -3, i, HcElements.rune).upgradeSlot());

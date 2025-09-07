@@ -1,6 +1,11 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/block",
+  "loader": "neoforge:obj",
+  "flip_v": true, 
+  "model": "hemomancy:models/block/block_altar.obj",
+  "mtl_override": "hemomancy:models/block/block_altar.mtl",
   "textures": {
-    "all": "hemomancy:block/blood_altar"
+    "texture0": "hemomancy:block/blood_altar",
+    "particle": "#texture0"
   }
 }

@@ -3,6 +3,7 @@ package com.easynull.hemomancy.core.altar;
 import com.easynull.hemomancy.registers.HcElements;
 import com.easynull.hemomancy.registers.blocks.RuneBlock;
 import com.easynull.hemomancy.registers.blocks.type.AltarBE;
+import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,15 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 public final class Altar {
-    private Map<RuneBlock.Type, Integer> runes = new HashMap<>();
+    private final Map<RuneBlock.Type, Integer> runes = new HashMap<>();
     final AltarBE altar;
     byte tier;
     long capacity;
-    int sacrifices, chargingRadius;
+    int sacrifices;
     float speed, charging, resCapacity;
+    String mode;
 
     public Altar(AltarBE altar) {
         this.altar = altar;
+        this.mode = altar.getModes()[0];
     }
 
     public boolean validStructure(byte tier) {
@@ -49,42 +52,46 @@ public final class Altar {
     }
 
     public void upgradeAltar() {
-        var pos = altar.getBlockPos();
-        Level level = altar.getLevel();
-        byte validTier = 1;
+        if (altar.getLevel().isClientSide()) return;
+        if (altar.getLevel().getGameTime() % 20 == 0) {
+            var pos = altar.getBlockPos();
+            Level level = altar.getLevel();
+            byte validTier = 1;
 
-        for (byte tier : Tier.getTiers().keySet()) {
-            if (validStructure(tier)) validTier = tier;
-        }
-        setTier(validTier);
-        runes.clear();
+            for (byte tier : Tier.getTiers().keySet()) {
+                if (validStructure(tier)) validTier = tier;
+            }
+            setTier(validTier);
+            runes.clear();
 
-        for (Tier.Component component : getComponents()) {
-            BlockPos cPos = pos.offset(component.pos);
-            BlockState state = level.getBlockState(cPos);
-            if (component.block == HcElements.rune.get() && state.getBlock() instanceof RuneBlock rune) {
-                if (component.isUpgrade() && rune.getType() != RuneBlock.Type.none) {
-                    for (RuneBlock.Type type : rune.getTypes()) {
-                        addUpgrade(type, rune.getMultp());
+            for (Tier.Component component : getComponents()) {
+                BlockPos cPos = pos.offset(component.pos);
+                BlockState state = level.getBlockState(cPos);
+                if (component.block == HcElements.rune.get() && state.getBlock() instanceof RuneBlock rune) {
+                    if (component.isUpgrade() && rune.getType() != RuneBlock.Type.none) {
+                        for (RuneBlock.Type type : rune.getTypes()) {
+                            addUpgrade(type, rune.getTier());
+                        }
                     }
                 }
             }
-        }
 
-        if (getTier() == 1) {
-            setSpeed(0.1f);
-            setSacrifices(0);
-            setResCapacity(1f);
-            setCharging(0);
-            setChargingRadius(0);
-        } else {
-            setSpeed(getUpgrade(RuneBlock.Type.speed) * 0.09f);
-            setSacrifices((int) (getUpgrade(RuneBlock.Type.sacrifices) * 0.09f));
-            setResCapacity(1f + getUpgrade(RuneBlock.Type.resonantCapacity) * 0.09f);
-            setCharging(getUpgrade(RuneBlock.Type.relations) * 0.09f);
-            setChargingRadius((int) (getUpgrade(RuneBlock.Type.relations) * 0.27f));
+            if (getTier() == 1) {
+                setSpeed(0.5f);
+                setSacrifices(0);
+                setResCapacity(1f);
+                setCharging(1f);
+            } else {
+                setSpeed(0.5f + getUpgrade(RuneBlock.Type.speed) * 0.05f);
+                setSacrifices((int) (getUpgrade(RuneBlock.Type.sacrifices) * 0.09f));
+                setResCapacity(1f + getUpgrade(RuneBlock.Type.resonantCapacity) * 0.09f);
+                setCharging(1f + getUpgrade(RuneBlock.Type.relations) * 0.09f);
+            }
+            setCapacity((int) ((getTier() * 5000 + (getUpgrade(RuneBlock.Type.capacity) * 1500)) * resCapacity));
+            if (altar.getLp(altar) > getCapacity()) {
+                altar.reducerLp(getCapacity(), altar);
+            }
         }
-        setCapacity((int) ((getTier() * 5000 + (getUpgrade(RuneBlock.Type.capacity) * 1500)) * resCapacity));
     }
 
     public void tick() {
@@ -119,8 +126,8 @@ public final class Altar {
         return charging;
     }
 
-    public int getChargingRadius() {
-        return chargingRadius;
+    public String getMode() {
+        return mode;
     }
 
     public void setTier(byte tier) {
@@ -153,13 +160,12 @@ public final class Altar {
         Utils.Block.updateBlockEntity(altar);
     }
 
-    public void setChargingRadius(int chargingRadius) {
-        this.chargingRadius = chargingRadius;
+    public void setMode(String mode) {
+        this.mode = mode;
         Utils.Block.updateBlockEntity(altar);
     }
 
     private int getUpgrade(RuneBlock.Type type) {
-        if (runes == null) return 0;
         return runes.getOrDefault(type, 0);
     }
 
@@ -173,9 +179,9 @@ public final class Altar {
         this.capacity = tag.getLong("capacity");
         this.resCapacity = tag.getFloat("resonantCapacity");
         this.sacrifices = tag.getInt("sacrifices");
-        this.chargingRadius = tag.getInt("chargingRadius");
         this.speed = tag.getFloat("speed");
         this.charging = tag.getFloat("charging");
+        this.mode = tag.getString("mode");
     }
 
     public void save(CompoundTag tag) {
@@ -183,8 +189,8 @@ public final class Altar {
         tag.putLong("capacity", capacity);
         tag.putFloat("resonantCapacity", resCapacity);
         tag.putInt("sacrifices", sacrifices);
-        tag.putInt("chargingRadius", chargingRadius);
         tag.putFloat("speed", speed);
         tag.putFloat("charging", charging);
+        tag.putString("mode", mode);
     }
 }

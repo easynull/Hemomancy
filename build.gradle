@@ -1,6 +1,8 @@
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '1.0.21'
+    id 'com.modrinth.minotaur' version "2.+"
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -13,7 +15,7 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 version = mod_version
-group = mod_group_id
+group = mod_group
 
 repositories {
     mavenLocal()
@@ -29,23 +31,26 @@ base {
 
 neoForge {
     version = neo_version
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
     parchment {
-        mappingsVersion = parchment_mappings_version
-        minecraftVersion = parchment_minecraft_version
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
     }
     runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
+        }
         client {
             client()
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        }
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-            logLevel = org.slf4j.event.Level.DEBUG
         }
     }
     mods {
         "${mod_id}" {
-            sourceSet(sourceSets.main)
+            sourceSet sourceSets.main
         }
     }
 }
@@ -55,8 +60,20 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "${mod_id}"
+    uploadFile = jar
+    versionNumber = "${mod_version}-neoforge"
+    versionType = "${releaseType}"
+    gameVersions = ["${minecraft_version}"] as Iterable<? extends String>
+    loaders = ["neoforge"]
+    changelog = rootProject.file("changelog.md").text
+}
+
 dependencies {
     implementation "maven.modrinth:nullcore:${nullcore_version}"
+    compileOnly files("libs/AvaritiaNeo-1.21.4-1.0.4.jar")
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -82,7 +99,7 @@ tasks.withType(ProcessResources).configureEach {
 
 idea {
     module {
-        downloadSources = true
+        downloadSources = false
         downloadJavadoc = true
     }
 }

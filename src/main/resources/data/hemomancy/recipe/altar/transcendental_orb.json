@@ -1,0 +1,11 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "hemomancy:transcendental_crystal"
+  ],
+  "result": {
+    "id": "hemomancy:transcendental_blood_orb"
+  },
+  "lp": 100000,
+  "tier": 6
+}

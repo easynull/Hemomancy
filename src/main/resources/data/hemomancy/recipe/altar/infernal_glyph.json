@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "hemomancy:demonic_glyph"
+  ],
+  "result": {
+    "id": "hemomancy:infernal_glyph",
+    "count": 1
+  },
+  "lp": 20000,
+  "tier": 6
+}
