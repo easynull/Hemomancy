@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:stone"
+  ],
+  "result": {
+    "id": "hemomancy:blank_glyph",
+    "count": 3
+  },
+  "lp": 500,
+  "tier": 1
+}

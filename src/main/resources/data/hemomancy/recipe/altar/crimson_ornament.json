@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:diamond_block"
+  ],
+  "result": {
+    "id": "hemomancy:crimson_ornament",
+    "count": 1
+  },
+  "lp": 2000,
+  "tier": 3
+}

@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "hemomancy:blank_glyph"
+  ],
+  "result": {
+    "id": "hemomancy:fortified_glyph",
+    "count": 1
+  },
+  "lp": 1500,
+  "tier": 2
+}

@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "hemomancy:fortified_glyph"
+  ],
+  "result": {
+    "id": "hemomancy:crimson_glyph",
+    "count": 1
+  },
+  "lp": 2500,
+  "tier": 3
+}

@@ -1,7 +1,5 @@
 {
-  "item.hemomancy.blood_altar": "Кровавый Алтарь",
-
-  "item.hemomancy.rune": "Руна",
+  "item.hemomancy.rune": "Пустая Руна",
   "item.hemomancy.speed_rune": "Руна Скорости",
   "item.hemomancy.sacrifices_rune": "Руна Жертвоприношения",
   "item.hemomancy.capacity_rune": "Руна Ёмкости",
@@ -17,20 +15,41 @@
   "item.hemomancy.transcendental_blood_orb": "Трансцендентальный Кровавый Шар",
   "item.hemomancy.infinity_blood_orb": "Бесконечный Кровавый Шар",
 
+  "item.hemomancy.blood_altar": "Кровавый Алтарь",
+  "item.hemomancy.pedestal": "Пьедистал ???",
   "item.hemomancy.sacrificial_dagger": "Жертвенный Кинжал",
+  "item.hemomancy.crimson_ornament": "Багровый Орнамент",
   "item.hemomancy.transcendental_crystal": "Трансцендентальный Кристалл",
-  "item.hemomancy.blood_ornament": "Кровавый Орнамент",
 
-  "item.hemomancy.statistical_sigil": "Сигил Статистики",
+  "item.hemomancy.hemostatic_controller": "Гемостатический контроллер",
   "item.hemomancy.water_sigil": "Сигил Водного Контроля",
   "item.hemomancy.lava_sigil": "Сигил Магматического Натиска",
+  "item.hemomancy.air_sigil": "Сигил Стратосферы",
+  "item.hemomancy.resistance_sigil": "Сигил Сопротивления",
+  "item.hemomancy.movement_sigil": "Сигил Перемещения",
+  "item.hemomancy.space_sigil": "Сигил Пространства",
+
+  "item.hemomancy.blank_glyph": "Пустой глиф",
+  "item.hemomancy.fortified_glyph": "Укреплённый глиф",
+  "item.hemomancy.crimson_glyph": "Багровый глиф",
+  "item.hemomancy.filled_glyph": "Наполненный глиф",
+  "item.hemomancy.demonic_glyph": "Демонический глиф",
+  "item.hemomancy.infernal_glyph": "Инфернальный глиф",
+  "item.hemomancy.cosmic_glyph": "Космический глиф",
+
+  "tooltip.hemomancy.rune": "▶ +%s к %s ◀",
+  "tooltip.hemomancy.tier": "Ур. %s",
+  "tooltip.hemomancy.orb.desc": "▶ Может вмещать в себя до %s LP",
+  "tooltip.hemomancy.water_sigil.desc": "◆ Позволяет управлять водными потоками",
+  "tooltip.hemomancy.lava_sigil.desc": "◆ Позволяет управлять магматическими потоками",
+  "tooltip.hemomancy.air_sigil.desc": "◆ Позволяет контролировать воздушное пространство",
+  "tooltip.hemomancy.resistance_sigil.desc": "◆ Создает защитные барьеры из сгущенной крови для отражения атак",
+  "tooltip.hemomancy.movement_sigil.desc": "◆ Позволяет перемещать любые блоки на разные позиции за небольшую плату",
+  "tooltip.hemomancy.space_sigil.desc": "◆ Сохраняет позицию игрока и позволяет перемещаться в нее в любое время. Для очистки буфера [Shift] + [ПКМ]",
 
   "rune.hemomancy.speed": "Скорости",
   "rune.hemomancy.sacrifices": "Жертвоприношению",
   "rune.hemomancy.capacity": "Ёмкости",
   "rune.hemomancy.resonantCapacity": "Резонирующей Ёмкости",
-  "rune.hemomancy.relations": "Связи",
-
-  "tooltip.hemomancy.rune": "▶ +%s к %s",
-  "message.hemomancy.statistical": "Цель содержит %s LP из %s LP"
+  "rune.hemomancy.relations": "Связи"
 }

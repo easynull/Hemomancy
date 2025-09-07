@@ -19,12 +19,12 @@ public final class DaggerItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
         int lp = rand.nextInt(150, 200);
-        Utils.Block.forEachCube(player.blockPosition(), 2, pos -> {
+        Utils.Block.forEachCube(player.blockPosition(), 1, pos -> {
             if(level.getBlockEntity(pos) instanceof AltarBE altar){
                 altar.reducerLp(lp, altar);
+                EnergyUtils.damageLp(player, lp);
             }
         });
-        EnergyUtils.damageLp(player, lp);
         return InteractionResult.CONSUME;
     }
 }

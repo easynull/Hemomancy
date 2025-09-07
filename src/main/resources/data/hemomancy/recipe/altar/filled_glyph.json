@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "hemomancy:crimson_glyph"
+  ],
+  "result": {
+    "id": "hemomancy:filled_glyph",
+    "count": 1
+  },
+  "lp": 5000,
+  "tier": 4
+}

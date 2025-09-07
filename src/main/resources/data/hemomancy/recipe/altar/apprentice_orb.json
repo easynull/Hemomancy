@@ -1,0 +1,11 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:emerald_block"
+  ],
+  "result": {
+    "id": "hemomancy:apprentice_blood_orb"
+  },
+  "lp": 5000,
+  "tier": 2
+}

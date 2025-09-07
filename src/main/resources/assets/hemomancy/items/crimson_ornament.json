@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "hemomancy:block/blood_ornament"
+    "model": "hemomancy:block/crimson_ornament"
   }
 }

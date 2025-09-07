@@ -1,0 +1,11 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "hemomancy:weak_blood_orb"
+  },
+  "lp": 1000,
+  "tier": 1
+}
