@@ -1,0 +1,6 @@
+{
+  "parent": "hemomancy:item/resistance_sigil",
+  "textures": {
+    "layer0": "hemomancy:item/resistance_sigil_active"
+  }
+}

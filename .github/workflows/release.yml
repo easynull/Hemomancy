@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   release:
@@ -29,9 +27,6 @@ jobs:
           echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_ENV
           echo "MC_VERSION=$MC_VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
-          echo "minecraft_version=$MC_VERSION" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -46,23 +41,26 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build all modules
+
+      - name: Build with Gradle
         run: ./gradlew build
 
       - name: Collect artifacts
-        id: collect-jars
         run: |
-          # NeoForge JAR
-          NEO_JAR=$(ls neoforge/build/libs/*-${MOD_VERSION}.jar | head -1)
-          echo "NEO_JAR=$NEO_JAR" >> $GITHUB_ENV
+          # Поиск JAR файлов
+          echo "JAR files found:"
+          find . -name "*.jar" -type f
           
-          # Список всех JAR для релиза
-          echo "ARTIFACTS=${NEO_JAR}" >> $GITHUB_ENV
+          # NeoForge JAR
+          NEO_JAR=$(find neoforge/build/libs -name "*.jar" -type f | head -1)
+          echo "NEO_JAR=$NEO_JAR" >> $GITHUB_ENV
+          echo "NeoForge JAR: $NEO_JAR"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -71,7 +69,7 @@ jobs:
           name: ${{ env.VERSION }}
           body: |
             ### Minecraft ${{ env.MC_VERSION }}
-          files: |
-            ${{ env.NEO_JAR }}
+            Built for NeoForge
+          files: ${{ env.NEO_JAR }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
