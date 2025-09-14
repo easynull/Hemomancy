@@ -169,7 +169,7 @@ public final class Tier {
         return tiers;
     }
 
-    public static byte getMaxTier(){
+    public static byte getSize(){
         return (byte) tiers.size();
     }
 

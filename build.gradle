@@ -1,3 +1,4 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '1.0.21'
@@ -26,7 +27,7 @@ repositories {
 }
 
 base {
-    archivesName = name
+    archivesName = name + "-${minecraft_version}"
 }
 
 neoForge {
@@ -64,11 +65,26 @@ modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "${mod_id}"
     uploadFile = jar
-    versionNumber = "${mod_version}-neoforge"
+    versionName = "${minecraft_version}-${mod_version}"
+    versionNumber = "${mod_version}"
     versionType = "${releaseType}"
     gameVersions = ["${minecraft_version}"] as Iterable<? extends String>
     loaders = ["neoforge"]
     changelog = rootProject.file("changelog.md").text
+    dependencies {
+        required.version "nullcore", "${nullcore_version}-neoforge"
+    }
+}
+
+tasks.register('curseforge', TaskPublishCurseForge) {
+    apiToken = System.getenv("CURSEFORGE_TOKEN")
+    def mainFile = upload(curseforge_id, jar)
+    mainFile.changelog = rootProject.file('changelog.md').text
+    mainFile.addGameVersion(minecraft_version)
+    mainFile.releaseType = "${releaseType}"
+    mainFile.displayName = "${minecraft_version}-${mod_version}"
+    mainFile.addModLoader("NeoForge")
+    mainFile.addRequirement('1286206')
 }
 
 dependencies {
