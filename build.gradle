@@ -72,7 +72,7 @@ modrinth {
     loaders = ["neoforge"]
     changelog = rootProject.file("changelog.md").text
     dependencies {
-        required.version "nullcore", "${nullcore_version}-neoforge"
+        required.version "nullcore", "${nullcore_version}"
     }
 }
 
@@ -84,7 +84,6 @@ tasks.register('curseforge', TaskPublishCurseForge) {
     mainFile.releaseType = "${releaseType}"
     mainFile.displayName = "${minecraft_version}-${mod_version}"
     mainFile.addModLoader("NeoForge")
-    mainFile.addRequirement('1286206')
 }
 
 dependencies {

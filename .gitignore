@@ -1,4 +1,4 @@
-# eclipse
+
 bin
 *.launch
 .settings
@@ -24,3 +24,4 @@ runs
 run-data
 
 repo
+/libs/
