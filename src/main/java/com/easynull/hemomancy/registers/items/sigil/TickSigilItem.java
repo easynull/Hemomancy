@@ -15,7 +15,7 @@ public final class TickSigilItem extends SigilItem {
     final int rollback;
 
     public TickSigilItem(Properties props, Context context, int lp, int rollback, Component... additionalTooltip) {
-        super(props, context, lp, additionalTooltip);
+        super(props.component(HcComponents.active, false), context, lp, additionalTooltip);
         this.rollback = rollback;
     }
 

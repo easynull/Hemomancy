@@ -18,7 +18,7 @@ public final class DaggerItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
-        int lp = rand.nextInt(150, 200);
+        int lp = rand.nextInt(85, 100);
         Utils.Block.forEachCube(player.blockPosition(), 1, pos -> {
             if(level.getBlockEntity(pos) instanceof AltarBE altar){
                 altar.reducerLp(lp, altar);

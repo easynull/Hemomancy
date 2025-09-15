@@ -42,7 +42,7 @@ public class PedestalRender<T extends ContainerBlockEntity> implements BlockEnti
             float xOffset = count > 1 ? (rand.nextFloat() - 0.5f) * spreadFactor : 0f;
             float yOffset = (rand.nextFloat() - 0.5f) * spreadFactor;
             float zOffset = count > 1 ? (rand.nextFloat() - 0.5f) * spreadFactor : 0f;
-            ps.translate(xOffset + 0.5f, yOffset + height + 2f + 0.06f * Mth.sin(Utils.Render.getAnimationTick() * 0.0360f), zOffset + 0.5f);
+            ps.translate(xOffset + 0.5f, yOffset + height + 0.06f * Mth.sin(Utils.Render.getAnimationTick() * 0.0360f), zOffset + 0.5f);
             ps.mulPose(Axis.YN.rotationDegrees(Utils.Render.getAnimationTick()));
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, ps, bufferSource, level, 0);
             ps.popPose();

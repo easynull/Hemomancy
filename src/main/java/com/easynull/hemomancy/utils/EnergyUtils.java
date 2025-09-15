@@ -45,10 +45,48 @@ public final class EnergyUtils {
     }
 
     public static void extractInFrom(Object target, Object source, long amount, boolean inTarget) {
-        if (!((source instanceof ItemStack s ? s.getItem() : source) instanceof LpElement sc)) return;
-        if (!((target instanceof ItemStack s ? s.getItem() : target) instanceof LpElement tg)) return;
-        tg.reducerLp(inTarget ? amount : -amount, target);
-        sc.reducerLp(inTarget ? -amount : amount, source);
+        if (amount <= 0) {
+            return;
+        }
+
+        LpElement sc = getLpElement(source);
+        LpElement tg = getLpElement(target);
+
+        if (sc == null || tg == null) {
+            return;
+        }
+
+        long sourceLp = sc.getLp(source);
+        long targetLp = tg.getLp(target);
+        long sourceMax = sc.getMaxLp();
+        long targetMax = tg.getMaxLp();
+
+        long transfer;
+
+        if (inTarget) {
+            long space = targetMax - targetLp;
+            transfer = Math.min(amount, Math.min(sourceLp, space));
+
+            if (transfer > 0) {
+                sc.reducerLp(-transfer, source);
+                tg.reducerLp(transfer, target);
+            }
+        } else {
+            long space = sourceMax - sourceLp;
+            transfer = Math.min(amount, Math.min(targetLp, space));
+
+            if (transfer > 0) {
+                tg.reducerLp(-transfer, target);
+                sc.reducerLp(transfer, source);
+            }
+        }
+    }
+
+    public static LpElement getLpElement(Object obj) {
+        if (obj instanceof ItemStack stack) {
+            return stack.getItem() instanceof LpElement element ? element : null;
+        }
+        return obj instanceof LpElement element ? element : null;
     }
 
     public static ItemStack getHighestTier(Player player) {

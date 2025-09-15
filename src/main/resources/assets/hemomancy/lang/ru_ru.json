@@ -1,5 +1,5 @@
 {
-  "item.hemomancy.rune": "Пустая Руна",
+  "item.hemomancy.blank_rune": "Чистая Руна",
   "item.hemomancy.speed_rune": "Руна Скорости",
   "item.hemomancy.sacrifices_rune": "Руна Жертвоприношения",
   "item.hemomancy.capacity_rune": "Руна Ёмкости",
@@ -16,7 +16,7 @@
   "item.hemomancy.infinity_blood_orb": "Бесконечный Кровавый Шар",
 
   "item.hemomancy.blood_altar": "Кровавый Алтарь",
-  "item.hemomancy.pedestal": "Пьедистал ???",
+  "item.hemomancy.alchemy": "Алхимия",
   "item.hemomancy.sacrificial_dagger": "Жертвенный Кинжал",
   "item.hemomancy.crimson_ornament": "Багровый Орнамент",
   "item.hemomancy.transcendental_crystal": "Трансцендентальный Кристалл",
@@ -29,7 +29,7 @@
   "item.hemomancy.movement_sigil": "Сигил Перемещения",
   "item.hemomancy.space_sigil": "Сигил Пространства",
 
-  "item.hemomancy.blank_glyph": "Пустой глиф",
+  "item.hemomancy.blank_glyph": "Чистый глиф",
   "item.hemomancy.fortified_glyph": "Укреплённый глиф",
   "item.hemomancy.crimson_glyph": "Багровый глиф",
   "item.hemomancy.filled_glyph": "Наполненный глиф",
@@ -46,6 +46,12 @@
   "tooltip.hemomancy.resistance_sigil.desc": "◆ Создает защитные барьеры из сгущенной крови для отражения атак",
   "tooltip.hemomancy.movement_sigil.desc": "◆ Позволяет перемещать любые блоки на разные позиции за небольшую плату",
   "tooltip.hemomancy.space_sigil.desc": "◆ Сохраняет позицию игрока и позволяет перемещаться в нее в любое время. Для очистки буфера [Shift] + [ПКМ]",
+
+  "message.hemomancy.mode.change": "▶ Режим изменен: %s ◀",
+
+  "mode.crafting": "Создание",
+  "mode.dominant": "Доминантый",
+  "mode.recessive": "Рецессивный",
 
   "rune.hemomancy.speed": "Скорости",
   "rune.hemomancy.sacrifices": "Жертвоприношению",

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "hemomancy:block/rune"
+    "model": "hemomancy:block/blank_rune"
   }
 }

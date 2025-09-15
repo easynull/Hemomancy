@@ -24,18 +24,20 @@ import java.util.List;
 public final class OrbItem extends Item implements LpElement, Tierable, IconRenderer {
     final long maxLp;
     final byte tier;
+    final int bonus;
 
-    public OrbItem(Properties prop, int tier, long maxLp) {
+    public OrbItem(Properties prop, int tier, long maxLp, int bonus) {
         super(prop.stacksTo(1));
         this.tier = (byte) tier;
         this.maxLp = maxLp;
+        this.bonus = bonus;
     }
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
-        int lp = rand.nextInt(150, 200);
-        if (reducerLp(lp, player.getItemInHand(hand))) {
+        long lp = rand.nextInt(100, 150);
+        if (reducerLp(lp * bonus, player.getItemInHand(hand))) {
             EnergyUtils.damageLp(player, lp);
             return InteractionResult.CONSUME;
         }

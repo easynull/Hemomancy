@@ -42,7 +42,7 @@ public final class HcElements {
     public static DeferredItem<Item> sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, hemostaticController, waterSigil, lavaSigil, airSigil, resistanceSigil, movementSigil, spaceSigil, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph, demonicGlyph, infernalGlyph, cosmicGlyph;
 
     static {
-        rune = blocks.registerBlock("rune", p -> new RuneBlock(p, -1, RuneBlock.Type.none), Blocks.STONE);
+        rune = blocks.registerBlock("blank_rune", p -> new RuneBlock(p, -1, RuneBlock.Type.none), Blocks.STONE);
         speedRune = blocks.registerBlock("speed_rune", p -> new RuneBlock(p, RuneBlock.Type.speed), Blocks.STONE);
         sacrificesRune = blocks.registerBlock("sacrifices_rune", p -> new RuneBlock(p, RuneBlock.Type.sacrifices), Blocks.STONE);
         capacityRune = blocks.registerBlock("capacity_rune", p -> new RuneBlock(p, 1, RuneBlock.Type.capacity), Blocks.STONE);
@@ -50,12 +50,12 @@ public final class HcElements {
         relationsRune = blocks.registerBlock("relations_rune", p -> new RuneBlock(p, RuneBlock.Type.relations), Blocks.STONE);
         chimericRune = blocks.registerBlock("chimeric_rune", p -> new RuneBlock(p, RuneBlock.Type.speed, RuneBlock.Type.capacity, RuneBlock.Type.resonantCapacity, RuneBlock.Type.sacrifices, RuneBlock.Type.relations), Blocks.STONE, new Item.Properties().rarity(Rarity.EPIC));
 
-        weakOrb = items.registerItem("weak_blood_orb", p -> new OrbItem(p, 1, 5000));
-        apprenticeOrb = items.registerItem("apprentice_blood_orb", p -> new OrbItem(p, 2, 25000));
-        magicianOrb = items.registerItem("magician_blood_orb", p -> new OrbItem(p, 3, 150000));
-        masterOrb = items.registerItem("master_blood_orb", p -> new OrbItem(p.rarity(Rarity.UNCOMMON), 4, 1000000));
-        archmageOrb = items.registerItem("archmage_blood_orb", p -> new OrbItem(p.rarity(Rarity.RARE), 5, 10000000));
-        transcendentalOrb = items.registerItem("transcendental_blood_orb", p -> new OrbItem(p.rarity(Rarity.EPIC), 6, 30000000));
+        weakOrb = items.registerItem("weak_blood_orb", p -> new OrbItem(p, 1, 5000, 1));
+        apprenticeOrb = items.registerItem("apprentice_blood_orb", p -> new OrbItem(p, 2, 25000, 3));
+        magicianOrb = items.registerItem("magician_blood_orb", p -> new OrbItem(p, 3, 150000, 10));
+        masterOrb = items.registerItem("master_blood_orb", p -> new OrbItem(p.rarity(Rarity.UNCOMMON), 4, 1000000, 20));
+        archmageOrb = items.registerItem("archmage_blood_orb", p -> new OrbItem(p.rarity(Rarity.RARE), 5, 10000000, 45));
+        transcendentalOrb = items.registerItem("transcendental_blood_orb", p -> new OrbItem(p.rarity(Rarity.EPIC), 6, 30000000, 100));
         sacrificialDagger = items.registerItem("sacrificial_dagger", p -> new DaggerItem(p.rarity(Rarity.UNCOMMON)));
 
         hemostaticController = items.registerItem("hemostatic_controller", ControllerItem::new);
@@ -67,6 +67,7 @@ public final class HcElements {
             float strength = 1.8f;
             player.setDeltaMovement(look.x() * strength, look.y() * strength + 0.5, look.z() * strength);
             player.resetFallDistance();
+            player.startFallFlying();
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WIND_CHARGE_BURST, SoundSource.PLAYERS, 1.0f, 1.0f);
         }, 65, true));
         resistanceSigil = items.registerItem("resistance_sigil", p -> new TickSigilItem(p, ctx -> {
@@ -135,7 +136,7 @@ public final class HcElements {
         transcendentalCrystal = blocks.registerBlock("transcendental_crystal", Block::new, Blocks.AMETHYST_BLOCK);
         crimsonOrnament = blocks.registerBlock("crimson_ornament", Block::new, Blocks.NETHERRACK);
         bloodAltar = blocks.registerBlock("blood_altar", p -> new PedestalBlock(p, HcBlockEntities.bloodAltar::get), Blocks.BLACKSTONE);
-        pedestal = blocks.registerBlock("pedestal", p -> new PedestalBlock(p, HcBlockEntities.pedestal::get), Blocks.BLACKSTONE);
+//        pedestal = blocks.registerBlock("pedestal", p -> new PedestalBlock(p, HcBlockEntities.pedestal::get), Blocks.BLACKSTONE);
 
         blankGlyph = items.registerItem("blank_glyph", Item::new);
         fortifiedGlyph = items.registerItem("fortified_glyph", Item::new);
@@ -147,13 +148,13 @@ public final class HcElements {
         alchemy = blocks.registerBlock("alchemy", AlchemyBlock::new, Blocks.BLACKSTONE);
 
         if (ModList.get().isLoaded("avaritia")) {
-            infinityOrb = items.registerItem("infinity_blood_orb", p -> new OrbItem(p.rarity(AvaritiaItems.COSMIC_RARITY), Byte.MAX_VALUE, 1_000_000_000_000L));
+            infinityOrb = items.registerItem("infinity_blood_orb", p -> new OrbItem(p.rarity(AvaritiaItems.COSMIC_RARITY), Byte.MAX_VALUE, 1_000_000_000_000L, 10000));
             cosmicGlyph = items.registerItem("cosmic_glyph", p -> new Item(p.rarity(AvaritiaItems.COSMIC_RARITY)));
         }
     }
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> main = tabs.registerSearchTab("hemomancy", Component.translatable("tab.hemomancy"), bloodAltar::toStack, rune, speedRune, sacrificesRune, capacityRune, resonantCapacityRune, relationsRune, chimericRune,
-            sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, hemostaticController, airSigil, waterSigil, lavaSigil, resistanceSigil, movementSigil, spaceSigil, crimsonOrnament, transcendentalCrystal, bloodAltar, pedestal, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph,
+            sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, hemostaticController, airSigil, waterSigil, lavaSigil, resistanceSigil, movementSigil, spaceSigil, crimsonOrnament, transcendentalCrystal, bloodAltar, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph,
             demonicGlyph, infernalGlyph, cosmicGlyph);
 
     public static void init(final IEventBus bus) {

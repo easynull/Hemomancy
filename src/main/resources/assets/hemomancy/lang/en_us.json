@@ -1,7 +1,7 @@
 {
   "tab.hemomancy": "Hemomancy",
 
-  "item.hemomancy.rune": "Blank Rune",
+  "item.hemomancy.blank_rune": "Blank Rune",
   "item.hemomancy.speed_rune": "Speed Rune",
   "item.hemomancy.sacrifices_rune": "Sacrifices Rune",
   "item.hemomancy.capacity_rune": "Capacity Rune",
@@ -18,7 +18,7 @@
   "item.hemomancy.infinity_blood_orb": "Infinity Blood Orb",
 
   "item.hemomancy.blood_altar": "Blood Altar",
-  "item.hemomancy.pedestal": "Pedestal ???",
+  "item.hemomancy.alchemy": "Alchemy",
   "item.hemomancy.sacrificial_dagger": "Sacrificial Dagger",
   "item.hemomancy.crimson_ornament": "Crimson Ornament",
   "item.hemomancy.transcendental_crystal": "Transcendental Crystal",
@@ -48,6 +48,12 @@
   "tooltip.hemomancy.resistance_sigil.desc": "◆ Creates protective barriers of condensed blood to repel attacks",
   "tooltip.hemomancy.movement_sigil.desc": "◆ Allows you to move any block without having to break it",
   "tooltip.hemomancy.space_sigil.desc": "◆ Allows you to move to a position saved by the player. To clear the buffer [Shift] + [RMB]",
+
+  "message.hemomancy.mode.change": "▶ Mode change: %s ◀",
+
+  "mode.crafting": "Crafting",
+  "mode.dominant": "Dominant",
+  "mode.recessive": "Recessive",
 
   "rune.hemomancy.speed": "Speed",
   "rune.hemomancy.sacrifices": "Sacrifices",

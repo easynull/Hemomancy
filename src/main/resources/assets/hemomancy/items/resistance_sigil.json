@@ -1,14 +1,14 @@
 {
   "model": {
     "type": "minecraft:condition",
-    "on_false": {
-      "type": "minecraft:model",
-      "model": "hemomancy:item/resistance_sigil"
-    },
+    "property": "hemomancy:active",
     "on_true": {
       "type": "minecraft:model",
       "model": "hemomancy:item/resistance_sigil_active"
     },
-    "property": "hemomancy:active"
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "hemomancy:item/resistance_sigil"
+    }
   }
 }

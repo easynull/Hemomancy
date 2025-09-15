@@ -16,8 +16,8 @@ public final class HcRecipes {
     public static DeferredHolder<RecipeType<?>, RecipeType<AltarRecipe>> altar = types.register("altar", ()-> RecipeType.simple(Hemomancy.toPath("altar")));
     public static DeferredHolder<RecipeSerializer<?>, AltarRecipe.Serializer> altarSer = serializer.register("altar", AltarRecipe.Serializer::new);
 
-    public static DeferredHolder<RecipeType<?>, RecipeType<AlchemyRecipe>> alchemy = types.register("alchemy", ()-> RecipeType.simple(Hemomancy.toPath("alchemy")));
-    public static DeferredHolder<RecipeSerializer<?>, AlchemyRecipe.Serializer> alchemySer = serializer.register("alchemy", AlchemyRecipe.Serializer::new);
+//    public static DeferredHolder<RecipeType<?>, RecipeType<AlchemyRecipe>> alchemy = types.register("alchemy", ()-> RecipeType.simple(Hemomancy.toPath("alchemy")));
+//    public static DeferredHolder<RecipeSerializer<?>, AlchemyRecipe.Serializer> alchemySer = serializer.register("alchemy", AlchemyRecipe.Serializer::new);
 
 //    public static DeferredHolder<RecipeType<?>, RecipeType<RitualRecipe>> ritual = types.register("ritual", ()-> RecipeType.simple(Hemomancy.toPath("ritual")));
 //    public static DeferredHolder<RecipeSerializer<?>, RitualRecipe.Serializer> ritualSer = serializer.register("ritual", RitualRecipe.Serializer::new);

@@ -23,7 +23,7 @@ public final class HcConfig {
             unmovementBlocks = ConfigManager.create(
                     "unmovement_blocks",
                     "Blocks that cannot be moved with the movement sigil",
-                    List.of("minecraft:bedrock")
+                    List.of("minecraft:bedrock", "minecraft:barrier")
             );
         }, true);
     }

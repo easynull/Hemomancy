@@ -1,5 +1,6 @@
 package com.easynull.hemomancy.registers.blocks.type;
 
+import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.core.Wandable;
 import com.easynull.hemomancy.core.Tierable;
@@ -35,11 +36,15 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
     @Override
     public void tick() {
         altar.tick();
+        crafting = false;
         if (getMode().equals(getModes()[0])) {
+            if(getRecipe().isEmpty()){
+                progress = 0;
+            }
             getRecipe().ifPresent(recipe -> {
                 ItemStack input = getFirst();
                 int max = calculateMaxCraftable(input, recipe);
-
+                crafting = true;
                 if (max <= 0 || getFirst().getCount() * recipe.result().getCount() >= 64) {
                     progress = 0;
                     crafting = false;
@@ -75,7 +80,20 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
 
     @Override
     public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-        return crafting && getMode().equals(getModes()[0]);
+        if(level.getGameTime() % 10 == 0){
+            return !crafting;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (getRecipe().isPresent()) {
+            ItemStack result = getRecipe().get().result();
+            return getFirst().getCount() * result.getCount() < 63;
+        } else {
+            return super.canPlaceItem(slot, stack);
+        }
     }
 
     private int calculateMaxCraftable(ItemStack input, AltarRecipe recipe) {
