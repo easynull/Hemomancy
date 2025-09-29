@@ -1,6 +1,5 @@
 package com.easynull.hemomancy.registers.blocks.type;
 
-import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.core.Wandable;
 import com.easynull.hemomancy.core.Tierable;
@@ -9,6 +8,7 @@ import com.easynull.hemomancy.registers.HcBlockEntities;
 import com.easynull.hemomancy.registers.recipes.AltarRecipe;
 import com.easynull.hemomancy.utils.EnergyUtils;
 import com.easynull.hemomancy.utils.RecipeUtils;
+import com.mw.nullcore.Utils;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import com.mw.nullcore.core.blocks.type.Tickable;
 import net.minecraft.core.BlockPos;
@@ -18,6 +18,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -35,17 +37,18 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
 
     @Override
     public void tick() {
+        if(level.isClientSide()) return;
         altar.tick();
         crafting = false;
         if (getMode().equals(getModes()[0])) {
-            if(getRecipe().isEmpty()){
+            if (getRecipe().isEmpty()) {
                 progress = 0;
             }
             getRecipe().ifPresent(recipe -> {
                 ItemStack input = getFirst();
                 int max = calculateMaxCraftable(input, recipe);
                 crafting = true;
-                if (max <= 0 || getFirst().getCount() * recipe.result().getCount() >= 64) {
+                if (max <= 0 || getFirst().getCount() * recipe.result().getCount() > 64) {
                     progress = 0;
                     crafting = false;
                     return;
@@ -76,21 +79,24 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
         } else {
             EnergyUtils.extractInFrom(getInventory().getItem(0), this, (long) (altar.getCharging() * 25f), getMode().equals(getModes()[2]));
         }
+        Utils.Level.getEntities(level, worldPosition, 1.5f).forEach(e -> {
+            if (e instanceof LivingEntity le && !le.isAlive()) {
+                reducerLp((long) (le.getMaxHealth() * altar.getSacrifices() * (le instanceof Player ? 3 : 1)), this);
+                if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5f, le.getY() + 0.5f, le.getZ() + 0.5f, 2, 0.2, 0.0, 0.2, 0.0);
+            }
+        });
     }
 
     @Override
     public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-        if(level.getGameTime() % 10 == 0){
-            return !crafting;
-        }
-        return false;
+        return level.getGameTime() % 10 == 0 && !crafting;
     }
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         if (getRecipe().isPresent()) {
             ItemStack result = getRecipe().get().result();
-            return getFirst().getCount() * result.getCount() < 63;
+            return getFirst().getCount() * result.getCount() < 64;
         } else {
             return super.canPlaceItem(slot, stack);
         }
@@ -105,9 +111,7 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
     }
 
     public Optional<AltarRecipe> getRecipe() {
-        AltarRecipe.Input input = new AltarRecipe.Input(this, altar.getTier());
-        AltarRecipe recipe = RecipeUtils.getAltarRecipe(input, level);
-        return recipe == null ? Optional.empty() : Optional.of(recipe);
+        return Optional.ofNullable(RecipeUtils.getAltarRecipe(new AltarRecipe.Input(this, getTier()), level));
     }
 
     @Override
@@ -116,6 +120,7 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
         altar.load(tag);
         lp = tag.getLong("lp");
         progress = tag.getLong("progress");
+        crafting = tag.getBoolean("crafting");
     }
 
     @Override
@@ -124,6 +129,7 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
         altar.save(tag);
         tag.putLong("lp", lp);
         tag.putLong("progress", progress);
+        tag.putBoolean("crafting", crafting);
     }
 
     @Override
@@ -149,5 +155,10 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
     @Override
     public void setMode(String mode) {
         altar.setMode(mode);
+    }
+
+    @Override
+    public boolean canDaggerFulled() {
+        return true;
     }
 }

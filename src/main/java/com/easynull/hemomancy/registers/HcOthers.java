@@ -3,7 +3,6 @@ package com.easynull.hemomancy.registers;
 import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.client.render.type.AlchemyRender;
 import com.easynull.hemomancy.client.render.type.AltarRender;
-import com.easynull.hemomancy.client.render.type.PedestalRender;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -22,6 +21,6 @@ public final class HcOthers {
 
     @SubscribeEvent
     public static void registerModelCondition(RegisterConditionalItemModelPropertyEvent event) {
-        event.register(Hemomancy.toPath("active"), HcComponents.Active.codec);
+        event.register(Hemomancy.path("active"), HcComponents.Active.codec);
     }
 }

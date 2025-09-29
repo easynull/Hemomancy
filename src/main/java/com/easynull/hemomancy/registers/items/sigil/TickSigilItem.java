@@ -3,7 +3,6 @@ package com.easynull.hemomancy.registers.items.sigil;
 import com.easynull.hemomancy.registers.HcComponents;
 import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -14,19 +13,19 @@ import net.minecraft.world.level.Level;
 public final class TickSigilItem extends SigilItem {
     final int rollback;
 
-    public TickSigilItem(Properties props, Context context, int lp, int rollback, Component... additionalTooltip) {
-        super(props.component(HcComponents.active, false), context, lp, additionalTooltip);
+    public TickSigilItem(Properties props, Context ctx, int lp, int rollback) {
+        super(props.component(HcComponents.active, false), ctx, lp);
         this.rollback = rollback;
     }
 
-    public TickSigilItem(Properties props, Context context, int lp, Component... additionalTooltip) {
-        this(props, context, lp, Utils.Mth.secondTick(1), additionalTooltip);
+    public TickSigilItem(Properties props, Context ctx, int lp) {
+        this(props, ctx, lp, Utils.Mth.secondTick(1));
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (entity instanceof Player player) {
-            context.use(new Consumer(level, player.blockPosition(), player, stack, this));
+            ctx.action(new Consumer(level, player.blockPosition(), player.getDirection(), player, stack, this));
             if(level.getGameTime() % rollback == 0 && isActive(stack) && shouldLP){
                 EnergyUtils.extractLp(player, lp);
             }

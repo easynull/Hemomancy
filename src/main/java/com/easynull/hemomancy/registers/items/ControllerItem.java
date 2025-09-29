@@ -6,9 +6,7 @@ import com.easynull.hemomancy.core.Tierable;
 import com.easynull.hemomancy.core.Wandable;
 import com.easynull.hemomancy.registers.HcConfig;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mojang.math.Axis;
 import com.mw.nullcore.Utils;
-import com.mw.nullcore.client.render.Transform;
 import com.mw.nullcore.core.items.OverlayRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,15 +34,13 @@ public final class ControllerItem extends Item implements OverlayRenderer {
     private byte tier;
 
     public ControllerItem(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (!(entity instanceof Player player)) return;
-
+        if (!(entity instanceof Player player) || !level.isClientSide()) return;
         resetState();
-
         HitResult hit = player.pick(5.0f, 0.0f, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
@@ -53,7 +49,6 @@ public final class ControllerItem extends Item implements OverlayRenderer {
                 return;
             }
         }
-
         updateFromInventory(player);
     }
 
@@ -67,24 +62,24 @@ public final class ControllerItem extends Item implements OverlayRenderer {
     private void updateFromBlockEntity(LpElement le, Object target) {
         lp = le.getLp(target);
         maxLp = le.getMaxLp();
-        current = ((BlockEntity) target).getBlockState().getBlock();
+        current = le.showedItem().isEmpty() ? ((BlockEntity) target).getBlockState().getBlock() : le.showedItem().getItem();
         if (le instanceof Tierable te) {
             tier = te.getTier();
         }
     }
 
     private void updateFromInventory(Player player) {
-        for (ItemStack inv : player.getInventory().items) {
-            if (inv.getItem() instanceof LpElement le) {
-                updateFromItem(le, inv);
-                return;
-            }
-        }
         ItemStack highestTier = EnergyUtils.getHighestTier(player);
         if (highestTier.getItem() instanceof LpElement le) {
             updateFromItem(le, highestTier);
-            if (highestTier.getItem() instanceof Tierable te) {
+            if (le instanceof Tierable te) {
                 tier = te.getTier();
+                return;
+            }
+        }
+        for (ItemStack inv : player.getInventory().items) {
+            if (inv.getItem() instanceof LpElement le) {
+                updateFromItem(le, inv);
             }
         }
     }
@@ -123,7 +118,7 @@ public final class ControllerItem extends Item implements OverlayRenderer {
     @Override
     public void renderOverlay(Player player, ItemStack stack, GuiGraphics gg, int x, int y, float pTick) {
         if (lp == 0) return;
-        final ResourceLocation bar = Hemomancy.toTextures("gui/bloodbar");
+        final ResourceLocation bar = Hemomancy.textures("gui/bloodbar");
         int xCord = x + 3;
         int yCord = y + 3;
 

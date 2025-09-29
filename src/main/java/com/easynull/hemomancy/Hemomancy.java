@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(Hemomancy.ID)
@@ -29,10 +28,10 @@ public final class Hemomancy {
         Tier.init();
     }
 
-    public static ResourceLocation toPath(String path) {
+    public static ResourceLocation path(String path) {
         return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
-    public static ResourceLocation toTextures(String path) {
-        return toPath("textures/" + path + ".png");
+    public static ResourceLocation textures(String path) {
+        return path("textures/" + path + ".png");
     }
 }

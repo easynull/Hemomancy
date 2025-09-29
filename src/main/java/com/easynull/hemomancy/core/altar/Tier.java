@@ -16,14 +16,14 @@ public final class Tier {
     public static void init(){
         registerTier((byte) 1, components -> {});
         registerTier((byte) 2, components -> {
-            components.accept(Component.of(-1, -1, -1, HcElements.rune));
-            components.accept(Component.of(0, -1, -1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, -1, HcElements.rune));
-            components.accept(Component.of(-1, -1, 0, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, 0, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(-1, -1, 1, HcElements.rune));
-            components.accept(Component.of(0, -1, 1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, 1, HcElements.rune));
+            components.accept(Component.of(-1, -1, -1, HcElements.blankRune));
+            components.accept(Component.of(0, -1, -1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, -1, HcElements.blankRune));
+            components.accept(Component.of(-1, -1, 0, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, 0, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(-1, -1, 1, HcElements.blankRune));
+            components.accept(Component.of(0, -1, 1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, 1, HcElements.blankRune));
         });
         registerTier((byte) 3, components -> {
             components.accept(Component.of(-3, -1, -3));
@@ -39,20 +39,20 @@ public final class Tier {
             components.accept(Component.of(-3, 1, 3, ()-> Blocks.GLOWSTONE));
             components.accept(Component.of(3, 1, 3, ()-> Blocks.GLOWSTONE));
 
-            components.accept(Component.of(-1, -1, -1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(0, -1, -1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, -1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(-1, -1, 0, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, 0, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(-1, -1, 1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(0, -1, 1, HcElements.rune).upgradeSlot());
-            components.accept(Component.of(1, -1, 1, HcElements.rune).upgradeSlot());
+            components.accept(Component.of(-1, -1, -1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(0, -1, -1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, -1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(-1, -1, 0, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, 0, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(-1, -1, 1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(0, -1, 1, HcElements.blankRune).upgradeSlot());
+            components.accept(Component.of(1, -1, 1, HcElements.blankRune).upgradeSlot());
 
             for (int i = -2; i <= 2; i++) {
-                components.accept(Component.of(3, -2, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-3, -2, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -2, 3, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -2, -3, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(3, -2, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-3, -2, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -2, 3, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -2, -3, HcElements.blankRune).upgradeSlot());
             }
         });
         registerTier((byte) 4, components -> {
@@ -69,10 +69,10 @@ public final class Tier {
             components.accept(Component.of(-5, 2, 5, HcElements.crimsonOrnament));
 
             for (int i = -3; i <= 3; i++) {
-                components.accept(Component.of(5, -3, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-5, -3, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -3, 5, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -3, -5, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(5, -3, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-5, -3, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -3, 5, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -3, -5, HcElements.blankRune).upgradeSlot());
             }
         });
         registerTier((byte) 5, components -> {
@@ -89,10 +89,10 @@ public final class Tier {
             components.accept(Component.of(8, -1, 8, ()-> Blocks.BEACON));
 
             for (int i = -6; i <= 6; i++) {
-                components.accept(Component.of(8, -4, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-8, -4, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -4, 8, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -4, -8, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(8, -4, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-8, -4, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -4, 8, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -4, -8, HcElements.blankRune).upgradeSlot());
             }
         });
         registerTier((byte) 6, components -> {
@@ -109,10 +109,10 @@ public final class Tier {
             components.accept(Component.of(-11, 3, 11, HcElements.transcendentalCrystal));
 
             for (int i = -9; i <= 9; i++) {
-                components.accept(Component.of(11, -5, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-11, -5, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -5, 11, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -5, -11, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(11, -5, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-11, -5, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -5, 11, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -5, -11, HcElements.blankRune).upgradeSlot());
             }
         });
         registerTier((byte) 7, components -> {
@@ -129,16 +129,16 @@ public final class Tier {
             components.accept(Component.of(-14, 1, 14, HcElements.transcendentalCrystal));
 
             for (int i = -12; i <= -2; i++) {
-                components.accept(Component.of(14, -6, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-14, -6, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -6, 14, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -6, -14, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(14, -6, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-14, -6, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -6, 14, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -6, -14, HcElements.blankRune).upgradeSlot());
             }
             for (int i = 2; i <= 12; i++) {
-                components.accept(Component.of(14, -6, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(-14, -6, i, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -6, 14, HcElements.rune).upgradeSlot());
-                components.accept(Component.of(i, -6, -14, HcElements.rune).upgradeSlot());
+                components.accept(Component.of(14, -6, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(-14, -6, i, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -6, 14, HcElements.blankRune).upgradeSlot());
+                components.accept(Component.of(i, -6, -14, HcElements.blankRune).upgradeSlot());
             }
 
             for (int i = -5; i <= -4; i++) {

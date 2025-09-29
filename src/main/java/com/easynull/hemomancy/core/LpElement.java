@@ -1,6 +1,7 @@
 package com.easynull.hemomancy.core;
 
 import com.easynull.hemomancy.registers.HcComponents;
+import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -8,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface LpElement {
     default long getLp(Object target) {
+        target = getRealTarget() == null ? target : getRealTarget();
         if (target instanceof ItemStack stack) return stack.getOrDefault(HcComponents.lp, 0L);
         else if (target instanceof BlockEntity be) return be.getPersistentData().getLong("lp");
         return 0;
@@ -27,5 +29,17 @@ public interface LpElement {
             Utils.Block.updateBlockEntity(be);
         }
         return amount != getMaxLp();
+    }
+
+    default boolean canDaggerFulled(){
+        return false;
+    }
+
+    default Object getRealTarget(){
+        return null;
+    }
+
+    default ItemStack showedItem() {
+        return ItemStack.EMPTY;
     }
 }

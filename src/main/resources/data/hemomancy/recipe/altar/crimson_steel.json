@@ -1,0 +1,11 @@
+{
+  "type": "hemomancy:altar",
+  "input": [
+    "minecraft:iron_ingot"
+  ],
+  "result": {
+    "id": "hemomancy:crimson_steel"
+  },
+  "lp": 750,
+  "tier": 2
+}

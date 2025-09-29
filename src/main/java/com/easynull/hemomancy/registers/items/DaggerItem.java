@@ -1,6 +1,6 @@
 package com.easynull.hemomancy.registers.items;
 
-import com.easynull.hemomancy.registers.blocks.type.AltarBE;
+import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
 import net.minecraft.util.RandomSource;
@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public final class DaggerItem extends Item {
     public DaggerItem(Properties prop) {
         super(prop.stacksTo(1));
@@ -18,11 +20,12 @@ public final class DaggerItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
-        int lp = rand.nextInt(85, 100);
+        AtomicLong lp = new AtomicLong(rand.nextInt(85, 100));
         Utils.Block.forEachCube(player.blockPosition(), 1, pos -> {
-            if(level.getBlockEntity(pos) instanceof AltarBE altar){
-                altar.reducerLp(lp, altar);
-                EnergyUtils.damageLp(player, lp);
+            if (level.getBlockEntity(pos) instanceof LpElement oth && oth.canDaggerFulled()) {
+                if(player.isCreative() && player.isShiftKeyDown()) lp.set(oth.getMaxLp());
+                oth.reducerLp(lp.get(), oth);
+                EnergyUtils.damageLp(player, lp.get());
             }
         });
         return InteractionResult.CONSUME;

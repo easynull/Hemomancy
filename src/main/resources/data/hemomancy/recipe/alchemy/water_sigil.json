@@ -1,0 +1,24 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    [
+      "minecraft:water_bucket"
+    ],
+    [
+      "minecraft:water_bucket"
+    ],
+    [
+      "minecraft:heart_of_the_sea"
+    ],
+    [
+      "minecraft:prismarine_shard"
+    ],
+    [
+      "hemomancy:potion"
+    ]
+  ],
+  "result": {
+    "id": "hemomancy:water_sigil"
+  },
+  "lp": 10000
+}

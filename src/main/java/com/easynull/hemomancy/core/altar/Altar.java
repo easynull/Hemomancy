@@ -3,7 +3,6 @@ package com.easynull.hemomancy.core.altar;
 import com.easynull.hemomancy.registers.HcElements;
 import com.easynull.hemomancy.registers.blocks.RuneBlock;
 import com.easynull.hemomancy.registers.blocks.type.AltarBE;
-import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +36,7 @@ public final class Altar {
             BlockPos cPos = pos.offset(component.pos);
             BlockState state = level.getBlockState(cPos);
             if (component.block != null) {
-                if (component.block == HcElements.rune.get()) {
+                if (component.block == HcElements.blankRune.get()) {
                     if (!(state.getBlock() instanceof RuneBlock)) {
                         isValid = false;
                     }
@@ -67,7 +66,7 @@ public final class Altar {
             for (Tier.Component component : getComponents()) {
                 BlockPos cPos = pos.offset(component.pos);
                 BlockState state = level.getBlockState(cPos);
-                if (component.block == HcElements.rune.get() && state.getBlock() instanceof RuneBlock rune) {
+                if (component.block == HcElements.blankRune.get() && state.getBlock() instanceof RuneBlock rune) {
                     if (component.isUpgrade() && rune.getType() != RuneBlock.Type.none) {
                         for (RuneBlock.Type type : rune.getTypes()) {
                             addUpgrade(type, rune.getTier());
@@ -82,12 +81,12 @@ public final class Altar {
                 setResCapacity(1f);
                 setCharging(1f);
             } else {
-                setSpeed(0.5f + getUpgrade(RuneBlock.Type.speed) * 0.05f);
-                setSacrifices((int) (getUpgrade(RuneBlock.Type.sacrifices) * 0.09f));
-                setResCapacity(1f + getUpgrade(RuneBlock.Type.resonantCapacity) * 0.09f);
-                setCharging(1f + getUpgrade(RuneBlock.Type.relations) * 0.09f);
+                setSpeed(0.5f + getUpgrade(RuneBlock.Type.speed) * 0.08f);
+                setSacrifices((int) (getUpgrade(RuneBlock.Type.sacrifices) * 0.6f));
+                setResCapacity(1f + getUpgrade(RuneBlock.Type.resonantCapacity) * 0.1f);
+                setCharging(1f + getUpgrade(RuneBlock.Type.relations) * 0.15f);
             }
-            setCapacity((int) ((getTier() * 5000 + (getUpgrade(RuneBlock.Type.capacity) * 1500)) * resCapacity));
+            setCapacity((int) ((getTier() * 5000 + (getUpgrade(RuneBlock.Type.capacity) * 1500)) * getResCapacity()));
             if (altar.getLp(altar) > getCapacity()) {
                 altar.reducerLp(getCapacity(), altar);
             }

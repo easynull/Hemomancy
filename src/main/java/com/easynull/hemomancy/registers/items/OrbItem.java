@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.fml.ModList;
 
 import java.util.List;
 
@@ -45,6 +46,11 @@ public final class OrbItem extends Item implements LpElement, Tierable, IconRend
     }
 
     @Override
+    public ItemStack getCraftingRemainder(ItemStack stack) {
+        return stack.copy();
+    }
+
+    @Override
     public byte getTier() {
         return tier;
     }
@@ -69,7 +75,7 @@ public final class OrbItem extends Item implements LpElement, Tierable, IconRend
 
     @Override
     public void renderIcon(GuiGraphics gg, Level level, ItemStack stack, int pX, int pY, float pTick) {
-        if (HcElements.infinityOrb != null && stack.getItem() == HcElements.infinityOrb.get()) {
+        if (HcElements.infinityOrb != null && stack.getItem() == HcElements.infinityOrb.get() && !ModList.get().isLoaded("iris")) {
             gg.pose().pushPose();
             GuiRenderBuilder.builder().pose(gg.pose()).renderType(ResourceLocation.fromNamespaceAndPath("avaritia", "textures/item/halo.png")).moveBefore(pX + 8f, pY + 8f).color(0f, 0f, 0f).pulseScale(1f, 1.02f, 3f).buildOverlay(18f);
             gg.pose().popPose();
