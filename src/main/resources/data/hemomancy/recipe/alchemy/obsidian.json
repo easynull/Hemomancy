@@ -1,0 +1,16 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    [
+      "minecraft:lava_bucket"
+    ],
+    [
+      "minecraft:water_bucket"
+    ]
+  ],
+  "result": {
+    "id": "minecraft:obsidian",
+    "count": 2
+  },
+  "lp": 1000
+}

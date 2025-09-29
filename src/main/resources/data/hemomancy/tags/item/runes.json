@@ -1,0 +1,14 @@
+{
+  "values": [
+    "hemomancy:blank_rune",
+    "hemomancy:speed_rune",
+    "hemomancy:sacrifices_rune",
+    "hemomancy:capacity_rune",
+    "hemomancy:resonant_capacity_rune",
+    "hemomancy:relations_rune",
+    {
+      "id": "hemomancy:chimeric_rune",
+      "required": false
+    }
+  ]
+}

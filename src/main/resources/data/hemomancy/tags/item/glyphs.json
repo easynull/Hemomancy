@@ -1,0 +1,9 @@
+{
+  "values": [
+    "hemomancy:blank_glyph",
+    {
+      "id": "hemomancy:cosmic_glyph",
+      "required": false
+    }
+  ]
+}

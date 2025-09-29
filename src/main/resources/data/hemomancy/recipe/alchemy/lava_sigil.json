@@ -1,0 +1,24 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    [
+      "minecraft:lava_bucket"
+    ],
+    [
+      "minecraft:lava_bucket"
+    ],
+    [
+      "minecraft:fire_charge"
+    ],
+    [
+      "minecraft:magma_cream"
+    ],
+    [
+      "hemomancy:crimson_glyph"
+    ]
+  ],
+  "result": {
+    "id": "hemomancy:lava_sigil"
+  },
+  "lp": 10000
+}

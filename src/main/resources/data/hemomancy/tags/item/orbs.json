@@ -1,0 +1,14 @@
+{
+  "values": [
+    "hemomancy:weak_blood_orb",
+    "hemomancy:apprentice_blood_orb",
+    "hemomancy:magician_blood_orb",
+    "hemomancy:master_blood_orb",
+    "hemomancy:archmage_blood_orb",
+    "hemomancy:transcendental_blood_orb",
+    {
+      "id": "hemomancy:infinity_blood_orb",
+      "required": false
+    }
+  ]
+}
