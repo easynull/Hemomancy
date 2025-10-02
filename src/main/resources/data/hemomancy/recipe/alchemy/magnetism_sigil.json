@@ -1,0 +1,15 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    ["minecraft:ender_pearl"],
+    ["minecraft:ender_pearl"],
+    ["minecraft:iron_block"],
+    ["minecraft:redstone_block"],
+    ["hemomancy:demonic_glyph"],
+    ["minecraft:sculk_sensor"]
+  ],
+  "result": {
+    "id": "hemomancy:magnetism_sigil"
+  },
+  "lp": 25000
+}

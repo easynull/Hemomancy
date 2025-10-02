@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "hemomancy:item/crimson_steel"
+    "layer0": "hemomancy:item/magnetism_sigil"
   }
 }

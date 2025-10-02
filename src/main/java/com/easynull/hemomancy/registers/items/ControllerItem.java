@@ -44,7 +44,7 @@ public final class ControllerItem extends Item implements OverlayRenderer {
         HitResult hit = player.pick(5.0f, 0.0f, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
-            if (level.getBlockEntity(pos) instanceof LpElement le) {
+            if (level.getBlockEntity(pos) instanceof LpElement le && le.getLp(level.getBlockEntity(pos)) > 0) {
                 updateFromBlockEntity(le, level.getBlockEntity(pos));
                 return;
             }

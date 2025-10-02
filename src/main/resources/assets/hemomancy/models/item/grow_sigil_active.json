@@ -1,0 +1,6 @@
+{
+  "parent": "hemomancy:item/grow_sigil",
+  "textures": {
+    "layer0": "hemomancy:item/grow_sigil_active"
+  }
+}

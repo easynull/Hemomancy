@@ -19,9 +19,6 @@ public final class HcRecipes {
     public static DeferredHolder<RecipeType<?>, RecipeType<AlchemyRecipe>> alchemy = types.register("alchemy", ()-> RecipeType.simple(Hemomancy.path("alchemy")));
     public static DeferredHolder<RecipeSerializer<?>, AlchemyRecipe.Serializer> alchemySer = serializer.register("alchemy", AlchemyRecipe.Serializer::new);
 
-//    public static DeferredHolder<RecipeType<?>, RecipeType<RitualRecipe>> ritual = types.register("ritual", ()-> RecipeType.simple(Hemomancy.path("ritual")));
-//    public static DeferredHolder<RecipeSerializer<?>, RitualRecipe.Serializer> ritualSer = serializer.register("ritual", RitualRecipe.Serializer::new);
-
     public static void init(IEventBus bus){
         serializer.register(bus);
         types.register(bus);

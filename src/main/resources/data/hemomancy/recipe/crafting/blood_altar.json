@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "F": "minecraft:furnace",
+    "S": "minecraft:stone",
+    "D": "minecraft:diamond"
+  },
+  "pattern": [
+    "S S",
+    "SFS",
+    "GDG"
+  ],
+  "result": {
+    "id": "hemomancy:blood_altar"
+  }
+}

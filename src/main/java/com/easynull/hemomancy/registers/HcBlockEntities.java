@@ -12,5 +12,5 @@ public final class HcBlockEntities {
     public static final OuterBlockEntity types = OuterBlockEntity.create(ID);
 
     public static final Supplier<BlockEntityType<AltarBE>> bloodAltar = types.register("blood_altar", ()-> new BlockEntityType<>(AltarBE::new, HcElements.bloodAltar.get()));
-    public static final Supplier<BlockEntityType<AlchemyBE>> alchemy = types.register("alchemy", ()-> new BlockEntityType<>(AlchemyBE::new, HcElements.alchemy.get()));
+    public static final Supplier<BlockEntityType<AlchemyTableBE>> alchemyTable = types.register("alchemy_table", ()-> new BlockEntityType<>(AlchemyTableBE::new, HcElements.alchemyTable.get()));
 }

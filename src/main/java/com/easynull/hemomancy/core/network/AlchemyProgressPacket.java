@@ -1,10 +1,8 @@
 package com.easynull.hemomancy.core.network;
 
 import com.easynull.hemomancy.Hemomancy;
-import com.easynull.hemomancy.registers.blocks.type.AlchemyBE;
-import com.mw.nullcore.Utils;
+import com.easynull.hemomancy.registers.blocks.type.AlchemyTableBE;
 import com.mw.nullcore.core.network.ClientChannel;
-import com.mw.nullcore.core.network.DualChannel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,7 +21,7 @@ public record AlchemyProgressPacket(BlockPos pos, long progress, boolean craftin
 
     @Override
     public void handleClient(AlchemyProgressPacket packet, IPayloadContext ctx) {
-        if (ctx.player().level().getBlockEntity(packet.pos()) instanceof AlchemyBE alchemy) {
+        if (ctx.player().level().getBlockEntity(packet.pos()) instanceof AlchemyTableBE alchemy) {
             alchemy.progress = packet.progress();
             alchemy.crafting = packet.crafting();
             alchemy.needLP = packet.needLP();

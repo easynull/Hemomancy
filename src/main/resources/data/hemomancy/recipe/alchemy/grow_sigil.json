@@ -1,0 +1,19 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    ["minecraft:bone_meal"],
+    ["minecraft:bone_meal"],
+    ["minecraft:bone_meal"],
+    ["minecraft:wheat_seeds"],
+    ["minecraft:wheat_seeds"],
+    ["minecraft:sugar_cane"],
+    ["minecraft:sugar_cane"],
+    ["minecraft:sugar_cane"],
+    ["minecraft:pitcher_plant"],
+    ["hemomancy:fortified_glyph"]
+  ],
+  "result": {
+    "id": "hemomancy:grow_sigil"
+  },
+  "lp": 15000
+}

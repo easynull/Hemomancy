@@ -1,11 +1,12 @@
 {
   "values": [
+    "hemomancy:air_sigil",
     "hemomancy:water_sigil",
     "hemomancy:lava_sigil",
-    "hemomancy:air_sigil",
-    "hemomancy:kinetic_sigil",
+    "hemomancy:magnetism_sigil",
     "hemomancy:resistance_sigil",
     "hemomancy:movement_sigil",
-    "hemomancy:space_sigil"
+    "hemomancy:teleposition_sigil",
+    "hemomancy:grow_sigil"
   ]
 }

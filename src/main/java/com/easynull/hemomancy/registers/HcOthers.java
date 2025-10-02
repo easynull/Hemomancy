@@ -1,7 +1,7 @@
 package com.easynull.hemomancy.registers;
 
 import com.easynull.hemomancy.Hemomancy;
-import com.easynull.hemomancy.client.render.type.AlchemyRender;
+import com.easynull.hemomancy.client.render.type.AlchemyTableRender;
 import com.easynull.hemomancy.client.render.type.AltarRender;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -15,8 +15,7 @@ public final class HcOthers {
     @SubscribeEvent
     public static void registerRenders(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(HcBlockEntities.bloodAltar.get(), AltarRender::new);
-//        event.registerBlockEntityRenderer(HcBlockEntities.pedestal.get(), PedestalRender::new);
-        event.registerBlockEntityRenderer(HcBlockEntities.alchemy.get(), AlchemyRender::new);
+        event.registerBlockEntityRenderer(HcBlockEntities.alchemyTable.get(), AlchemyTableRender::new);
     }
 
     @SubscribeEvent

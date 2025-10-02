@@ -18,7 +18,7 @@ public final class HcConfig {
             advancedController = ConfigManager.create(
                     "advanced_controller",
                     "Shows a crimson bar even when the player is not holding the controller",
-                    false
+                    true
             );
             unmovementBlocks = ConfigManager.create(
                     "unmovement_blocks",

@@ -13,6 +13,8 @@ import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import com.mw.nullcore.core.blocks.type.Tickable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -21,80 +23,60 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public final class AlchemyBE extends ContainerBlockEntity implements Tickable, LpElement, Tierable {
+public final class AlchemyTableBE extends ContainerBlockEntity implements Tickable, LpElement, Tierable {
     public long progress, needLP;
     public boolean crafting;
 
-    public AlchemyBE(BlockPos pos, BlockState state) {
-        super(HcBlockEntities.alchemy.get(), pos, state, 12, 64);
+    public AlchemyTableBE(BlockPos pos, BlockState state) {
+        super(HcBlockEntities.alchemyTable.get(), pos, state, 16, 64);
     }
 
     @Override
     public void tick() {
         Optional<AlchemyRecipe> recipeOpt = getRecipe();
-
-        if (recipeOpt.isPresent()) {
-            AlchemyRecipe recipe = recipeOpt.get();
-
-            if (!crafting) {
-                setProgress(0, true, recipe.lp());
-            }
-            ItemStack orb = getFirst();
-            if (orb.getItem() instanceof OrbItem orbItem) {
-                if(orbItem.getLp(orb) <= 10) return;
-                orbItem.reducerLp(-10, getInventory().getItem(0));
-                setProgress(progress += 10, true, recipe.lp());
-                if (progress >= recipe.lp()) {
-                    completeRecipe(recipe);
-                }
-            } else {
-                resetCrafting();
-            }
-        } else {
-            if (crafting) {
-                resetCrafting();
-            }
+        if (recipeOpt.isEmpty()) {
+            if (crafting) resetCrafting();
+            return;
         }
+        AlchemyRecipe recipe = recipeOpt.get();
+        if (!crafting) setProgress(0, true, recipe.lp());
+        ItemStack orb = getItem(0);
+        if (!(orb.getItem() instanceof OrbItem orbItem)) {
+            resetCrafting();
+            return;
+        }
+        long space = (long) (recipe.lp() * 0.01f);
+        if (orbItem.getLp(orb) <= space) return;
+        orbItem.reducerLp(-space, orb);
+        setProgress(progress += space, true, recipe.lp());
+        if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5, 1, 0.2, 0.0, 0.2, 0.0);
+        if (progress >= recipe.lp()) completeRecipe(recipe);
     }
 
     private void completeRecipe(AlchemyRecipe recipe) {
         List<Ingredient> inputs = recipe.inputs();
-        List<ItemStack> availableItems = new ArrayList<>();
-
-        for (int i = 2; i < getContainerSize(); i++) {
-            ItemStack stack = getItem(i);
-            if (!stack.isEmpty()) {
-                availableItems.add(stack);
-            }
-        }
-
-        List<Ingredient> remainingIngredients = new ArrayList<>(inputs);
-
-        for (Ingredient ingredient : inputs) {
-            for (int i = 2; i < getContainerSize(); i++) {
-                ItemStack stack = getItem(i);
-                if (!stack.isEmpty() && ingredient.test(stack)) {
+        int size = getContainerSize();
+        for (Ingredient ing : inputs) {
+            for (int slot = 2; slot < size; slot++) {
+                ItemStack stack = getItem(slot);
+                if (!stack.isEmpty() && ing.test(stack)) {
                     stack.shrink(1);
-                    if (stack.isEmpty()) {
-                        setItem(i, ItemStack.EMPTY);
-                    }
-                    remainingIngredients.remove(ingredient);
+                    if (stack.isEmpty()) setItem(slot, ItemStack.EMPTY);
                     break;
                 }
             }
         }
         ItemStack currentResult = getItem(1);
         ItemStack recipeResult = recipe.result().copy();
+        resetCrafting();
         if (!currentResult.isEmpty() && ItemStack.isSameItemSameComponents(currentResult, recipeResult)) {
             currentResult.grow(recipeResult.getCount());
         } else {
             setItem(1, recipeResult);
         }
-        resetCrafting();
     }
 
     private void resetCrafting() {
@@ -102,13 +84,12 @@ public final class AlchemyBE extends ContainerBlockEntity implements Tickable, L
     }
 
     public void setProgress(long progress, boolean crafting, long needLP) {
-        if (!level.isClientSide() && this.level instanceof ServerLevel sLevel) {
-            this.progress = progress;
-            this.crafting = crafting;
-            this.needLP = needLP;
-            PacketDistributor.sendToPlayersTrackingChunk(sLevel, new ChunkPos(getBlockPos()), new AlchemyProgressPacket(getBlockPos(), this.progress, this.crafting, this.needLP));
-            Utils.Block.updateBlockEntity(this);
-        }
+        if (level.isClientSide() || !(level instanceof ServerLevel sLevel)) return;
+        this.progress = progress;
+        this.crafting = crafting;
+        this.needLP = needLP;
+        PacketDistributor.sendToPlayersTrackingChunk(sLevel, new ChunkPos(worldPosition), new AlchemyProgressPacket(worldPosition, this.progress, this.crafting, this.needLP));
+        Utils.Block.updateBlockEntity(this);
     }
 
     public Optional<AlchemyRecipe> getRecipe() {
@@ -135,24 +116,24 @@ public final class AlchemyBE extends ContainerBlockEntity implements Tickable, L
 
     @Override
     public ItemStack showedItem() {
-        if (getFirst().getItem() instanceof OrbItem) return getFirst();
-        return LpElement.super.showedItem();
+        ItemStack first = getItem(0);
+        return first.getItem() instanceof OrbItem ? first : LpElement.super.showedItem();
     }
 
     @Override
     public Object getRealTarget() {
-        return getFirst();
+        return getItem(0);
     }
 
     @Override
     public byte getTier() {
-        ItemStack orb = getFirst();
+        ItemStack orb = getItem(0);
         return orb.getItem() instanceof OrbItem orbItem ? orbItem.getTier() : 0;
     }
 
     @Override
     public long getMaxLp() {
-        ItemStack orb = getFirst();
+        ItemStack orb = getItem(0);
         return orb.getItem() instanceof OrbItem orbItem ? orbItem.getMaxLp() : 0;
     }
 

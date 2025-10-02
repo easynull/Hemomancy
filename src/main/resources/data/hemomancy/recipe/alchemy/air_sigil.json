@@ -1,0 +1,15 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    ["minecraft:feather"],
+    ["minecraft:feather"],
+    ["minecraft:feather"],
+    ["minecraft:ghast_tear"],
+    ["minecraft:phantom_membrane"],
+    ["hemomancy:fortified_glyph"]
+  ],
+  "result": {
+    "id": "hemomancy:air_sigil"
+  },
+  "lp": 12000
+}

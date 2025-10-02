@@ -1,24 +1,16 @@
 {
   "type": "hemomancy:alchemy",
   "inputs": [
-    [
-      "minecraft:water_bucket"
-    ],
-    [
-      "minecraft:water_bucket"
-    ],
-    [
-      "minecraft:heart_of_the_sea"
-    ],
-    [
-      "minecraft:prismarine_shard"
-    ],
-    [
-      "hemomancy:potion"
-    ]
+    ["minecraft:water_bucket"],
+    ["minecraft:water_bucket"],
+    ["minecraft:kelp"],
+    ["minecraft:kelp"],
+    ["minecraft:heart_of_the_sea"],
+    ["minecraft:potion"],
+    ["hemomancy:crimson_glyph"]
   ],
   "result": {
     "id": "hemomancy:water_sigil"
   },
-  "lp": 10000
+  "lp": 5000
 }

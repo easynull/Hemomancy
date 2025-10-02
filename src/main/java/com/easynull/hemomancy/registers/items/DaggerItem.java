@@ -21,13 +21,15 @@ public final class DaggerItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
         AtomicLong lp = new AtomicLong(rand.nextInt(85, 100));
+        AtomicLong damageLp = new AtomicLong(lp.get());
         Utils.Block.forEachCube(player.blockPosition(), 1, pos -> {
             if (level.getBlockEntity(pos) instanceof LpElement oth && oth.canDaggerFulled()) {
                 if(player.isCreative() && player.isShiftKeyDown()) lp.set(oth.getMaxLp());
                 oth.reducerLp(lp.get(), oth);
-                EnergyUtils.damageLp(player, lp.get());
+                damageLp.set(lp.get() + lp.get());
             }
         });
-        return InteractionResult.CONSUME;
+        EnergyUtils.damageLp(player, damageLp.get());
+        return InteractionResult.FAIL;
     }
 }

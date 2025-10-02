@@ -1,5 +1,16 @@
 {
   "values": [
-    "hemomancy:blood_altar"
+    "hemomancy:blood_altar",
+    "hemomancy:alchemy_table",
+    "hemomancy:crimson_ornament",
+    "hemomancy:transcendental_crystal",
+    "hemomancy:blank_rune",
+    "hemomancy:speed_rune",
+    "hemomancy:sacrifices_rune",
+    "hemomancy:capacity_rune",
+    "hemomancy:resonant_capacity_rune",
+    "hemomancy:relations_rune",
+    "hemomancy:rune_stairs",
+    "hemomancy:rune_slab"
   ]
 }

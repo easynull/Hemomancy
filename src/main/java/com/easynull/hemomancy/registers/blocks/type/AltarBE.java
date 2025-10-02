@@ -37,52 +37,50 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
 
     @Override
     public void tick() {
-        if(level.isClientSide()) return;
+        if (level.isClientSide()) return;
         altar.tick();
         crafting = false;
-        if (getMode().equals(getModes()[0])) {
-            if (getRecipe().isEmpty()) {
+        ItemStack first = getItem(0);
+        String mode = getMode();
+        if (mode.equals(getModes()[0])) {
+            Optional<AltarRecipe> recipeOpt = getRecipe();
+            if (recipeOpt.isEmpty()) {
                 progress = 0;
+                return;
             }
-            getRecipe().ifPresent(recipe -> {
-                ItemStack input = getFirst();
-                int max = calculateMaxCraftable(input, recipe);
-                crafting = true;
-                if (max <= 0 || getFirst().getCount() * recipe.result().getCount() > 64) {
-                    progress = 0;
-                    crafting = false;
-                    return;
-                }
-
-                long totalLp = recipe.lp() * input.getCount();
-                long lpPer = (long) (20 * altar.getSpeed());
-
-                if (progress >= totalLp) {
-                    ItemStack output = recipe.result().copy();
-                    output.setCount(output.getCount() * max);
-                    setFirst(output);
-                    progress = 0;
-                    crafting = false;
-                    return;
-                }
-
-                long lpTake = Math.min(getLp(this), lpPer);
-
-                if (lpTake > 0) {
-                    progress += lpTake;
-                    reducerLp(-lpTake, this);
-                    if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1.0f, getBlockPos().getZ() + 0.5f, 1, 0.2, 0.0, 0.2, 0.0);
-                } else {
-                    if (level instanceof ServerLevel sl) sl.sendParticles(ParticleTypes.SMOKE, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1.0f, getBlockPos().getZ() + 0.5f, 1, 0.2, 0.0, 0.2, 0.0);
-                }
-            });
+            AltarRecipe recipe = recipeOpt.get();
+            int max = calculateMaxCraftable(first, recipe);
+            crafting = true;
+            if (max <= 0 || first.getCount() * recipe.result().getCount() > 64) {
+                progress = 0;
+                crafting = false;
+                return;
+            }
+            long totalLp = recipe.lp() * first.getCount();
+            long lpPer = (long) (20 * altar.getSpeed());
+            if (progress >= totalLp) {
+                ItemStack output = recipe.result().copy();
+                output.setCount(output.getCount() * max);
+                setItem(0, output);
+                progress = 0;
+                crafting = false;
+                return;
+            }
+            long lpTake = Math.min(getLp(this), lpPer);
+            if (lpTake > 0) {
+                progress += lpTake;
+                reducerLp(-lpTake, this);
+                if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, 1, 0.2, 0.0, 0.2, 0.0);
+            } else {
+                if (level instanceof ServerLevel sl) sl.sendParticles(ParticleTypes.SMOKE, worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, 1, 0.2, 0.0, 0.2, 0.0);
+            }
         } else {
-            EnergyUtils.extractInFrom(getInventory().getItem(0), this, (long) (altar.getCharging() * 25f), getMode().equals(getModes()[2]));
+            EnergyUtils.extractInFrom(first, this, (long) (altar.getCharging() * 25f), mode.equals(getModes()[2]));
         }
         Utils.Level.getEntities(level, worldPosition, 1.5f).forEach(e -> {
             if (e instanceof LivingEntity le && !le.isAlive()) {
                 reducerLp((long) (le.getMaxHealth() * altar.getSacrifices() * (le instanceof Player ? 3 : 1)), this);
-                if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5f, le.getY() + 0.5f, le.getZ() + 0.5f, 2, 0.2, 0.0, 0.2, 0.0);
+                if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5, le.getY() + 0.5, le.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
             }
         });
     }
@@ -94,18 +92,17 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        if (getRecipe().isPresent()) {
-            ItemStack result = getRecipe().get().result();
-            return getFirst().getCount() * result.getCount() < 64;
-        } else {
-            return super.canPlaceItem(slot, stack);
+        Optional<AltarRecipe> recipeOpt = getRecipe();
+        if (recipeOpt.isPresent()) {
+            ItemStack result = recipeOpt.get().result();
+            return getItem(0).getCount() * result.getCount() < 64;
         }
+        return super.canPlaceItem(slot, stack);
     }
 
     private int calculateMaxCraftable(ItemStack input, AltarRecipe recipe) {
         ItemStack result = recipe.result();
         int inputLimit = input.getCount();
-
         int outputStackLimit = result.getMaxStackSize() / result.getCount();
         return Math.min(inputLimit, outputStackLimit);
     }

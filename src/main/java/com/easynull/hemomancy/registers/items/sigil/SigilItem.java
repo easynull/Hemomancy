@@ -36,13 +36,13 @@ public class SigilItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (this instanceof TickSigilItem) return InteractionResult.FAIL;
         BlockHitResult hit = (BlockHitResult) player.pick(5.0f, 0.0f, false);
         BlockPos pos = hit.getBlockPos();
         if (!validAir && level.getBlockState(pos).isAir()) return InteractionResult.FAIL;
         ctx.action(new Consumer(level, pos, hit.getDirection(), player, player.getItemInHand(hand), this));
-        if (shouldLP) EnergyUtils.extractLp(player, lp);
-        else shouldLP = true;
-        return InteractionResult.CONSUME;
+        EnergyUtils.extractLp(player, lp);
+        return shouldLP ? InteractionResult.CONSUME : InteractionResult.FAIL;
     }
 
     public void shouldLP(boolean should) {

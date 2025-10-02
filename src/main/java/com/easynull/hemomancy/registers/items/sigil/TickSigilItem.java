@@ -3,6 +3,7 @@ package com.easynull.hemomancy.registers.items.sigil;
 import com.easynull.hemomancy.registers.HcComponents;
 import com.easynull.hemomancy.utils.EnergyUtils;
 import com.mw.nullcore.Utils;
+import com.mw.nullcore.registers.NullComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +15,7 @@ public final class TickSigilItem extends SigilItem {
     final int rollback;
 
     public TickSigilItem(Properties props, Context ctx, int lp, int rollback) {
-        super(props.component(HcComponents.active, false), ctx, lp);
+        super(props.component(NullComponents.active, false), ctx, lp);
         this.rollback = rollback;
     }
 
@@ -39,10 +40,10 @@ public final class TickSigilItem extends SigilItem {
     }
 
     public boolean isActive(ItemStack stack){
-        return stack.getOrDefault(HcComponents.active, false);
+        return stack.get(NullComponents.active);
     }
 
     public void setActive(ItemStack stack, boolean active){
-        stack.set(HcComponents.active, active);
+        stack.set(NullComponents.active, active);
     }
 }

@@ -20,40 +20,31 @@ import java.util.List;
 
 public record AlchemyRecipe(ItemStack result, List<Ingredient> inputs, long lp) implements Recipe<AlchemyRecipe.Input> {
     @Override
-    public boolean matches(AlchemyRecipe.Input input, Level level) {
-        List<Ingredient> remainingIngredients = new ArrayList<>(inputs);
-        List<ItemStack> availableItems = new ArrayList<>();
-
-        for (int i = 1; i < input.size(); i++) {
+    public boolean matches(Input input, Level level) {
+        NonNullList<ItemStack> available = NonNullList.create();
+        for (int i = 2; i < input.size(); i++) {
             ItemStack stack = input.getItem(i);
-            if(i == 1 && stack.getCount() < stack.getMaxStackSize() && ItemStack.isSameItemSameComponents(stack, result())) continue;
-            if (!stack.isEmpty()) {
-                availableItems.add(stack);
-            }
+            if (!stack.isEmpty()) available.add(stack.copy());
         }
-        if (availableItems.size() != inputs.size()) return false;
-        for (ItemStack item : availableItems) {
-            boolean foundMatch = false;
-            Iterator<Ingredient> iterator = remainingIngredients.iterator();
-            while (iterator.hasNext()) {
-                Ingredient ingredient = iterator.next();
-                if (ingredient.test(item)) {
-                    iterator.remove();
-                    foundMatch = true;
+        for (Ingredient ing : inputs) {
+            boolean found = false;
+            for (int j = 0; j < available.size(); j++) {
+                ItemStack stack = available.get(j);
+                if (!stack.isEmpty() && ing.test(stack)) {
+                    stack.shrink(1);
+                    if (stack.isEmpty()) available.set(j, ItemStack.EMPTY);
+                    found = true;
                     break;
                 }
             }
-
-            if (!foundMatch) {
-                return false;
-            }
+            if (!found) return false;
         }
-
-        return remainingIngredients.isEmpty();
+        ItemStack slot1 = input.getItem(1);
+        return slot1.isEmpty() || (ItemStack.isSameItemSameComponents(slot1, result()) && slot1.getCount() < slot1.getMaxStackSize());
     }
 
     @Override
-    public ItemStack assemble(AlchemyRecipe.Input recipe, HolderLookup.Provider provider) {
+    public ItemStack assemble(Input recipe, HolderLookup.Provider provider) {
         return result().copy();
     }
 
@@ -79,11 +70,10 @@ public record AlchemyRecipe(ItemStack result, List<Ingredient> inputs, long lp) 
 
     public static class Serializer implements RecipeSerializer<AlchemyRecipe> {
         static final MapCodec<AlchemyRecipe> codec = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                        ItemStack.CODEC.fieldOf("result").forGetter(AlchemyRecipe::result),
-                        Ingredient.CODEC.listOf(2, 10).fieldOf("inputs").forGetter(AlchemyRecipe::inputs),
-                        Codec.LONG.fieldOf("lp").forGetter(AlchemyRecipe::lp)
-                ).apply(builder, AlchemyRecipe::new)
-        );
+                ItemStack.CODEC.fieldOf("result").forGetter(AlchemyRecipe::result),
+                Ingredient.CODEC.listOf(2, 10).fieldOf("inputs").forGetter(AlchemyRecipe::inputs),
+                Codec.LONG.fieldOf("lp").forGetter(AlchemyRecipe::lp)
+        ).apply(builder, AlchemyRecipe::new));
         static final StreamCodec<RegistryFriendlyByteBuf, AlchemyRecipe> streamCodec = StreamCodec.composite(
                 ItemStack.STREAM_CODEC, AlchemyRecipe::result,
                 Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), AlchemyRecipe::inputs,

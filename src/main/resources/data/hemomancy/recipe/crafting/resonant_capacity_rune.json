@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "hemomancy:demonic_glyph",
+    "R": "hemomancy:capacity_rune",
+    "O": "#hemomancy:orbs",
+    "S": "minecraft:deepslate",
+    "B": "minecraft:bucket"
+  },
+  "pattern": [
+    "SBS",
+    "GRG",
+    "SOS"
+  ],
+  "result": {
+    "id": "hemomancy:resonant_capacity_rune"
+  }
+}

@@ -1,6 +1,11 @@
 {
   "values": [
     "hemomancy:blank_glyph",
+    "hemomancy:fortified_glyph",
+    "hemomancy:crimson_glyph",
+    "hemomancy:filled_glyph",
+    "hemomancy:demonic_glyph",
+    "hemomancy:infernal_glyph",
     {
       "id": "hemomancy:cosmic_glyph",
       "required": false
