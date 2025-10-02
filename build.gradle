@@ -92,7 +92,6 @@ tasks.register('curseforge', TaskPublishCurseForge) {
     mainFile.releaseType = "${releaseType}"
     mainFile.displayName = "${minecraft_version}-${mod_version}"
     mainFile.addModLoader("NeoForge")
-    mainFile.addRequirement("1286206")
 }
 
 dependencies {
