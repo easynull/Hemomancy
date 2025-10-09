@@ -2,12 +2,17 @@ package com.easynull.hemomancy.registers;
 
 import com.easynull.hemomancy.registers.blocks.*;
 import com.easynull.hemomancy.registers.items.*;
+import com.easynull.hemomancy.registers.items.armortools.DesecratedAxe;
+import com.easynull.hemomancy.registers.items.armortools.DesecratedPickaxe;
+import com.easynull.hemomancy.registers.items.armortools.DesecratedShovel;
+import com.easynull.hemomancy.registers.items.armortools.DesecratedSword;
 import com.easynull.hemomancy.registers.items.sigil.*;
 import com.mw.nullcore.Utils;
 import com.mw.nullcore.core.holders.*;
 import com.mw.nullcore.registers.NullComponents;
 import net.byAqua3.avaritia.loader.AvaritiaItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -15,7 +20,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Relative;
@@ -29,7 +33,6 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -47,7 +50,7 @@ public final class HcElements {
     static final OuterCreativeTab tabs = OuterCreativeTab.create(ID);
 
     public static DeferredBlock<Block> bloodAltar, blankRune, speedRune, sacrificesRune, capacityRune, resonantCapacityRune, relationsRune, chimericRune, transcendentalCrystal, crimsonOrnament, alchemyTable, runeStairs, runeSlab;
-    public static DeferredItem<Item> sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, crimsonSteelIngot, hemostaticController, waterSigil, lavaSigil, drainageSigil, airSigil, resistanceSigil, magnetismSigil, movementSigil, telepositionSigil, growSigil, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph, demonicGlyph, infernalGlyph, cosmicGlyph;
+    public static DeferredItem<Item> sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, crimsonSteelIngot, hemostaticController, waterSigil, lavaSigil, drainageSigil, airSigil, resistanceSigil, magnetismSigil, movementSigil, telepositionSigil, growSigil, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph, demonicGlyph, infernalGlyph, cosmicGlyph, desecratedPickaxe, desecratedAxe, desecratedSword, desecratedShovel, awDesecratedPickaxe, awDesecratedAxe, awDesecratedSword, awDesecratedShovel;
 
     static {
         bloodAltar = blocks.registerBlock("blood_altar", AltarBlock::new, Blocks.BLACKSTONE);
@@ -114,7 +117,7 @@ public final class HcElements {
         resistanceSigil = items.registerItem("resistance_sigil", p -> new TickSigilItem(p, ctx -> {
             if (!((TickSigilItem) ctx.item()).isActive(ctx.stack())) return;
             ctx.player().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2, 4, false, false, false));
-        }, 2500));
+        }, 2500, Utils.Mth.secondTick(2)));
         movementSigil = items.registerItem("movement_sigil", p -> new SigilItem(p, ctx -> {
             Level level = ctx.level();
             BlockPos pos = ctx.pos();
@@ -168,19 +171,29 @@ public final class HcElements {
             }
         }, 1500, true));
         growSigil = items.registerItem("grow_sigil", p -> new TickSigilItem(p, ctx -> {
-            if (ctx.level().isClientSide() || !((TickSigilItem) ctx.item()).isActive(ctx.stack())) return;
+            if (ctx.level().isClientSide() || !((TickSigilItem) ctx.item()).isActive(ctx.stack()) || !ctx.level().isDay()) return;
             Utils.Block.forEachCube(ctx.pos(), 5, pos -> {
                 BlockState state = ctx.level().getBlockState(pos);
                 Block block = state.getBlock();
                 Level level = ctx.level();
                 if (block == Blocks.DIRT && level.random.nextFloat() < 0.1f) level.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 3);
                 else if (block instanceof FarmBlock farm && level.random.nextFloat() < 0.1f && farm.defaultBlockState().getValue(BlockStateProperties.MOISTURE) < 7) level.setBlock(pos, Blocks.FARMLAND.defaultBlockState().setValue(BlockStateProperties.MOISTURE, 7), 3);
-                else if (block instanceof BonemealableBlock growable && growable.isValidBonemealTarget(level, pos, state) && level.random.nextFloat() < 0.05f && growable.isBonemealSuccess(level, level.random, pos, state)) growable.performBonemeal((ServerLevel) level, level.random, pos, state);
+                else if (block instanceof BonemealableBlock growable && block != Blocks.GRASS_BLOCK && growable.isValidBonemealTarget(level, pos, state) && level.random.nextFloat() < 0.05f && growable.isBonemealSuccess(level, level.random, pos, state)) growable.performBonemeal((ServerLevel) level, level.random, pos, state);
             });
         }, 150, Utils.Mth.secondTick(2)));
 
         runeStairs = blocks.registerBlock("rune_stairs", p -> new StairBlock(blankRune.get().defaultBlockState(), p), Blocks.STONE);
         runeSlab = blocks.registerBlock("rune_slab", SlabBlock::new, Blocks.STONE);
+
+        //TODO: THIS TEST ITEMS YET
+        desecratedPickaxe = items.registerItem("desecrated_pickaxe", p -> new DesecratedPickaxe(p.rarity(Rarity.EPIC), false));
+        awDesecratedPickaxe = items.registerItem("awakened_desecrated_pickaxe", p -> new DesecratedPickaxe(p.rarity(Rarity.EPIC), true));
+        desecratedAxe = items.registerItem("desecrated_axe", p -> new DesecratedAxe(p.rarity(Rarity.EPIC), false));
+        awDesecratedAxe = items.registerItem("awakened_desecrated_axe", p -> new DesecratedAxe(p.rarity(Rarity.EPIC), true));
+        desecratedSword = items.registerItem("desecrated_sword", p -> new DesecratedSword(p.rarity(Rarity.EPIC), false));
+        awDesecratedSword = items.registerItem("awakened_desecrated_sword", p -> new DesecratedSword(p.rarity(Rarity.EPIC), true));
+        desecratedShovel = items.registerItem("desecrated_shovel", p -> new DesecratedShovel(p.rarity(Rarity.EPIC), false));
+        awDesecratedShovel = items.registerItem("awakened_desecrated_shovel", p -> new DesecratedShovel(p.rarity(Rarity.EPIC), true));
 
         if (ModList.get().isLoaded("avaritia")) {
             chimericRune = blocks.registerBlock("chimeric_rune", p -> new RuneBlock(p, 0, RuneBlock.Type.speed, RuneBlock.Type.capacity, RuneBlock.Type.resonantCapacity, RuneBlock.Type.sacrifices, RuneBlock.Type.relations), Blocks.STONE, new Item.Properties().rarity(Rarity.EPIC));
@@ -191,7 +204,7 @@ public final class HcElements {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> main = tabs.registerTab("hemomancy", Component.translatable("tab.hemomancy"), alchemyTable::toStack, bloodAltar, blankRune, speedRune, sacrificesRune, capacityRune, resonantCapacityRune, relationsRune, chimericRune,
             sacrificialDagger, weakOrb, apprenticeOrb, magicianOrb, masterOrb, archmageOrb, transcendentalOrb, infinityOrb, hemostaticController, blankGlyph, fortifiedGlyph, crimsonGlyph, filledGlyph, demonicGlyph, infernalGlyph, cosmicGlyph, crimsonOrnament, crimsonSteelIngot, transcendentalCrystal,
-            airSigil, magnetismSigil, waterSigil, lavaSigil, resistanceSigil, movementSigil, telepositionSigil, growSigil, alchemyTable, runeStairs, runeSlab);
+            airSigil, magnetismSigil, waterSigil, lavaSigil, resistanceSigil, movementSigil, telepositionSigil, growSigil, alchemyTable, runeStairs, runeSlab, desecratedPickaxe, desecratedAxe, desecratedSword, desecratedShovel, awDesecratedPickaxe, awDesecratedAxe, awDesecratedSword, awDesecratedShovel);
 
     public static void init(final IEventBus bus) {
         items.register(bus);

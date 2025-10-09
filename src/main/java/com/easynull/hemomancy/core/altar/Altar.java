@@ -1,11 +1,16 @@
 package com.easynull.hemomancy.core.altar;
 
+import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.registers.HcElements;
 import com.easynull.hemomancy.registers.blocks.RuneBlock;
 import com.easynull.hemomancy.registers.blocks.type.AltarBE;
 import com.mw.nullcore.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -51,7 +56,6 @@ public final class Altar {
     }
 
     public void upgradeAltar() {
-        if (altar.getLevel().isClientSide()) return;
         if (altar.getLevel().getGameTime() % 20 == 0) {
             var pos = altar.getBlockPos();
             Level level = altar.getLevel();
@@ -90,6 +94,14 @@ public final class Altar {
             if (altar.getLp(altar) > getCapacity()) {
                 altar.reducerLp(getCapacity(), altar);
             }
+        }
+        if(getSacrifices() > 0) {
+            Utils.Level.getEntities(altar.getLevel(), altar.getBlockPos(), 3f).forEach(e -> {
+                if (e instanceof LivingEntity le && !le.isAlive()) {
+                    altar.reducerLp((long) (le.getMaxHealth() * getSacrifices() * (le instanceof Player ? 3 : 1)), altar);
+                    if (altar.getLevel() instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5, le.getY() + 0.5, le.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
+                }
+            });
         }
     }
 

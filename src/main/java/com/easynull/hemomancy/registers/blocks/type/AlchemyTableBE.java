@@ -7,6 +7,7 @@ import com.easynull.hemomancy.core.network.AlchemyProgressPacket;
 import com.easynull.hemomancy.registers.HcBlockEntities;
 import com.easynull.hemomancy.registers.items.OrbItem;
 import com.easynull.hemomancy.registers.recipes.AlchemyRecipe;
+import com.easynull.hemomancy.registers.recipes.AltarRecipe;
 import com.easynull.hemomancy.utils.RecipeUtils;
 import com.mw.nullcore.Utils;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
@@ -17,6 +18,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ChunkPos;
@@ -48,7 +50,7 @@ public final class AlchemyTableBE extends ContainerBlockEntity implements Tickab
             resetCrafting();
             return;
         }
-        long space = (long) (recipe.lp() * 0.01f);
+        long space = (long) (recipe.lp() * 0.007f);
         if (orbItem.getLp(orb) <= space) return;
         orbItem.reducerLp(-space, orb);
         setProgress(progress += space, true, recipe.lp());
@@ -90,6 +92,22 @@ public final class AlchemyTableBE extends ContainerBlockEntity implements Tickab
         this.needLP = needLP;
         PacketDistributor.sendToPlayersTrackingChunk(sLevel, new ChunkPos(worldPosition), new AlchemyProgressPacket(worldPosition, this.progress, this.crafting, this.needLP));
         Utils.Block.updateBlockEntity(this);
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        if(slot == 1 || slot == 0) return false;
+        Optional<AlchemyRecipe> recipeOpt = getRecipe();
+        if (recipeOpt.isPresent()) {
+            ItemStack result = recipeOpt.get().result();
+            return getItem(1).getCount() * result.getCount() < 64;
+        }
+        return super.canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canTakeItem(Container target, int slot, ItemStack stack) {
+        return level.getGameTime() % 10 == 0 && !crafting && slot == 1;
     }
 
     public Optional<AlchemyRecipe> getRecipe() {

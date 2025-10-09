@@ -33,7 +33,7 @@ public class PedestalRender<T extends ContainerBlockEntity> implements BlockEnti
     public static void renderMoreItem(PoseStack ps, MultiBufferSource bufferSource, ItemStack stack, float spreadFactor, Level level, BlockPos pos, Direction direction, float height) {
         if (stack.isEmpty()) return;
         final RandomSource rand = RandomSource.create(pos.asLong());
-        int count = stack.getCount();
+        int count = Math.min(stack.getCount(), 4);
         int light = LevelRenderer.getLightColor(level, level.getBlockState(pos), pos.relative(direction));
 
         ps.pushPose();

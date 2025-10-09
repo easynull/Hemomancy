@@ -1,5 +1,6 @@
 package com.easynull.hemomancy.registers.blocks.type;
 
+import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.core.Wandable;
 import com.easynull.hemomancy.core.Tierable;
@@ -77,12 +78,6 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
         } else {
             EnergyUtils.extractInFrom(first, this, (long) (altar.getCharging() * 25f), mode.equals(getModes()[2]));
         }
-        Utils.Level.getEntities(level, worldPosition, 1.5f).forEach(e -> {
-            if (e instanceof LivingEntity le && !le.isAlive()) {
-                reducerLp((long) (le.getMaxHealth() * altar.getSacrifices() * (le instanceof Player ? 3 : 1)), this);
-                if (level instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5, le.getY() + 0.5, le.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
-            }
-        });
     }
 
     @Override

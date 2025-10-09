@@ -24,14 +24,14 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
-    //maven {
-        //name = "Jared's maven"
-        //url = "https://maven.blamejared.com/"
-    //}
-    //maven {
-        //name = "ModMaven"
-        //url = "https://modmaven.dev"
-    //}
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
 }
 
 base {
@@ -96,8 +96,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
 
 dependencies {
     implementation "maven.modrinth:nullcore:${nullcore_version}"
-    //compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     compileOnly files("libs/AvaritiaNeo-1.21.4-1.0.4.jar")
 }
 

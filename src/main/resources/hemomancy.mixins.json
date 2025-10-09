@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.easynull.hemomancy.core.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "mixins": [
+    "GameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

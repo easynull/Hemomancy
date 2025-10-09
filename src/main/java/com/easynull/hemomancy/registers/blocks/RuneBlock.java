@@ -60,10 +60,10 @@ public final class RuneBlock extends Block implements Tierable {
     @NamedEnum(1)
     public enum Type {
         none(0xFFFFFFFF),
-        speed(0xFF08F3CC),
+        speed(0x98C9D4FF),
         sacrifices(0xFFFCC500),
         capacity(0xFFFF5000),
-        resonantCapacity(0xFFFF5000),
+        resonantCapacity(0xA6F9D1FF),
         relations(0xFFFF00FF);
 
         public final int color;

@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "C": "hemomancy:crimson_steel_ingot",
-    "O": "#hemomancy:orbs",
+    "O": "hemomancy:crimson_ornament",
     "D": "minecraft:diamond"
   },
   "pattern": [
-    "  D",
+    "  C",
     " O ",
-    "C  "
+    "D  "
   ],
   "result": {
     "id": "hemomancy:hemostatic_controller"

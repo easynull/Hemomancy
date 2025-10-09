@@ -45,6 +45,15 @@
   "item.hemomancy.rune_stairs": "Runic Stairs",
   "item.hemomancy.rune_slab": "Runic Slab",
 
+  "item.hemomancy.desecrated_pickaxe": "Desecrated Pickaxe",
+  "item.hemomancy.awakened_desecrated_pickaxe": "Awakened Desecrated Pickaxe",
+  "item.hemomancy.desecrated_axe": "Desecrated Axe",
+  "item.hemomancy.awakened_desecrated_axe": "Awakened Desecrated Axe",
+  "item.hemomancy.desecrated_sword": "Desecrated Sword",
+  "item.hemomancy.awakened_desecrated_sword": "Awakened Desecrated Sword",
+  "item.hemomancy.desecrated_shovel": "Desecrated Shovel",
+  "item.hemomancy.awakened_desecrated_shovel": "Awakened Desecrated Shovel",
+
   "tooltip.hemomancy.rune": "▶ +%s of %s ◀",
   "tooltip.hemomancy.tier": "Tier %s",
   "tooltip.hemomancy.orb.desc": "▶ Can hold up to %s LP",

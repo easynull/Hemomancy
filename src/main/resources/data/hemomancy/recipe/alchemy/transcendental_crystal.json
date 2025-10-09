@@ -1,0 +1,15 @@
+{
+  "type": "hemomancy:alchemy",
+  "inputs": [
+    ["minecraft:amethyst_block"],
+    ["minecraft:amethyst_shard"],
+    ["minecraft:amethyst_block"],
+    ["minecraft:amethyst_shard"],
+    ["minecraft:amethyst_block"],
+    ["minecraft:amethyst_shard"]
+  ],
+  "result": {
+    "id": "hemomancy:transcendental_crystal"
+  },
+  "lp": 120000
+}

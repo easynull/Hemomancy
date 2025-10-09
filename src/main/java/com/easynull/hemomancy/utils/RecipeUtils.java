@@ -2,12 +2,16 @@ package com.easynull.hemomancy.utils;
 
 import com.easynull.hemomancy.registers.recipes.AlchemyRecipe;
 import com.easynull.hemomancy.registers.recipes.AltarRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class RecipeUtils {
     public static AltarRecipe getAltarRecipe(AltarRecipe.Input input, Level level) {
@@ -29,9 +33,9 @@ public final class RecipeUtils {
         Collection<RecipeHolder<?>> recipes = sl.recipeAccess().getRecipes();
         for (RecipeHolder<?> holder : recipes) {
             Recipe<?> recipe = holder.value();
-            if (recipe instanceof AlchemyRecipe altar) {
-                if (altar.matches(input, level)) {
-                    return altar;
+            if (recipe instanceof AlchemyRecipe alchemy) {
+                if (alchemy.matches(input, level)) {
+                    return alchemy;
                 }
             }
         }

@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public record AlchemyRecipe(ItemStack result, List<Ingredient> inputs, long lp) implements Recipe<AlchemyRecipe.Input> {
+    public static final List<AlchemyRecipe> recipes = new ArrayList<>();
+
     @Override
     public boolean matches(Input input, Level level) {
         NonNullList<ItemStack> available = NonNullList.create();
@@ -50,6 +52,7 @@ public record AlchemyRecipe(ItemStack result, List<Ingredient> inputs, long lp) 
 
     @Override
     public RecipeType<AlchemyRecipe> getType() {
+        recipes.add(this);
         return HcRecipes.alchemy.get();
     }
 

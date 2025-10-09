@@ -11,7 +11,7 @@ public final class EnergyUtils {
     public static float calculateDamage(LivingEntity entity, long lp) {
         if (lp <= 0) return 0f;
         float diminishing = 0.8f;
-        float damage = (float) (0.5f * Math.log1p(lp / 10.0));
+        float damage = (float) (0.5f * Math.log1p(lp));
         damage *= (float) Math.pow(damage, -diminishing * 0.1);
         return Math.min(damage, entity.getMaxHealth());
     }

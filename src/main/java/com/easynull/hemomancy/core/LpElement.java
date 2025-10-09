@@ -16,10 +16,11 @@ public interface LpElement {
     }
 
     default long getMaxLp() {
-        return 5000;
+        return 0;
     }
 
     default boolean reducerLp(long amount, Object target) {
+        if (getMaxLp() <= 0) return false;
         amount = Math.clamp(getLp(target) + amount, 0, getMaxLp());
         if (target instanceof ItemStack stack) {
             stack.set(HcComponents.lp, amount);

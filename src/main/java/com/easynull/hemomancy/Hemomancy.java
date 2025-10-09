@@ -23,7 +23,6 @@ public final class Hemomancy {
         HcElements.init(bus);
         HcComponents.components.register(bus);
         HcBlockEntities.types.register(bus);
-//        HcMenus.menus.register(bus);
         HcRecipes.init(bus);
         HcConfig.init();
     }

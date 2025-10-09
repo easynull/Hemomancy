@@ -1,7 +1,7 @@
 {
   "type": "hemomancy:altar",
   "input": [
-    "minecraft:netherite_block"
+    "minecraft:barrier"
   ],
   "result": {
     "id": "hemomancy:master_blood_orb"

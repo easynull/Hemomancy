@@ -1,5 +1,6 @@
-- Added alchemy table
-- Added more sigils
+- Added JEI recipes
+- Added desecrated tools
+- Added awakened desecrated tools
 - Added altar recipes
 - Added alchemy recipes
 - Rewrited textures

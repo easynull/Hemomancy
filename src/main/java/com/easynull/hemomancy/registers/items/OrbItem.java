@@ -38,6 +38,7 @@ public final class OrbItem extends Item implements LpElement, Tierable, IconRend
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         RandomSource rand = RandomSource.create();
         long lp = rand.nextInt(100, 150);
+        if (player.isShiftKeyDown() && player.isCreative()) lp = getMaxLp();
         if (reducerLp(lp * bonus, player.getItemInHand(hand))) {
             EnergyUtils.damageLp(player, lp);
             return InteractionResult.CONSUME;

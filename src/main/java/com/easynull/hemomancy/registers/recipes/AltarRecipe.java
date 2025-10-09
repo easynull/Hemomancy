@@ -13,7 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record AltarRecipe(ItemStack result, Ingredient input, long lp, byte tier) implements Recipe<AltarRecipe.Input> {
+    public static final List<AltarRecipe> recipes = new ArrayList<>();
+
     @Override
     public boolean matches(Input input, Level level) {
         return this.input.test(input.inv().getInventory().getItem(0)) && input.tier() >= tier();
@@ -26,6 +31,7 @@ public record AltarRecipe(ItemStack result, Ingredient input, long lp, byte tier
 
     @Override
     public RecipeType<AltarRecipe> getType() {
+        recipes.add(this);
         return HcRecipes.altar.get();
     }
 
