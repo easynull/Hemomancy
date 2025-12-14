@@ -7,12 +7,11 @@ import com.easynull.hemomancy.registers.items.armortools.DesecratedPickaxe;
 import com.easynull.hemomancy.registers.items.armortools.DesecratedShovel;
 import com.easynull.hemomancy.registers.items.armortools.DesecratedSword;
 import com.easynull.hemomancy.registers.items.sigil.*;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.holders.*;
-import com.mw.nullcore.registers.NullComponents;
+import com.mw.nullcore.registers.NcComponents;
 import net.byAqua3.avaritia.loader.AvaritiaItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -85,8 +84,8 @@ public final class HcElements {
         hemostaticController = items.registerItem("hemostatic_controller", ControllerItem::new);
         waterSigil = items.registerItem("water_sigil", p -> new SigilItem(p, ctx -> ctx.level().setBlock(ctx.pos().relative(ctx.direction()), Blocks.WATER.defaultBlockState(), 3), 150));
         lavaSigil = items.registerItem("lava_sigil", p -> new SigilItem(p, ctx -> ctx.level().setBlock(ctx.pos().relative(ctx.direction()), Blocks.LAVA.defaultBlockState(), 3), 150));
-        drainageSigil = items.registerItem("drainage_sigil", p -> new TickSigilItem(p, ctx -> Utils.Block.forEachSphere(ctx.pos(), 4, pos -> {
-            if(!Utils.Block.isFluid(ctx.level().getBlockState(pos))) return;
+        drainageSigil = items.registerItem("drainage_sigil", p -> new EnSigilItem(p, ctx -> NcUtils.Block.forEachSphere(ctx.pos(), 4, pos -> {
+            if(!NcUtils.Block.isFluid(ctx.level().getBlockState(pos))) return;
             ctx.level().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         }), 50));
         airSigil = items.registerItem("air_sigil", p -> new SigilItem(p, ctx -> {
@@ -99,9 +98,9 @@ public final class HcElements {
             player.startFallFlying();
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WIND_CHARGE_BURST, SoundSource.PLAYERS, 1.0f, 1.0f);
         }, 45, true));
-        magnetismSigil = items.registerItem("magnetism_sigil", p -> new TickSigilItem(p, ctx -> {
-            if(ctx.level().isClientSide() || !((TickSigilItem) ctx.item()).isActive(ctx.stack())) return;
-            Utils.Level.getEntities(ctx.level(), ctx.pos(), 12f).forEach(e -> {
+        magnetismSigil = items.registerItem("magnetism_sigil", p -> new EnSigilItem(p, ctx -> {
+            if(ctx.level().isClientSide() || !((EnSigilItem) ctx.item()).isActive(ctx.stack())) return;
+            NcUtils.Level.getEntities(ctx.level(), ctx.pos(), 12f).forEach(e -> {
                 if(e instanceof Player) return;
                 Vec3 playerPos = ctx.player().position();
                 Vec3 entityPos = e.position();
@@ -113,28 +112,28 @@ public final class HcElements {
                 Vec3 direction = playerPos.subtract(entityPos).normalize();
                 e.setDeltaMovement(e.getDeltaMovement().add(direction.scale(force)));
             });
-        }, 150, Utils.Mth.secondTick(5)));
-        resistanceSigil = items.registerItem("resistance_sigil", p -> new TickSigilItem(p, ctx -> {
-            if (!((TickSigilItem) ctx.item()).isActive(ctx.stack())) return;
+        }, 150, NcUtils.Mth.secondTick(5)));
+        resistanceSigil = items.registerItem("resistance_sigil", p -> new EnSigilItem(p, ctx -> {
+            if (!((EnSigilItem) ctx.item()).isActive(ctx.stack())) return;
             ctx.player().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2, 4, false, false, false));
-        }, 2500, Utils.Mth.secondTick(2)));
+        }, 2500, NcUtils.Mth.secondTick(2)));
         movementSigil = items.registerItem("movement_sigil", p -> new SigilItem(p, ctx -> {
             Level level = ctx.level();
             BlockPos pos = ctx.pos();
             BlockState state = level.getBlockState(pos);
             ItemStack stack = ctx.stack();
-            if (state.isAir() || Utils.Block.isFluid(state) || HcConfig.unmovementBlocks.get().contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString())) return;
-            if (stack.get(NullComponents.blockState) == null) {
+            if (state.isAir() || NcUtils.Block.isFluid(state) || HcConfig.unmovementBlocks.get().contains(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString())) return;
+            if (stack.get(NcComponents.BLOCK) == null) {
                 BlockEntity be = level.getBlockEntity(pos);
                 if (state.hasBlockEntity() && be != null) {
                     stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(be.saveWithFullMetadata(level.registryAccess())));
                     level.removeBlockEntity(pos);
                 }
-                stack.set(NullComponents.blockState, state);
+                stack.set(NcComponents.BLOCK, state);
                 stack.set(DataComponents.LORE, new ItemLore(List.of(new ItemStack(state.getBlock()).getDisplayName())));
                 level.removeBlock(pos, false);
             } else {
-                BlockState storedState = stack.get(NullComponents.blockState);
+                BlockState storedState = stack.get(NcComponents.BLOCK);
                 if (storedState == null) return;
                 level.setBlock(pos.relative(ctx.direction()), storedState, 3);
                 CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
@@ -142,27 +141,27 @@ public final class HcElements {
                     BlockEntity be = BlockEntity.loadStatic(pos.relative(ctx.direction()), storedState, data.copyTag(), level.registryAccess());
                     if (be != null) level.setBlockEntity(be);
                 }
-                stack.remove(NullComponents.blockState);
+                stack.remove(NcComponents.BLOCK);
                 stack.remove(DataComponents.BLOCK_ENTITY_DATA);
                 stack.remove(DataComponents.LORE);
             }
         }, 3000));
         telepositionSigil = items.registerItem("teleposition_sigil", p -> new SigilItem(p, ctx -> {
-            BlockPos savePos = ctx.stack().get(NullComponents.pos);
-            ResourceKey<Level> saveDim = ctx.stack().get(HcComponents.dim);
+            BlockPos savePos = ctx.stack().get(NcComponents.POS);
+            ResourceKey<Level> saveDim = ctx.stack().get(HcComponents.DIMENSION);
             BlockPos pos = ctx.pos();
             ItemStack stack = ctx.stack();
             Player player = ctx.player();
             if (savePos == null && saveDim == null) {
                 ctx.item().shouldLP(false);
-                stack.set(NullComponents.pos, pos);
-                stack.set(HcComponents.dim, player.level().dimension());
+                stack.set(NcComponents.POS, pos);
+                stack.set(HcComponents.DIMENSION, player.level().dimension());
                 stack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ())).withColor(0xFFFFFFFF))));
             } else {
                 if(player.isShiftKeyDown()) {
                     ctx.item().shouldLP(false);
-                    stack.remove(NullComponents.pos);
-                    stack.remove(HcComponents.dim);
+                    stack.remove(NcComponents.POS);
+                    stack.remove(HcComponents.DIMENSION);
                     stack.remove(DataComponents.LORE);
                     return;
                 }
@@ -170,9 +169,9 @@ public final class HcElements {
                 player.teleportTo(player.getServer().getLevel(saveDim), savePos.getX() + 0.5f, savePos.getY() + 1f, savePos.getZ() + 0.5f, Relative.DELTA, 1f, 1f, false);
             }
         }, 1500, true));
-        growSigil = items.registerItem("grow_sigil", p -> new TickSigilItem(p, ctx -> {
-            if (ctx.level().isClientSide() || !((TickSigilItem) ctx.item()).isActive(ctx.stack()) || !ctx.level().isDay()) return;
-            Utils.Block.forEachCube(ctx.pos(), 5, pos -> {
+        growSigil = items.registerItem("grow_sigil", p -> new EnSigilItem(p, ctx -> {
+            if (ctx.level().isClientSide() || !((EnSigilItem) ctx.item()).isActive(ctx.stack()) || !ctx.level().isDay()) return;
+            NcUtils.Block.forEachCube(ctx.pos(), 5, pos -> {
                 BlockState state = ctx.level().getBlockState(pos);
                 Block block = state.getBlock();
                 Level level = ctx.level();
@@ -180,7 +179,7 @@ public final class HcElements {
                 else if (block instanceof FarmBlock farm && level.random.nextFloat() < 0.1f && farm.defaultBlockState().getValue(BlockStateProperties.MOISTURE) < 7) level.setBlock(pos, Blocks.FARMLAND.defaultBlockState().setValue(BlockStateProperties.MOISTURE, 7), 3);
                 else if (block instanceof BonemealableBlock growable && block != Blocks.GRASS_BLOCK && growable.isValidBonemealTarget(level, pos, state) && level.random.nextFloat() < 0.05f && growable.isBonemealSuccess(level, level.random, pos, state)) growable.performBonemeal((ServerLevel) level, level.random, pos, state);
             });
-        }, 150, Utils.Mth.secondTick(2)));
+        }, 150, NcUtils.Mth.secondTick(2)));
 
         runeStairs = blocks.registerBlock("rune_stairs", p -> new StairBlock(blankRune.get().defaultBlockState(), p), Blocks.STONE);
         runeSlab = blocks.registerBlock("rune_slab", SlabBlock::new, Blocks.STONE);

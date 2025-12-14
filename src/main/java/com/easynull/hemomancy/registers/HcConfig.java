@@ -14,7 +14,7 @@ public final class HcConfig {
     public static ConfigManager.Initialize.Unit<List<String>> unmovementBlocks;
 
     public static void init() {
-        ConfigManager.register(ID, FMLPaths.CONFIGDIR.get(), () -> {
+        ConfigManager.register(ID, () -> {
             advancedController = ConfigManager.create(
                     "advanced_controller",
                     "Shows a crimson bar even when the player is not holding the controller",

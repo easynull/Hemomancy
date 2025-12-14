@@ -6,7 +6,7 @@ import com.easynull.hemomancy.core.Tierable;
 import com.easynull.hemomancy.core.Wandable;
 import com.easynull.hemomancy.registers.HcConfig;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.items.OverlayRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -125,12 +125,12 @@ public final class ControllerItem extends Item implements OverlayRenderer {
         int progress = (int) (lp * 27.0 / maxLp);
         int barHeight = (int) (progress * 1.5);
 
-        Utils.Render.drawTexture(gg, bar, xCord, yCord, 0, 0, 21, 48, 48, 48);
-        Utils.Render.drawTexture(gg, bar, xCord + 6, yCord + 40 - barHeight, 21, 33 - barHeight, 12, barHeight, 48, 48);
+        NcUtils.Render.drawTexture(gg, bar, xCord, yCord, 0, 0, 21, 48, 48, 48);
+        NcUtils.Render.drawTexture(gg, bar, xCord + 6, yCord + 40 - barHeight, 21, 33 - barHeight, 12, barHeight, 48, 48);
 
         if (current != null) gg.renderItem(new ItemStack(current), xCord + 26, yCord + 7);
-        if (tier > 0) Utils.Render.drawText(gg, Component.translatable("tooltip.hemomancy.tier", tier), xCord + 23, yCord + 27, 0xFFFFFFFF, false);
-        if (isGlobal()) gg.drawCenteredString(Minecraft.getInstance().font, Utils.Text.formatNum(lp), xCord + 14, yCord + 50, 0xFFFF0000);
+        if (tier > 0) NcUtils.Render.drawText(gg, Component.translatable("tooltip.hemomancy.tier", tier), xCord + 23, yCord + 27, 0xFFFFFFFF, false);
+        if (isGlobal()) gg.drawCenteredString(Minecraft.getInstance().font, NcUtils.Text.formatNum(lp), xCord + 14, yCord + 50, 0xFFFF0000);
     }
 
     @Override

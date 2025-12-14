@@ -2,7 +2,7 @@ package com.easynull.hemomancy.client.render.type;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -42,8 +42,8 @@ public class PedestalRender<T extends ContainerBlockEntity> implements BlockEnti
             float xOffset = count > 1 ? (rand.nextFloat() - 0.5f) * spreadFactor : 0f;
             float yOffset = (rand.nextFloat() - 0.5f) * spreadFactor;
             float zOffset = count > 1 ? (rand.nextFloat() - 0.5f) * spreadFactor : 0f;
-            ps.translate(xOffset + 0.5f, yOffset + height + 0.06f * Mth.sin(Utils.Render.getAnimationTick() * 0.0360f), zOffset + 0.5f);
-            ps.mulPose(Axis.YN.rotationDegrees(Utils.Render.getAnimationTick()));
+            ps.translate(xOffset + 0.5f, yOffset + height + 0.06f * Mth.sin(NcUtils.Render.getAnimationTick() * 0.0360f), zOffset + 0.5f);
+            ps.mulPose(Axis.YN.rotationDegrees(NcUtils.Render.getAnimationTick()));
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, ps, bufferSource, level, 0);
             ps.popPose();
         }

@@ -1,9 +1,8 @@
 package com.easynull.hemomancy.registers.items.sigil;
 
-import com.easynull.hemomancy.registers.HcComponents;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
-import com.mw.nullcore.registers.NullComponents;
+import com.mw.nullcore.core.NcUtils;
+import com.mw.nullcore.registers.NcComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -11,16 +10,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public final class TickSigilItem extends SigilItem {
+public final class EnSigilItem extends SigilItem {
     final int rollback;
 
-    public TickSigilItem(Properties props, Context ctx, int lp, int rollback) {
-        super(props.component(NullComponents.active, false), ctx, lp);
+    public EnSigilItem(Properties props, Context ctx, int lp, int rollback) {
+        super(props.component(NcComponents.ENABLED, false), ctx, lp);
         this.rollback = rollback;
     }
 
-    public TickSigilItem(Properties props, Context ctx, int lp) {
-        this(props, ctx, lp, Utils.Mth.secondTick(1));
+    public EnSigilItem(Properties props, Context ctx, int lp) {
+        this(props, ctx, lp, NcUtils.Mth.secondTick(1));
     }
 
     @Override
@@ -40,10 +39,10 @@ public final class TickSigilItem extends SigilItem {
     }
 
     public boolean isActive(ItemStack stack){
-        return stack.get(NullComponents.active);
+        return stack.get(NcComponents.ENABLED);
     }
 
     public void setActive(ItemStack stack, boolean active){
-        stack.set(NullComponents.active, active);
+        stack.set(NcComponents.ENABLED, active);
     }
 }

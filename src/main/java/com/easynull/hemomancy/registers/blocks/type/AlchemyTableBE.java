@@ -9,7 +9,7 @@ import com.easynull.hemomancy.registers.items.OrbItem;
 import com.easynull.hemomancy.registers.recipes.AlchemyRecipe;
 import com.easynull.hemomancy.registers.recipes.AltarRecipe;
 import com.easynull.hemomancy.utils.RecipeUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import com.mw.nullcore.core.blocks.type.Tickable;
 import net.minecraft.core.BlockPos;
@@ -91,7 +91,7 @@ public final class AlchemyTableBE extends ContainerBlockEntity implements Tickab
         this.crafting = crafting;
         this.needLP = needLP;
         PacketDistributor.sendToPlayersTrackingChunk(sLevel, new ChunkPos(worldPosition), new AlchemyProgressPacket(worldPosition, this.progress, this.crafting, this.needLP));
-        Utils.Block.updateBlockEntity(this);
+        NcUtils.Block.updateBlockEntity(this);
     }
 
     @Override

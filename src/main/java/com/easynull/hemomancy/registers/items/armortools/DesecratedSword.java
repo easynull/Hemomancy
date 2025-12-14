@@ -2,7 +2,7 @@ package com.easynull.hemomancy.registers.items.armortools;
 
 import com.easynull.hemomancy.registers.HcMaterials;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -27,13 +27,13 @@ public final class DesecratedSword extends SwordItem implements Desecrated {
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (awakened) {
             if(player.level() instanceof ServerLevel level) {
-                Utils.Level.getEntities(player.level(), entity.blockPosition(), 2).forEach(e -> {
+                NcUtils.Level.getEntities(player.level(), entity.blockPosition(), 2).forEach(e -> {
                     if (e == player || !(e instanceof LivingEntity le)) return;
                     float baseDamage = stack.get(DataComponents.TOOL).damagePerBlock();
                     float enchantedDamage = baseDamage + EnchantmentHelper.getDamageProtection(level, le, player.damageSources().playerAttack(player));
                     le.hurt(player.damageSources().playerAttack(player), enchantedDamage);
                     EnchantmentHelper.doPostAttackEffects(level, le, player.damageSources().playerAttack(player));
-                    if (!le.is(entity)) Utils.Particle.forParticleSpawn(player.level(), DustParticleOptions.REDSTONE, (float) (le.getX() + 0.5), (float) (le.getY() + 0.5), (float) (le.getZ() + 0.5), 1f, 1f, 1f, 2);
+                    if (!le.is(entity)) NcUtils.Particle.forParticleSpawn(player.level(), DustParticleOptions.REDSTONE, (float) (le.getX() + 0.5), (float) (le.getY() + 0.5), (float) (le.getZ() + 0.5), 1f, 1f, 1f, 2);
                 });
             }
             EnergyUtils.extractLp(player, 50000);

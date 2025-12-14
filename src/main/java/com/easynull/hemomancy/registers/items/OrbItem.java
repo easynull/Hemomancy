@@ -4,10 +4,12 @@ import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.core.Tierable;
 import com.easynull.hemomancy.registers.HcElements;
 import com.easynull.hemomancy.utils.EnergyUtils;
+import com.mw.nullcore.client.particle.screen.ScreenParticleHolder;
 import com.mw.nullcore.core.builders.GuiRenderBuilder;
-import com.mw.nullcore.core.items.IconRenderer;
+import com.mw.nullcore.core.items.Renderable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -22,7 +24,7 @@ import net.neoforged.fml.ModList;
 
 import java.util.List;
 
-public final class OrbItem extends Item implements LpElement, Tierable, IconRenderer {
+public final class OrbItem extends Item implements LpElement, Tierable, Renderable {
     final long maxLp;
     final byte tier;
     final int bonus;
@@ -75,11 +77,16 @@ public final class OrbItem extends Item implements LpElement, Tierable, IconRend
     }
 
     @Override
-    public void renderIcon(GuiGraphics gg, Level level, ItemStack stack, int pX, int pY, float pTick) {
+    public void renderEarly(ScreenParticleHolder target, GuiGraphics gg, ClientLevel level, float pTick, ItemStack stack, int x, int y) {
         if (HcElements.infinityOrb != null && stack.getItem() == HcElements.infinityOrb.get() && !ModList.get().isLoaded("iris")) {
             gg.pose().pushPose();
-            GuiRenderBuilder.builder().pose(gg.pose()).renderType(ResourceLocation.fromNamespaceAndPath("avaritia", "textures/item/halo.png")).moveBefore(pX + 8f, pY + 8f).color(0f, 0f, 0f).pulseScale(1f, 1.02f, 3f).buildOverlay(18f);
+            GuiRenderBuilder.builder().pose(gg.pose()).renderType(ResourceLocation.fromNamespaceAndPath("avaritia", "textures/item/halo.png")).move(50, x + 8f, y + 8f).color(0f, 0f, 0f).buildOverlay(18f);
             gg.pose().popPose();
         }
+    }
+
+    @Override
+    public boolean isParticleRenderable() {
+        return false;
     }
 }

@@ -2,7 +2,7 @@ package com.easynull.hemomancy.registers.items;
 
 import com.easynull.hemomancy.core.LpElement;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,7 +22,7 @@ public final class DaggerItem extends Item {
         RandomSource rand = RandomSource.create();
         AtomicLong lp = new AtomicLong(rand.nextInt(85, 100));
         AtomicLong damageLp = new AtomicLong(lp.get());
-        Utils.Block.forEachCube(player.blockPosition(), 1, pos -> {
+        NcUtils.Block.forEachCube(player.blockPosition(), 1, pos -> {
             if (level.getBlockEntity(pos) instanceof LpElement oth && oth.canDaggerFulled()) {
                 if(player.isCreative() && player.isShiftKeyDown()) lp.set(oth.getMaxLp());
                 oth.reducerLp(lp.get(), oth);

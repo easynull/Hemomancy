@@ -1,8 +1,9 @@
 package com.easynull.hemomancy.registers.blocks;
 
 import com.easynull.hemomancy.registers.HcBlockEntities;
+import com.easynull.hemomancy.registers.blocks.type.AlchemyTableBE;
 import com.easynull.hemomancy.registers.items.OrbItem;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.blocks.EntitibleBlock;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class AlchemyTableBlock extends EntitibleBlock {
     public AlchemyTableBlock(Properties properties) {
-        super(properties.lightLevel(state -> 8), HcBlockEntities.alchemyTable::get);
+        super(properties.lightLevel(state -> 8), AlchemyTableBE::new);
     }
 
     @Override
@@ -31,7 +32,7 @@ public final class AlchemyTableBlock extends EntitibleBlock {
         int size = container.getContainerSize();
         if (player.isShiftKeyDown()) {
             for (int i = 0; i < size; i++) {
-                if (container.getItem(i).getItem() instanceof OrbItem && Utils.Item.insertItem(container, player, i, Screen.hasControlDown() ? 1 : 64)) {
+                if (container.getItem(i).getItem() instanceof OrbItem && NcUtils.Item.insertItem(container, player, i, Screen.hasControlDown() ? 1 : 64)) {
                     return InteractionResult.CONSUME;
                 }
             }
@@ -41,7 +42,7 @@ public final class AlchemyTableBlock extends EntitibleBlock {
             if ((i == 0 && !(held.getItem() instanceof OrbItem) && container.getItem(0).isEmpty()) || (i == 1 && container.getItem(1).isEmpty())) continue;
             ItemStack slot = container.getItem(i);
             boolean canInteract = held.isEmpty() ? !slot.isEmpty() : slot.isEmpty() || ItemStack.isSameItemSameComponents(held, slot);
-            if (canInteract && Utils.Item.insertItem(container, player, i, Screen.hasControlDown() ? 1 : 64)) return InteractionResult.SUCCESS;
+            if (canInteract && NcUtils.Item.insertItem(container, player, i, Screen.hasControlDown() ? 1 : 64)) return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

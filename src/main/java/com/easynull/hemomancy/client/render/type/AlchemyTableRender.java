@@ -3,7 +3,7 @@ package com.easynull.hemomancy.client.render.type;
 import com.easynull.hemomancy.registers.blocks.type.AlchemyTableBE;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -22,7 +22,7 @@ public final class AlchemyTableRender implements BlockEntityRenderer<AlchemyTabl
         boolean crafting = alchemy.isCrafting();
         float progress = crafting ? (float) alchemy.progress / alchemy.needLP : 0f;
         float speed = 0.1f + progress * 0.2f;
-        float time = Utils.Render.getAnimationTick() * speed;
+        float time = NcUtils.Render.getAnimationTick() * speed;
         float radiusFactor = 1f - progress * progress;
         float baseRadius = crafting ? 0.9f * radiusFactor : 0.9f;
 

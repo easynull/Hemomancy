@@ -1,7 +1,7 @@
 package com.easynull.hemomancy.registers.blocks;
 
-import com.easynull.hemomancy.registers.HcBlockEntities;
-import com.mw.nullcore.Utils;
+import com.easynull.hemomancy.registers.blocks.type.AltarBE;
+import com.mw.nullcore.core.NcUtils;
 import com.mw.nullcore.core.blocks.EntitibleBlock;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,13 +21,13 @@ import java.util.function.Supplier;
 
 public final class AltarBlock extends EntitibleBlock {
     public AltarBlock(Properties properties) {
-        super(properties.lightLevel(state -> 8), HcBlockEntities.bloodAltar::get);
+        super(properties.lightLevel(state -> 8), AltarBE::new);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.getBlockEntity(pos) instanceof ContainerBlockEntity container) {
-            if (Utils.Item.insertItem(container, player, 0, Screen.hasControlDown() ? 1 : 64)) return InteractionResult.SUCCESS;
+            if (NcUtils.Item.insertItem(container, player, 0, Screen.hasControlDown() ? 1 : 64)) return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

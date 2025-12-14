@@ -2,7 +2,7 @@ package com.easynull.hemomancy.registers.items.armortools;
 
 import com.easynull.hemomancy.registers.HcMaterials;
 import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -23,7 +23,7 @@ public final class DesecratedPickaxe extends PickaxeItem implements Desecrated {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         if (awakened && level.getBlockState(pos).is(BlockTags.MINEABLE_WITH_PICKAXE) && !Screen.hasShiftDown()) {
-            Utils.Block.forEachCube(pos, 2, p -> {
+            NcUtils.Block.forEachCube(pos, 2, p -> {
                 BlockState adState = level.getBlockState(p.above());
                 if (adState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
                     if (!((Player) miningEntity).isCreative()) adState.getBlock().playerDestroy(level, (Player) miningEntity, p.above(), adState, level.getBlockEntity(p.above()), stack);

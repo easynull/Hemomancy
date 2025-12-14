@@ -9,7 +9,6 @@ import com.easynull.hemomancy.registers.HcBlockEntities;
 import com.easynull.hemomancy.registers.recipes.AltarRecipe;
 import com.easynull.hemomancy.utils.EnergyUtils;
 import com.easynull.hemomancy.utils.RecipeUtils;
-import com.mw.nullcore.Utils;
 import com.mw.nullcore.core.blocks.type.ContainerBlockEntity;
 import com.mw.nullcore.core.blocks.type.Tickable;
 import net.minecraft.core.BlockPos;
@@ -110,7 +109,7 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         altar.load(tag);
-        lp = tag.getLong("lp");
+        lp = tag.getLong("LP");
         progress = tag.getLong("progress");
         crafting = tag.getBoolean("crafting");
     }
@@ -119,7 +118,7 @@ public final class AltarBE extends ContainerBlockEntity implements Tickable, LpE
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         altar.save(tag);
-        tag.putLong("lp", lp);
+        tag.putLong("LP", lp);
         tag.putLong("progress", progress);
         tag.putBoolean("crafting", crafting);
     }

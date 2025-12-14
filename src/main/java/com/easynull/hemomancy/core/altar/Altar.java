@@ -4,7 +4,7 @@ import com.easynull.hemomancy.Hemomancy;
 import com.easynull.hemomancy.registers.HcElements;
 import com.easynull.hemomancy.registers.blocks.RuneBlock;
 import com.easynull.hemomancy.registers.blocks.type.AltarBE;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -48,7 +48,7 @@ public final class Altar {
                 } else if (!component.block.defaultBlockState().is(state.getBlock())) {
                     isValid = false;
                 }
-            } else if (state.isAir() || Utils.Block.isFluid(state)) {
+            } else if (state.isAir() || NcUtils.Block.isFluid(state)) {
                 isValid = false;
             }
         }
@@ -96,7 +96,7 @@ public final class Altar {
             }
         }
         if(getSacrifices() > 0) {
-            Utils.Level.getEntities(altar.getLevel(), altar.getBlockPos(), 3f).forEach(e -> {
+            NcUtils.Level.getEntities(altar.getLevel(), altar.getBlockPos(), 3f).forEach(e -> {
                 if (e instanceof LivingEntity le && !le.isAlive()) {
                     altar.reducerLp((long) (le.getMaxHealth() * getSacrifices() * (le instanceof Player ? 3 : 1)), altar);
                     if (altar.getLevel() instanceof ServerLevel sl) sl.sendParticles(DustParticleOptions.REDSTONE, le.getX() + 0.5, le.getY() + 0.5, le.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
@@ -143,37 +143,37 @@ public final class Altar {
 
     public void setTier(byte tier) {
         this.tier = tier;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setSpeed(float speed) {
         this.speed = speed;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setCapacity(long capacity) {
         this.capacity = capacity;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setResCapacity(float resCapacity) {
         this.resCapacity = resCapacity;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setSacrifices(int sacrifices) {
         this.sacrifices = sacrifices;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setCharging(float charging) {
         this.charging = charging;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     public void setMode(String mode) {
         this.mode = mode;
-        Utils.Block.updateBlockEntity(altar);
+        NcUtils.Block.updateBlockEntity(altar);
     }
 
     private int getUpgrade(RuneBlock.Type type) {

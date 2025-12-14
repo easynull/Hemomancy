@@ -1,8 +1,7 @@
 package com.easynull.hemomancy.core;
 
 import com.easynull.hemomancy.registers.HcComponents;
-import com.easynull.hemomancy.utils.EnergyUtils;
-import com.mw.nullcore.Utils;
+import com.mw.nullcore.core.NcUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,8 +9,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public interface LpElement {
     default long getLp(Object target) {
         target = getRealTarget() == null ? target : getRealTarget();
-        if (target instanceof ItemStack stack) return stack.getOrDefault(HcComponents.lp, 0L);
-        else if (target instanceof BlockEntity be) return be.getPersistentData().getLong("lp");
+        if (target instanceof ItemStack stack) return stack.getOrDefault(HcComponents.LP, 0L);
+        else if (target instanceof BlockEntity be) return be.getPersistentData().getLong("LP");
         return 0;
     }
 
@@ -23,11 +22,11 @@ public interface LpElement {
         if (getMaxLp() <= 0) return false;
         amount = Math.clamp(getLp(target) + amount, 0, getMaxLp());
         if (target instanceof ItemStack stack) {
-            stack.set(HcComponents.lp, amount);
+            stack.set(HcComponents.LP, amount);
         } else if (target instanceof BlockEntity be) {
             CompoundTag nbt = be.getPersistentData();
-            nbt.putLong("lp", amount);
-            Utils.Block.updateBlockEntity(be);
+            nbt.putLong("LP", amount);
+            NcUtils.Block.updateBlockEntity(be);
         }
         return amount != getMaxLp();
     }
