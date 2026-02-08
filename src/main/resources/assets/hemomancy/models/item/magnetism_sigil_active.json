@@ -1,6 +1,0 @@
-{
-  "parent": "hemomancy:item/magnetism_sigil",
-  "textures": {
-    "layer0": "hemomancy:item/magnetism_sigil_active"
-  }
-}

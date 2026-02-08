@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "hemomancy:block/blank_rune",
-    "side": "hemomancy:block/blank_rune",
-    "top": "hemomancy:block/blank_rune"
-  }
-}

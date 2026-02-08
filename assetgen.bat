@@ -18,7 +18,6 @@ echo MODID = %MODID%
 set "BASE_DIR=%~dp0"
 set "ASSETS_DIR=%BASE_DIR%src\main\resources\assets\%MODID%\"
 set "BLOCKSTATES_DIR=%ASSETS_DIR%blockstates\"
-set "ITEMS_DIR=%ASSETS_DIR%items\"
 set "MODELS_DIR=%ASSETS_DIR%models\"
 set "ITEM_MODELS_DIR=%MODELS_DIR%item\"
 set "BLOCK_MODELS_DIR=%MODELS_DIR%block\"
@@ -69,15 +68,6 @@ echo }
 
 (
 echo {
-echo   "model": {
-echo     "type": "minecraft:model",
-echo     "model": "%MODID%:block/%BLOCK_ID%"
-echo   }
-echo }
-) > "%ITEMS_DIR%/%BLOCK_ID%.json"
-
-(
-echo {
 echo   "type": "minecraft:block",
 echo   "pools": [
 echo     {
@@ -113,15 +103,6 @@ echo     "layer0": "%MODID%:item/%ITEM_ID%"
 echo   }
 echo }
 ) > "%ITEM_MODELS_DIR%/%ITEM_ID%.json"
-
-(
-echo {
-echo   "model": {
-echo     "type": "minecraft:model",
-echo     "model": "%MODID%:item/%ITEM_ID%"
-echo   }
-echo }
-) > "%ITEMS_DIR%/%ITEM_ID%.json"
 
 echo %ITEM_ID% Successfully created!
 goto :eof
