@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "hemomancy:block/rune_slab"
+    },
+    "type=double": {
+      "model": "hemomancy:block/blank_rune"
+    },
+    "type=top": {
+      "model": "hemomancy:block/rune_slab_top"
+    }
+  }
+}
