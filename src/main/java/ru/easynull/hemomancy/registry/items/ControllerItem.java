@@ -31,7 +31,7 @@ public final class ControllerItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (!(entity instanceof PlayerEntity player) || world.isClient) {
+        if (!(entity instanceof PlayerEntity player) || world.isClient()) {
             return;
         }
         resetState();
@@ -64,7 +64,7 @@ public final class ControllerItem extends Item {
         maxLp = element.getMaxLp();
 
         ItemStack showed = (ItemStack) element.getRealTarget();
-        if (showed.isEmpty()) {
+        if (showed == null || showed.isEmpty()) {
             currentItem = ((BlockEntity) target).getCachedState().getBlock().asItem();
         } else {
             currentItem = showed.getItem();

@@ -16,11 +16,11 @@ if not defined MODID (
 echo MODID = %MODID%
 
 set "BASE_DIR=%~dp0"
-set "ASSETS_DIR=%BASE_DIR%src\main\resources\assets\%MODID%\"
+set "ASSETS_DIR=%BASE_DIR%src\client\resources\assets\%MODID%\"
 set "BLOCKSTATES_DIR=%ASSETS_DIR%blockstates\"
 set "MODELS_DIR=%ASSETS_DIR%models\"
 set "ITEM_MODELS_DIR=%MODELS_DIR%item\"
-set "BLOCK_MODELS_DIR=%MODELS_DIR%block\"
+set "BLOCK_MODELS_DIR=%MODELS_DIR%state\"
 set "LOOT_TABLES_DIR=%BASE_DIR%src\main\resources\data\%MODID%\loot_table\blocks\"
 
 echo ASSETS = %ASSETS_DIR%
@@ -40,35 +40,35 @@ if errorlevel 2 (
 exit /b 0
 
 :generate_block
-set /p BLOCK_ID=Print ID of block: 
+set /p BLOCK_ID=Print ID of state:
 echo Generating JSON for %BLOCK_ID%...
 
 (
 echo {
 echo   "variants": {
-echo     "": { "model": "%MODID%:block/%BLOCK_ID%" }
+echo     "": { "model": "%MODID%:state/%BLOCK_ID%" }
 echo   }
 echo }
 ) > "%BLOCKSTATES_DIR%/%BLOCK_ID%.json"
 
 (
 echo {
-echo   "parent": "block/cube_all",
+echo   "parent": "state/cube_all",
 echo   "textures": {
-echo     "all": "%MODID%:block/%BLOCK_ID%"
+echo     "all": "%MODID%:state/%BLOCK_ID%"
 echo   }
 echo }
 ) > "%BLOCK_MODELS_DIR%/%BLOCK_ID%.json"
 
 (
 echo {
-echo   "parent": "%MODID%:block/%BLOCK_ID%"
+echo   "parent": "%MODID%:state/%BLOCK_ID%"
 echo }
 ) > "%ITEM_MODELS_DIR%/%BLOCK_ID%.json"
 
 (
 echo {
-echo   "type": "minecraft:block",
+echo   "type": "minecraft:state",
 echo   "pools": [
 echo     {
 echo       "bonus_rolls": 0.0,

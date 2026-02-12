@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "hemomancy:blank_glyph"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "   ",
+    "   ",
+    "SGS"
+  ],
+  "result": {
+    "item": "hemomancy:rune_slab",
+    "count": 3
+  }
+}

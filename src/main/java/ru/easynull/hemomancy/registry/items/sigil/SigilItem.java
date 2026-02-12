@@ -42,22 +42,22 @@ public class SigilItem extends Item {
             return TypedActionResult.fail(stack);
         }
         action.perform(new SigilContext(world, pos, hit.getSide(), player, stack, this));
-        EnergyUtils.extractLp(player, lpCost);
-        return consumeLp ? TypedActionResult.consume(stack) : TypedActionResult.fail(stack);
+        if (consumeLp) EnergyUtils.extractLp(player, lpCost);
+        else consumeLp = true;
+        return TypedActionResult.consume(stack);
     }
 
-    public void setConsumeLp(boolean consume) {
-        this.consumeLp = consume;
-    }
-
-    public boolean isActive(ItemStack stack){
-        return true;
+    public void cancelConsumeLp() {
+        this.consumeLp = false;
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         String key = "tooltip.hemomancy." + this.getTranslationKey().split("\\.")[2] + ".desc";
         tooltip.add(Text.translatable(key).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
+        if(stack.hasNbt() && stack.getNbt().contains("Tooltip")){
+            tooltip.add(Text.literal(stack.getNbt().getString("Tooltip")));
+        }
     }
 
     public record SigilContext(World world, BlockPos pos, Direction side, PlayerEntity player, ItemStack stack, SigilItem item) {}

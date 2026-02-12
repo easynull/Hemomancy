@@ -3,6 +3,7 @@ package ru.easynull.hemomancy.registry.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.BlockView;
@@ -14,19 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 public final class RuneBlock extends Block implements Tierable {
-    private static final Map<Type, Number> RUNE_VALUES = new HashMap<>();
+    public static final Map<Type, Number> RUNE_VALUES = new HashMap<>();
 
     private final List<Type> types;
     private final byte tier;
-    private final Number buff;
 
     public RuneBlock(Settings settings, int tier, Number buff, Type... types) {
         super(settings);
         this.tier = (byte) tier;
-        this.buff = buff;
         this.types = List.of(types);
 
-        if (getPrimaryType() != Type.NONE) {
+        if (getPrimaryType() != Type.NONE && buff != null) {
             RUNE_VALUES.putIfAbsent(getPrimaryType(), buff);
         }
     }
@@ -49,10 +48,10 @@ public final class RuneBlock extends Block implements Tierable {
             if (value instanceof Float f) {
                 formattedValue = String.format("%.1f%%", 10f * f);
             } else {
-                formattedValue = String.valueOf(value.intValue() * 1500);
+                formattedValue = String.valueOf(value.intValue());
             }
 
-            Text text = Text.translatable("tooltip.hemomancy.rune", formattedValue, Text.translatable("rune.hemomancy." + type.name().toLowerCase())).formatted(Formatting.byColorIndex(type.color >> 24 & 0xFF));
+            Text text = Text.translatable("tooltip.hemomancy.rune", formattedValue, Text.translatable("rune.hemomancy." + type.name().toLowerCase())).setStyle(Style.EMPTY.withColor(type.color));
 
             tooltip.add(text);
         }

@@ -1,0 +1,19 @@
+{
+  "type": "hemomancy:bloody_alchemy",
+  "ingredients": [
+    {"item": "minecraft:bone_meal"},
+    {"item": "minecraft:bone_meal"},
+    {"item": "minecraft:bone_meal"},
+    {"item": "minecraft:wheat_seeds"},
+    {"item": "minecraft:wheat_seeds"},
+    {"item": "minecraft:sugar_cane"},
+    {"item": "minecraft:sugar_cane"},
+    {"item": "minecraft:sugar_cane"},
+    {"item": "minecraft:pitcher_plant"},
+    {"item": "hemomancy:fortified_glyph"}
+  ],
+  "result": {
+    "item": "hemomancy:grow_sigil"
+  },
+  "lp": 15000
+}

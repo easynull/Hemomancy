@@ -4,6 +4,9 @@
   "package": "ru.easynull.hemomancy.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ItemRendererMixin",
+    "ModelLoaderMixin",
+    "HandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

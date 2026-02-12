@@ -9,6 +9,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.registry.HmItems;
@@ -37,7 +38,7 @@ public final class OrbItem extends Item implements LpElement, Tierable {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
 
-        Random rand = new Random(); // или player.getRandom()
+        Random rand = new Random();
         long lp = rand.nextInt(100, 150);
 
         if (player.isSneaking() && player.isCreative()) {

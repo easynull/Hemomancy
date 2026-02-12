@@ -4,6 +4,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
+import ru.easynull.hemomancy.Hemomancy;
+import ru.easynull.hemomancy.utils.HmUtils;
 
 public interface LpElement {
     default long getLp(Object target) {
@@ -27,18 +29,15 @@ public interface LpElement {
         if (getMaxLp() <= 0) return false;
 
         long current = getLp(target);
-        long newAmount = (long) MathHelper.clamp(current - amount, 0L, getMaxLp());
+        long newAmount = (long) MathHelper.clamp(current + amount, 0L, getMaxLp());
         if (target instanceof ItemStack stack) {
             NbtCompound nbt = stack.getOrCreateNbt();
             nbt.putLong("LP", newAmount);
-        }
-        else if (target instanceof BlockEntity be) {
+        } else if (target instanceof BlockEntity be) {
             NbtCompound nbt = be.createNbt();
             nbt.putLong("LP", newAmount);
-            be.markDirty();
-            if (!be.getWorld().isClient) {
-                be.getWorld().updateListeners(be.getPos(), be.getCachedState(), be.getCachedState(), 3);
-            }
+            be.readNbt(nbt);
+            HmUtils.updateBlockEntity(be);
         }
 
         return newAmount != getMaxLp();

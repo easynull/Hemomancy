@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hemomancy:crimson_steel_ingot"
+    },
+    "O": {
+      "item": "hemomancy:crimson_ornament"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "  C",
+    " O ",
+    "D  "
+  ],
+  "result": {
+    "item": "hemomancy:hemostatic_controller"
+  }
+}

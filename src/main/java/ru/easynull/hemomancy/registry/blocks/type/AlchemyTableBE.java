@@ -1,20 +1,25 @@
 package ru.easynull.hemomancy.registry.blocks.type;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.api.SidedBE;
+import ru.easynull.hemomancy.Hemomancy;
+import ru.easynull.hemomancy.api.InventoryBE;
 import ru.easynull.hemomancy.api.Tickable;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
+import ru.easynull.hemomancy.net.UpdateAlchemyS2CPacket;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.registry.HmRecipes;
 import ru.easynull.hemomancy.registry.items.OrbItem;
@@ -24,7 +29,7 @@ import ru.easynull.hemomancy.utils.HmUtils;
 import java.util.List;
 import java.util.Optional;
 
-public final class AlchemyTableBE extends SidedBE implements Tickable, LpElement, Tierable {
+public final class AlchemyTableBE extends InventoryBE implements Tickable, LpElement, Tierable {
     public long progress, needLP;
     public boolean crafting;
 
@@ -34,6 +39,7 @@ public final class AlchemyTableBE extends SidedBE implements Tickable, LpElement
 
     @Override
     public void onTick() {
+        if (world == null || world.isClient) return;
         Optional<AlchemyRecipe> recipeOpt = getRecipe();
         if (recipeOpt.isEmpty()) {
             if (crafting) resetCrafting();
@@ -55,26 +61,10 @@ public final class AlchemyTableBE extends SidedBE implements Tickable, LpElement
     }
 
     private void completeRecipe(AlchemyRecipe recipe) {
-        List<Ingredient> inputs = recipe.inputs();
-        int size = size();
-        for (Ingredient ing : inputs) {
-            for (int slot = 2; slot < size; slot++) {
-                ItemStack stack = getStack(slot);
-                if (!stack.isEmpty() && ing.test(stack)) {
-                    stack.decrement(1);
-                    if (stack.isEmpty()) setStack(slot, ItemStack.EMPTY);
-                    break;
-                }
-            }
+        for (int slot = 2; slot < size(); slot++){
+            removeStack(slot);
         }
-        ItemStack currentResult = getStack(1);
-        ItemStack recipeResult = recipe.result().copy();
-        resetCrafting();
-        if (!currentResult.isEmpty() && ItemStack.areItemsEqual(currentResult, recipeResult)) {
-            currentResult.increment(recipeResult.getCount());
-        } else {
-            setStack(1, recipeResult);
-        }
+        setStack(1, recipe.result());
     }
 
     private void resetCrafting() {
@@ -86,6 +76,9 @@ public final class AlchemyTableBE extends SidedBE implements Tickable, LpElement
         this.crafting = crafting;
         this.needLP = needLP;
         HmUtils.updateBlockEntity(this);
+        ((ServerWorld)world).getChunkManager().threadedAnvilChunkStorage
+                .getPlayersWatchingChunk(new ChunkPos(getPos()), false)
+                .forEach(player -> ServerPlayNetworking.send(player, new UpdateAlchemyS2CPacket(getPos(), progress, needLP, crafting)));
     }
 
     @Override
@@ -115,15 +108,17 @@ public final class AlchemyTableBE extends SidedBE implements Tickable, LpElement
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        nbt.putLong("progress", progress);
-        nbt.putBoolean("crafting", crafting);
+        nbt.putLong("Progress", progress);
+        nbt.putLong("NeedLP", needLP);
+        nbt.putBoolean("Crafting", crafting);
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        progress = nbt.getLong("progress");
-        crafting = nbt.getBoolean("crafting");
+        progress = nbt.getLong("Progress");
+        needLP = nbt.getLong("NeedLP");
+        crafting = nbt.getBoolean("Crafting");
     }
 
     @Override

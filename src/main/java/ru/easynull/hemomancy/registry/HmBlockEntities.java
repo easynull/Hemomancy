@@ -8,16 +8,20 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import ru.easynull.hemomancy.Hemomancy;
+import ru.easynull.hemomancy.registry.blocks.*;
 import ru.easynull.hemomancy.registry.blocks.type.*;
+import ru.easynull.hemomancy.utils.HmUtils;
+
+import java.util.List;
 
 public final class HmBlockEntities {
 
-    public static final BlockEntityType<AltarBE> BLOOD_ALTAR = registerBlockEntity("blood_altar", AltarBE::new, HmBlocks.BLOOD_ALTAR);
-    public static final BlockEntityType<AlchemyTableBE> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBE::new, HmBlocks.ALCHEMY_TABLE);
+    public static final BlockEntityType<BloodAltarBE> BLOOD_ALTAR = registerBlockEntity("blood_altar", BloodAltarBE::new, HmUtils.getElementsClasses(Registries.BLOCK, BloodAltarBlock.class));
+    public static final BlockEntityType<AlchemyTableBE> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBE::new, HmUtils.getElementsClasses(Registries.BLOCK, AlchemyTableBlock.class));
 
-    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String name, FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory, Block... blocks) {
+    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String name, FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory, List<Block> blocks) {
         Identifier id = Hemomancy.path(name);
-        return (BlockEntityType<T>) Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(entityFactory, blocks).build());
+        return (BlockEntityType<T>) Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(entityFactory, blocks.toArray(new Block[0])).build());
     }
 
     public static void onInit(){}

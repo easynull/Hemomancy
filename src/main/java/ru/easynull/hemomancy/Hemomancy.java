@@ -1,6 +1,7 @@
 package ru.easynull.hemomancy;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import ru.easynull.hemomancy.api.altar.Tier;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.registry.HmBlocks;
 import ru.easynull.hemomancy.registry.HmItems;
+import ru.easynull.hemomancy.registry.HmRecipes;
 
 public final class Hemomancy implements ModInitializer {
     public static final String ID = "hemomancy";
@@ -18,12 +20,14 @@ public final class Hemomancy implements ModInitializer {
         HmItems.onInit();
         HmBlocks.onInit();
         HmBlockEntities.onInit();
+        HmRecipes.onInit();
         Tier.onInit();
 //        NetHandler.onInit();
         onEvents();
     }
 
-    private static void onEvents(){}
+    private static void onEvents(){
+    }
 
     public static Identifier path(String path) {
         return Identifier.of(ID, path);

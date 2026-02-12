@@ -1,9 +1,8 @@
 package ru.easynull.hemomancy.registry.blocks;
 
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -15,60 +14,70 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.api.EntitibleBlock;
-import ru.easynull.hemomancy.api.SidedBE;
+import ru.easynull.hemomancy.api.InventoryBE;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
-import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBE;
 import ru.easynull.hemomancy.registry.items.OrbItem;
 import ru.easynull.hemomancy.utils.HmUtils;
 
 public final class AlchemyTableBlock extends EntitibleBlock {
+    private static final VoxelShape SHAPE = VoxelShapes.union(VoxelShapes.cuboid(0.065, 0, 0.065, 0.935, 0.25, 0.935), VoxelShapes.cuboid(0.255, 0.125, 0.255, 0.745, 0.565, 0.745), VoxelShapes.cuboid(0, 0.565, 0, 1, 0.935, 1));
 
     public AlchemyTableBlock(Settings properties) {
-        super(properties.luminance(state -> 8), ()-> HmBlockEntities.ALCHEMY_TABLE);
+        super(properties.luminance(state -> 8), () -> HmBlockEntities.ALCHEMY_TABLE);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (level.isClient) return ActionResult.PASS;
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (world.getBlockEntity(pos) instanceof InventoryBE container) {
+            ItemStack handStack = player.getStackInHand(hand);
+            if(!container.getStack(1).isEmpty()){
+                player.giveItemStack(container.getStack(1).copy());
+                container.removeStack(1);
+                return ActionResult.SUCCESS;
+            }
+            if (handStack.getItem() instanceof OrbItem && HmUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
+            if(player.isSneaking() && !container.getFirst().isEmpty()){
+                player.giveItemStack(container.getFirst().copy());
+                container.removeStack(0);
+                return ActionResult.SUCCESS;
+            }
+            for(int slot = 2; slot < container.size(); slot++){
+                ItemStack slotStack = container.getStack(slot);
 
-        if (!(level.getBlockEntity(pos) instanceof SidedBE container)) {
-            return ActionResult.PASS;
-        }
-
-        ItemStack held = player.getStackInHand(hand);
-        boolean reverse = held.isEmpty();
-        int size = container.size();
-
-        if (player.isSneaking()) {
-            for (int i = 0; i < size; i++) {
-                if (container.getStack(i).getItem() instanceof OrbItem && HmUtils.insertIntoPlayer(container, player, i, 64)) {
-                    return ActionResult.CONSUME;
+                if (handStack.isEmpty()) {
+                    if (!slotStack.isEmpty()) {
+                        player.setStackInHand(hand, slotStack.copy());
+                        container.setStack(slot, ItemStack.EMPTY);
+                        container.markDirty();
+                        return ActionResult.SUCCESS;
+                    }
+                } else {
+                    if (slotStack.isEmpty()) {
+                        container.setStack(slot, handStack.split(handStack.getCount()));
+                        container.markDirty();
+                        return ActionResult.SUCCESS;
+                    } else if (ItemStack.areItemsEqual(handStack, slotStack) && ItemStack.canCombine(handStack, slotStack)) {
+                        int maxTransfer = Math.min(slotStack.getMaxCount() - slotStack.getCount(), handStack.getCount());
+                        if (maxTransfer > 0) {
+                            slotStack.increment(maxTransfer);
+                            handStack.decrement(maxTransfer);
+                            container.markDirty();
+                            return ActionResult.SUCCESS;
+                        }
+                    }
                 }
             }
         }
-
-        for (int iter = 0; iter < size; iter++) {
-            int i = reverse ? size - 1 - iter : iter;
-
-            if ((i == 0 && !(held.getItem() instanceof OrbItem) && container.getStack(0).isEmpty()) || (i == 1 && container.getStack(1).isEmpty())) continue;
-
-            ItemStack slot = container.getStack(i);
-            boolean canInteract = held.isEmpty() ? !slot.isEmpty() : slot.isEmpty() || ItemStack.areEqual(held, slot) && ItemStack.areItemsEqual(held, slot);
-
-            if (canInteract && HmUtils.insertIntoPlayer(container, player, i, 64)) {
-                return ActionResult.SUCCESS;
-            }
-        }
-
         return ActionResult.PASS;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView level, BlockPos pos, ShapeContext context) {
-        return VoxelShapes.union(
-                VoxelShapes.cuboid(0.065, 0,     0.065, 0.935, 0.25,  0.935),
-                VoxelShapes.cuboid(0.255, 0.125, 0.255, 0.745, 0.565, 0.745),
-                VoxelShapes.cuboid(0,     0.565, 0,     1,     0.935, 1)
-        );
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
     }
 }

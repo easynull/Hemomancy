@@ -1,0 +1,13 @@
+{
+  "type": "hemomancy:bloody_alchemy",
+  "ingredients": [
+    {"item": "hemomancy:crimson_steel_ingot"},
+    {"item": "hemomancy:crimson_steel_ingot"},
+    {"item": "minecraft:blaze_powder"},
+    {"item": "hemomancy:crimson_glyph"}
+  ],
+  "result": {
+    "item": "hemomancy:resistance_sigil"
+  },
+  "lp": 15000
+}

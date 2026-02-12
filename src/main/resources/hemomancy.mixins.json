@@ -4,6 +4,11 @@
   "package": "ru.easynull.hemomancy.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "InteractManagerMixin",
+    "ItemEntityMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "PlayerInventoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,13 +14,13 @@ import ru.easynull.hemomancy.registry.blocks.*;
 
 public final class HmBlocks {
 
-    public static final Block BLOOD_ALTAR = registerBlock("blood_altar", new AltarBlock(AbstractBlock.Settings.copy(Blocks.BLACKSTONE)));
+    public static final Block BLOOD_ALTAR = registerBlock("blood_altar", new BloodAltarBlock(AbstractBlock.Settings.copy(Blocks.BLACKSTONE)));
     public static final Block ALCHEMY_TABLE = registerBlock("alchemy_table", new AlchemyTableBlock(AbstractBlock.Settings.copy(Blocks.BLACKSTONE)));
 
-    public static final Block BLANK_RUNE = registerBlock("blank_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 0, 0, RuneBlock.Type.NONE));
+    public static final Block BLANK_RUNE = registerBlock("blank_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 0, RuneBlock.Type.NONE));
     public static final Block SPEED_RUNE = registerBlock("speed_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 0.8f, RuneBlock.Type.SPEED));
-    public static final Block SACRIFICES_RUNE = registerBlock("sacrifices_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 6f, RuneBlock.Type.SACRIFICES));
-    public static final Block CAPACITY_RUNE = registerBlock("capacity_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1f, RuneBlock.Type.CAPACITY));
+    public static final Block SACRIFICES_RUNE = registerBlock("sacrifices_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 2.5f, RuneBlock.Type.SACRIFICES));
+    public static final Block CAPACITY_RUNE = registerBlock("capacity_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1500, RuneBlock.Type.CAPACITY));
     public static final Block RESONANT_CAPACITY_RUNE = registerBlock("resonant_capacity_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1f, RuneBlock.Type.RESONANT_CAPACITY));
     public static final Block RELATIONS_RUNE = registerBlock("relations_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1.5f, RuneBlock.Type.RELATIONS));
     public static Block CHIMERIC_RUNE;
