@@ -1,6 +1,2 @@
 - Backport on Fabric 1.20.1
-- Alchemy is [WIP]
-- Blood altar
-- New structure Altar tiers
-- Desecrated tools is [WIP]
-- Add 9 sigils
+- Add dagger recipe
