@@ -71,7 +71,7 @@ modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "${mod_id}"
     uploadFile = jar
-    versionName = "${minecraft_version}-${mod_version}"
+    versionName = "${mod_version}"
     versionNumber = "${mod_version}"
     versionType = "${releaseType}"
     gameVersions = ["${minecraft_version}"] as Iterable<? extends String>
@@ -85,7 +85,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
     mainFile.changelog = rootProject.file('changelog.md').text
     mainFile.addGameVersion(minecraft_version)
     mainFile.releaseType = "${releaseType}"
-    mainFile.displayName = "${minecraft_version}-${mod_version}"
+    mainFile.displayName = "${mod_version}"
     mainFile.addModLoader("Fabric")
 }
 
