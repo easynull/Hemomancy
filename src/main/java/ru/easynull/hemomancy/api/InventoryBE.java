@@ -15,8 +15,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.Hemomancy;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public abstract class InventoryBE extends BlockEntity implements SidedInventory {
     public final SimpleInventory inventory;
@@ -86,21 +85,21 @@ public abstract class InventoryBE extends BlockEntity implements SidedInventory 
     @Override
     public ItemStack removeStack(int slot, int amount) {
         ItemStack stack = inventory.removeStack(slot, amount);
-        HmUtils.updateBlockEntity(this);
+        HmCommonUtils.updateBlockEntity(this);
         return stack;
     }
 
     @Override
     public ItemStack removeStack(int slot) {
         var stack = inventory.removeStack(slot);
-        HmUtils.updateBlockEntity(this);
+        HmCommonUtils.updateBlockEntity(this);
         return stack;
     }
 
     @Override
     public void setStack(int slot, ItemStack stack) {
         inventory.setStack(slot, stack);
-        HmUtils.updateBlockEntity(this);
+        HmCommonUtils.updateBlockEntity(this);
     }
 
     @Override
@@ -115,7 +114,7 @@ public abstract class InventoryBE extends BlockEntity implements SidedInventory 
     @Override
     public void clear() {
         inventory.clear();
-        HmUtils.updateBlockEntity(this);
+        HmCommonUtils.updateBlockEntity(this);
     }
 
     @Override

@@ -1,19 +1,16 @@
 {
   "type": "hemomancy:bloody_alchemy",
   "ingredients": [
-    {"item": "minecraft:ender_pearl"},
-    {"item": "minecraft:ender_pearl"},
-    {"item": "minecraft:ender_pearl"},
-    {"item": "minecraft:chorus_fruit"},
-    {"item": "minecraft:chorus_fruit"},
-    {"item": "minecraft:chorus_fruit"},
-    {"item": "minecraft:chorus_fruit"},
-    {"item": "minecraft:chorus_fruit"},
-    {"item": "minecraft:ender_eye"},
-    {"item": "hemomancy:infernal_glyph"}
+    {"item": "minecraft:feather"},
+    {"item": "minecraft:feather"},
+    {"item": "minecraft:feather"},
+    {"item": "minecraft:ghast_tear"},
+    {"item": "minecraft:phantom_membrane"},
+    {"item": "minecraft:phantom_membrane"},
+    {"item": "hemomancy:filled_glyph"}
   ],
   "result": {
     "item": "hemomancy:air_sigil"
   },
-  "lp": 12000
+  "lp": 16000
 }

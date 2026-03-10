@@ -13,7 +13,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class DesecratedAxeItem extends AxeItem implements DesecratedTool {
     private final boolean awakened;
@@ -29,8 +29,8 @@ public final class DesecratedAxeItem extends AxeItem implements DesecratedTool {
             return;
         }
 
-        if(!HmUtils.breakTree((ServerWorld) world, pos, player)) {
-            HmUtils.forEachInCube(pos, 3, p -> {
+        if(!HmCommonUtils.breakTree((ServerWorld) world, pos, player)) {
+            HmCommonUtils.forEachInCube(pos, 3, p -> {
                 BlockPos above = p.up();
                 BlockState aboveState = world.getBlockState(above);
                 if (aboveState.isAir()) return;

@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import ru.easynull.hemomancy.api.EntitibleBlock;
 import ru.easynull.hemomancy.api.InventoryBE;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class BloodAltarBlock extends EntitibleBlock {
     public static final VoxelShape SHAPE = VoxelShapes.union(createCuboidShape(0, 0, 0, 4, 12, 4), createCuboidShape(12, 0, 0, 16, 12, 4), createCuboidShape(0, 0, 12, 4, 12, 16), createCuboidShape(12, 0, 12, 16, 12, 16), createCuboidShape(1, 0.1f, 1, 15, 11, 15));
@@ -26,7 +26,7 @@ public final class BloodAltarBlock extends EntitibleBlock {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         if (world.getBlockEntity(pos) instanceof InventoryBE container) {
-            if (HmUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
+            if (HmCommonUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
     }

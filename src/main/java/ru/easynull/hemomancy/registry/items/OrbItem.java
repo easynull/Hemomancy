@@ -9,7 +9,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.registry.HmItems;
@@ -70,7 +69,7 @@ public final class OrbItem extends Item implements LpElement, Tierable {
 
     @Override
     public long getLp(Object target) {
-        if (target instanceof ItemStack stack && stack.isOf(HmItems.INFINITY_BLOOD_ORB)) {
+        if (target instanceof ItemStack stack && stack.isOf(HmItems.INEXHAUSTIBLE_BLOOD_ORB)) {
             return getMaxLp();
         }
         return LpElement.super.getLp(target);
@@ -78,7 +77,7 @@ public final class OrbItem extends Item implements LpElement, Tierable {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        String value = stack.isOf(HmItems.INFINITY_BLOOD_ORB) ? "∞" : String.valueOf(getMaxLp());
+        String value = stack.isOf(HmItems.INEXHAUSTIBLE_BLOOD_ORB) ? "∞" : String.valueOf(getMaxLp());
         tooltip.add(Text.translatable("tooltip.hemomancy.orb.desc", value).formatted(Formatting.GRAY));
     }
 }

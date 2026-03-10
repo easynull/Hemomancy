@@ -10,14 +10,14 @@ import net.minecraft.util.Identifier;
 import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.registry.blocks.*;
 import ru.easynull.hemomancy.registry.blocks.type.*;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 import java.util.List;
 
 public final class HmBlockEntities {
 
-    public static final BlockEntityType<BloodAltarBE> BLOOD_ALTAR = registerBlockEntity("blood_altar", BloodAltarBE::new, HmUtils.getElementsClasses(Registries.BLOCK, BloodAltarBlock.class));
-    public static final BlockEntityType<AlchemyTableBE> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBE::new, HmUtils.getElementsClasses(Registries.BLOCK, AlchemyTableBlock.class));
+    public static final BlockEntityType<BloodAltarBE> BLOOD_ALTAR = registerBlockEntity("blood_altar", BloodAltarBE::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, BloodAltarBlock.class));
+    public static final BlockEntityType<AlchemyTableBE> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBE::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, AlchemyTableBlock.class));
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String name, FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory, List<Block> blocks) {
         Identifier id = Hemomancy.path(name);

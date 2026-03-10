@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.utils.EnergyUtils;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class DesecratedShovelItem extends ShovelItem implements DesecratedTool {
     private final boolean awakened;
@@ -25,7 +25,7 @@ public final class DesecratedShovelItem extends ShovelItem implements Desecrated
             return;
         }
 
-        HmUtils.forEachInCube(pos, 3, p -> {
+        HmCommonUtils.forEachInCube(pos, 3, p -> {
             BlockPos above = p.up();
             BlockState aboveState = world.getBlockState(above);
             if (aboveState.isAir()) return;

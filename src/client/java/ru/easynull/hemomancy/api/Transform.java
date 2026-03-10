@@ -1,4 +1,4 @@
-package ru.easynull.hemomancy.render;
+package ru.easynull.hemomancy.api;
 
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Quaternionf;

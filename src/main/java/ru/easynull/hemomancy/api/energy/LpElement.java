@@ -4,8 +4,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
-import ru.easynull.hemomancy.Hemomancy;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public interface LpElement {
     default long getLp(Object target) {
@@ -37,7 +36,7 @@ public interface LpElement {
             NbtCompound nbt = be.createNbt();
             nbt.putLong("LP", newAmount);
             be.readNbt(nbt);
-            HmUtils.updateBlockEntity(be);
+            HmCommonUtils.updateBlockEntity(be);
         }
 
         return newAmount != getMaxLp();

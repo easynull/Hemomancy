@@ -5,6 +5,8 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.easynull.hemomancy.api.altar.Tier;
+import ru.easynull.hemomancy.api.mage.quest.MageQuestManager;
+import ru.easynull.hemomancy.proxy.MainProxy;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.registry.HmBlocks;
 import ru.easynull.hemomancy.registry.HmItems;
@@ -16,12 +18,14 @@ public final class Hemomancy implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        MainProxy.setProxy(new MainProxy());
         HmItems.onInit();
         HmBlocks.onInit();
         HmBlockEntities.onInit();
         HmRecipes.onInit();
         Tier.onInit();
 //        NetHandler.onInit();
+        MageQuestManager.onInit();
         onEvents();
     }
 

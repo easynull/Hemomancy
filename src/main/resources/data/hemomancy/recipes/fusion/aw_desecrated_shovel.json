@@ -1,0 +1,13 @@
+{
+  "type": "hemomancy:bloody_fusion",
+  "ingredient": [
+    {
+      "item": "hemomancy:desecrated_shovel"
+    }
+  ],
+  "result": {
+    "item": "hemomancy:awakened_desecrated_shovel"
+  },
+  "lp": 200000,
+  "tier": 6
+}

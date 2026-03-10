@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.Hemomancy;
-import ru.easynull.hemomancy.registry.items.ControllerItem;
+import ru.easynull.hemomancy.registry.items.BookItem;
 import ru.easynull.hemomancy.registry.items.DaggerItem;
 import ru.easynull.hemomancy.registry.items.OrbItem;
 import ru.easynull.hemomancy.registry.items.sigil.EnabledSigilItem;
@@ -37,7 +37,7 @@ import ru.easynull.hemomancy.registry.items.tool.DesecratedAxeItem;
 import ru.easynull.hemomancy.registry.items.tool.DesecratedPickaxeItem;
 import ru.easynull.hemomancy.registry.items.tool.DesecratedShovelItem;
 import ru.easynull.hemomancy.registry.items.tool.DesecratedSwordItem;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public final class HmItems {
     public static final Item MASTER_BLOOD_ORB = registerItem("master_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.UNCOMMON), 4, 1000000, 20));
     public static final Item ARCHMAGE_BLOOD_ORB = registerItem("archmage_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.RARE), 5, 10000000, 45));
     public static final Item TRANSCENDENTAL_BLOOD_ORB = registerItem("transcendental_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), 6, 30000000, 100));
-    public static Item INFINITY_BLOOD_ORB;
+    public static Item INEXHAUSTIBLE_BLOOD_ORB;
     // Glyphs
     public static final Item BLANK_GLYPH = registerItem("blank_glyph", new Item(new Item.Settings()));
     public static final Item FORTIFIED_GLYPH = registerItem("fortified_glyph", new Item(new Item.Settings()));
@@ -62,7 +62,7 @@ public final class HmItems {
 
     public static final Item CRIMSON_STEEL_INGOT = registerItem("crimson_steel_ingot", new Item(new Item.Settings()));
 
-    public static final Item HEMOSTATIC_CONTROLLER = registerItem("hemostatic_controller", new ControllerItem(new Item.Settings()));
+    public static final Item BOOK = registerItem("book", new BookItem(new Item.Settings()));
 
     // Sigils
     public static final Item WATER_SIGIL = registerItem("water_sigil", new SigilItem(
@@ -85,7 +85,7 @@ public final class HmItems {
 
     public static final Item DRAINAGE_SIGIL = registerItem("drainage_sigil", new EnabledSigilItem(
             new Item.Settings(),
-            ctx -> HmUtils.forEachInCube(ctx.pos(), 4, p -> {
+            ctx -> HmCommonUtils.forEachInCube(ctx.pos(), 4, p -> {
                 BlockState state = ctx.world().getBlockState(p);
                 if (state.getBlock() instanceof FluidDrainable drain) {
                     if (!drain.tryDrainFluid(ctx.world(), p, state).isEmpty()) {
@@ -118,7 +118,7 @@ public final class HmItems {
 
     public static final Item MAGNETISM_SIGIL = registerItem("magnetism_sigil", new EnabledSigilItem(
             new Item.Settings(),
-            ctx -> HmUtils.attractEntities(ctx.world(), ctx.pos(), 12f, 1.1f, ItemEntity.class, e -> true),
+            ctx -> HmCommonUtils.attractEntities(ctx.world(), ctx.pos(), 12f, 1.1f, ItemEntity.class, e -> true),
             150, 3, 80
     ));
 
@@ -139,32 +139,32 @@ public final class HmItems {
 
                 NbtCompound nbt = stack.getOrCreateNbt();
 
-                if (!nbt.contains("StoredBlockState")) {
+                if (!nbt.contains("BlockState")) {
                     BlockEntity be = world.getBlockEntity(pos);
                     if (be != null) {
                         NbtCompound tag = be.createNbtWithIdentifyingData();
-                        nbt.put("StoredBlockEntity", tag);
+                        nbt.put("BlockEntity", tag);
                         world.removeBlockEntity(pos);
                     }
-                    nbt.put("StoredBlockState", NbtHelper.fromBlockState(state));
-                    nbt.put("Tooltip", HmUtils.fromList(List.of(state.getBlock().getName())));
+                    nbt.put("BlockState", NbtHelper.fromBlockState(state));
+                    nbt.put("Tooltip", HmCommonUtils.fromList(List.of(state.getBlock().getName())));
                     world.removeBlock(pos, false);
                 } else {
-                    NbtCompound stateNbt = nbt.getCompound("StoredBlockState");
+                    NbtCompound stateNbt = nbt.getCompound("BlockState");
                     BlockState stored = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), stateNbt);
                     if (stored == null) return;
 
                     BlockPos placePos = pos.offset(ctx.side());
                     world.setBlockState(placePos, stored, Block.NOTIFY_LISTENERS);
 
-                    if (nbt.contains("StoredBlockEntity")) {
-                        NbtCompound tag = nbt.getCompound("StoredBlockEntity");
+                    if (nbt.contains("BlockEntity")) {
+                        NbtCompound tag = nbt.getCompound("BlockEntity");
                         BlockEntity be = BlockEntity.createFromNbt(placePos, stored, tag);
                         if (be != null) world.addBlockEntity(be);
                     }
 
-                    nbt.remove("StoredBlockState");
-                    nbt.remove("StoredBlockEntity");
+                    nbt.remove("BlockState");
+                    nbt.remove("BlockEntity");
                     nbt.remove("Tooltip");
                 }
             }, 3000, false
@@ -176,11 +176,11 @@ public final class HmItems {
                 ItemStack stack = ctx.stack();
                 NbtCompound nbt = stack.getOrCreateNbt();
 
-                if (!nbt.contains("SavedPosX")) {
+                if (!nbt.contains("X")) {
                     BlockPos pos = ctx.pos();
-                    nbt.putInt("SavedPosX", pos.getX());
-                    nbt.putInt("SavedPosY", pos.getY());
-                    nbt.putInt("SavedPosZ", pos.getZ());
+                    nbt.putInt("X", pos.getX());
+                    nbt.putInt("Y", pos.getY());
+                    nbt.putInt("Z", pos.getZ());
 
                     nbt.putString("Tooltip", String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ()));
                     ctx.item().cancelConsumeLp();
@@ -189,16 +189,16 @@ public final class HmItems {
                     if (player == null) return;
 
                     if (player.isSneaking()) {
-                        nbt.remove("SavedPosX");
-                        nbt.remove("SavedPosY");
-                        nbt.remove("SavedPosZ");
+                        nbt.remove("X");
+                        nbt.remove("Y");
+                        nbt.remove("Z");
                         nbt.remove("Tooltip");
                         return;
                     }
 
-                    int x = nbt.getInt("SavedPosX");
-                    int y = nbt.getInt("SavedPosY");
-                    int z = nbt.getInt("SavedPosZ");
+                    int x = nbt.getInt("X");
+                    int y = nbt.getInt("Y");
+                    int z = nbt.getInt("Z");
 
                     player.teleport(x + 0.5, y + 1, z + 0.5);
                 }
@@ -213,7 +213,7 @@ public final class HmItems {
 
                 BlockPos center = ctx.pos();
                 World world = ctx.world();
-                HmUtils.forEachInCube(center, 5, pos -> {
+                HmCommonUtils.forEachInCube(center, 5, pos -> {
                     Random random = world.random;
                     BlockState state = world.getBlockState(pos);
                     Block block = state.getBlock();
@@ -249,11 +249,10 @@ public final class HmItems {
     public static final Item AWAKENED_DESECRATED_SHOVEL = registerItem("awakened_desecrated_shovel", new DesecratedShovelItem(new Item.Settings().rarity(Rarity.EPIC), true));
 
     public static final RegistryKey<ItemGroup> TAB = registerTab("hemomancy", Text.translatable("tab.hemomancy"),
-            ALCHEMY_TABLE,
-            BLOOD_ALTAR, BLANK_RUNE, SPEED_RUNE, SACRIFICES_RUNE, CAPACITY_RUNE, RESONANT_CAPACITY_RUNE, RELATIONS_RUNE,
-            SACRIFICIAL_DAGGER,
+            BOOK,
+            BOOK, BLOOD_ALTAR, BLANK_RUNE, SPEED_RUNE, SACRIFICES_RUNE, CAPACITY_RUNE, RESONANT_CAPACITY_RUNE, RELATIONS_RUNE,
+            SACRIFICIAL_DAGGER, MAGE_STATUE,
             WEAK_BLOOD_ORB, APPRENTICE_BLOOD_ORB, MAGICIAN_BLOOD_ORB, MASTER_BLOOD_ORB, ARCHMAGE_BLOOD_ORB, TRANSCENDENTAL_BLOOD_ORB,
-            HEMOSTATIC_CONTROLLER,
             BLANK_GLYPH, FORTIFIED_GLYPH, CRIMSON_GLYPH, FILLED_GLYPH, DEMONIC_GLYPH, INFERNAL_GLYPH,
             CRIMSON_STEEL_INGOT, CRIMSON_ORNAMENT, TRANSCENDENTAL_CRYSTAL,
             AIR_SIGIL, MAGNETISM_SIGIL, WATER_SIGIL, LAVA_SIGIL, DRAINAGE_SIGIL, RESISTANCE_SIGIL, MOVEMENT_SIGIL, TELEPOSITION_SIGIL, GROW_SIGIL,
@@ -283,7 +282,7 @@ public final class HmItems {
 
     public static void onInit() {
         if (FabricLoader.getInstance().isModLoaded("avaritia")) {
-            INFINITY_BLOOD_ORB = registerItem("infinity_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), Byte.MAX_VALUE, 300000000000000L, 999));
+            INEXHAUSTIBLE_BLOOD_ORB = registerItem("inexhaustible_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), Byte.MAX_VALUE, 300000000000000L, 999));
         }
     }
 }

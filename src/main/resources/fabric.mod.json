@@ -7,7 +7,7 @@
   "authors": ["easynull"],
   "contact": {},
   "license": "CC-BY-2.0",
-  "icon": "icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "client": ["ru.easynull.hemomancy.HemomancyClient"],

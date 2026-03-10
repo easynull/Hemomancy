@@ -31,6 +31,8 @@ public final class HmBlocks {
     public static final Block RUNE_STAIRS = registerBlock("rune_stairs", new StairsBlock(BLANK_RUNE.getDefaultState(), AbstractBlock.Settings.copy(Blocks.STONE)));
     public static final Block RUNE_SLAB = registerBlock("rune_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 
+    public static final Block MAGE_STATUE = registerBlock("mage_statue", new MageStatueBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
+
     private static <T extends Block> T registerBlock(String name, T block, Item.Settings itemSettings) {
         RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Hemomancy.path(name));
         Registry.register(Registries.BLOCK, blockKey, block);

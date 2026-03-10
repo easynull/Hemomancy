@@ -13,7 +13,7 @@ import net.minecraft.util.math.random.Random;
 import org.joml.Quaternionf;
 import ru.easynull.hemomancy.HemomancyClient;
 import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBE;
-import ru.easynull.hemomancy.render.Transform;
+import ru.easynull.hemomancy.api.Transform;
 
 public final class AlchemyTableRenderer implements BlockEntityRenderer<AlchemyTableBE> {
 

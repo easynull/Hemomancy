@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import ru.easynull.hemomancy.registry.HmBlocks;
 import ru.easynull.hemomancy.registry.blocks.RuneBlock;
 import ru.easynull.hemomancy.registry.blocks.type.BloodAltarBE;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +65,7 @@ public final class AltarConstructor {
                     }
                 }
             } else {
-                if (state.isAir() || HmUtils.isFluid(state)) {
+                if (state.isAir() || HmCommonUtils.isFluid(state)) {
                     valid = false;
                 }
             }
@@ -142,7 +142,7 @@ public final class AltarConstructor {
             World world = altar.getWorld();
             if (world == null || world.isClient) return;
 
-            List<LivingEntity> nearby = HmUtils.getNearbyLivingEntities(world, altar.getPos(), 3.0);
+            List<LivingEntity> nearby = HmCommonUtils.getNearbyLivingEntities(world, altar.getPos(), 3.0);
 
             for (LivingEntity entity : nearby) {
                 if (!entity.isAlive()) {
@@ -194,49 +194,49 @@ public final class AltarConstructor {
     public void setTier(byte newTier) {
         if (tier != newTier) {
             tier = newTier;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setSpeed(float newSpeed) {
         if (speed != newSpeed) {
             speed = newSpeed;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setCapacity(long newCapacity) {
         if (capacity != newCapacity) {
             capacity = newCapacity;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setResCapacity(float newResCapacity) {
         if (resCapacity != newResCapacity) {
             resCapacity = newResCapacity;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setSacrifices(int newSacrifices) {
         if (sacrifices != newSacrifices) {
             sacrifices = newSacrifices;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setCharging(float newCharging) {
         if (charging != newCharging) {
             charging = newCharging;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 
     public void setMode(String newMode) {
         if (!mode.equals(newMode)) {
             mode = newMode;
-            HmUtils.updateBlockEntity(altar);
+            HmCommonUtils.updateBlockEntity(altar);
         }
     }
 

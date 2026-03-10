@@ -1,32 +1,51 @@
 package ru.easynull.hemomancy.registry.items;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.api.energy.Wandable;
+import ru.easynull.hemomancy.api.mage.MagePlayer;
+import ru.easynull.hemomancy.proxy.MainProxy;
 import ru.easynull.hemomancy.utils.EnergyUtils;
 
 import java.util.List;
 
-public final class ControllerItem extends Item {
+public final class BookItem extends Item {
     private long lp;
     private long maxLp;
     private Item currentItem;
     private byte tier;
 
-    public ControllerItem(Settings settings) {
+    public BookItem(Settings settings) {
         super(settings.maxCount(1));
+    }
+
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS);
+        ItemStack stack = player.getStackInHand(hand);
+        if (player.getAttached(MagePlayer.DATA) == null) MagePlayer.of(player).setLevel(0);
+        if (!world.isClient()) return TypedActionResult.pass(stack);
+        MainProxy.PROXY.openBook(stack);
+        return TypedActionResult.success(stack);
     }
 
     @Override
@@ -104,13 +123,13 @@ public final class ControllerItem extends Item {
         BlockPos pos = context.getBlockPos();
         PlayerEntity player = context.getPlayer();
 
-        if (world.isClient || !(world.getBlockEntity(pos) instanceof Wandable wandable)) {
-            return ActionResult.FAIL;
+        if (!(world.getBlockEntity(pos) instanceof Wandable wandable)) {
+            return ActionResult.PASS;
         }
 
         List<String> modes = List.of(wandable.getModes());
         if (modes.isEmpty()) {
-            return ActionResult.FAIL;
+            return ActionResult.PASS;
         }
 
         String currentMode = wandable.getMode();
@@ -123,7 +142,12 @@ public final class ControllerItem extends Item {
             player.sendMessage(Text.translatable("message.hemomancy.mode.change", Text.translatable("mode." + nextMode)), true);
         }
 
-        return ActionResult.CONSUME;
+        return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        if (stack.hasNbt()) tooltip.add(Text.literal("Рассширенное издание").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
     }
 
     public long getCurrentLp() {

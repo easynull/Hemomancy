@@ -16,7 +16,7 @@ import net.minecraft.util.UseAction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.utils.EnergyUtils;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class DesecratedSwordItem extends SwordItem implements DesecratedTool {
     private final boolean awakened;
@@ -45,7 +45,7 @@ public final class DesecratedSwordItem extends SwordItem implements DesecratedTo
         ServerWorld world = (ServerWorld) attacker.getWorld();
         BlockPos center = target.getBlockPos();
 
-        HmUtils.getNearbyLivingEntities(world, center, 2).forEach(e -> {
+        HmCommonUtils.getNearbyLivingEntities(world, center, 2).forEach(e -> {
             if (e == player || e == target) return;
 
             player.attack(e);
@@ -60,7 +60,7 @@ public final class DesecratedSwordItem extends SwordItem implements DesecratedTo
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
         if (user instanceof PlayerEntity player) {
             float baseDamage = getMaterial().getAttackDamage();
-            HmUtils.attractEntities(world, user.getBlockPos(), 14f, 0.5f, LivingEntity.class, e -> {
+            HmCommonUtils.attractEntities(world, user.getBlockPos(), 14f, 0.5f, LivingEntity.class, e -> {
                 if (e.getType().isIn(ConventionalEntityTypeTags.BOSSES)) return false;
                 if (e.getPos().distanceTo(player.getPos()) < 1.2f) e.damage(player.getDamageSources().playerAttack(player), baseDamage);
                 return true;

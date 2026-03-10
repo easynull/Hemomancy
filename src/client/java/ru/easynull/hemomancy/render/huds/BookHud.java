@@ -9,13 +9,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import ru.easynull.hemomancy.Hemomancy;
-import ru.easynull.hemomancy.registry.items.ControllerItem;
+import ru.easynull.hemomancy.registry.items.BookItem;
 
-public final class ControllerHud {
+public final class BookHud {
     public static final MinecraftClient client = MinecraftClient.getInstance();
     private static final int UPDATE_INTERVAL = 5;
 
-    private static ControllerItem cachedController = null;
+    private static BookItem cachedBook = null;
 
     private static long cachedLp = 0;
     private static long cachedMaxLp = 0;
@@ -34,7 +34,7 @@ public final class ControllerHud {
             updateCache(player);
         }
 
-        if (cachedController == null || cachedLp == 0) return;
+        if (cachedBook == null || cachedLp == 0) return;
 
         long lp = cachedLp;
         long maxLp = cachedMaxLp;
@@ -64,20 +64,20 @@ public final class ControllerHud {
     }
 
     private static void updateCache(PlayerEntity player) {
-        cachedController = null;
+        cachedBook = null;
         cachedLp = 0;
         cachedMaxLp = 0;
         cachedDisplayedItem = null;
         cachedTier = 0;
         DefaultedList<ItemStack> main = player.getInventory().main;
         for (ItemStack stack : main) {
-            if (stack.getItem() instanceof ControllerItem controller) {
-                cachedController = controller;
+            if (stack.getItem() instanceof BookItem book && stack.hasNbt() && stack.getNbt().getInt("Level") > 1) {
+                cachedBook = book;
 
-                cachedLp = controller.getCurrentLp();
-                cachedMaxLp = controller.getCurrentMaxLp();
-                cachedDisplayedItem = controller.getCurrentDisplayedItem();
-                cachedTier = controller.getCurrentTier();
+                cachedLp = book.getCurrentLp();
+                cachedMaxLp = book.getCurrentMaxLp();
+                cachedDisplayedItem = book.getCurrentDisplayedItem();
+                cachedTier = book.getCurrentTier();
                 break;
             }
         }

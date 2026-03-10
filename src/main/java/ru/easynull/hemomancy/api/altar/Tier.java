@@ -8,7 +8,6 @@ import net.minecraft.block.enums.StairShape;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.registry.HmBlocks;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ru.easynull.hemomancy.utils.HmUtils.rotatePos;
+import static ru.easynull.hemomancy.utils.HmCommonUtils.rotatePos;
 
 public final class Tier {
     private static final Map<Byte, List<Component>> TIERS = new HashMap<>();

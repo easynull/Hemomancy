@@ -9,27 +9,23 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Deprecated
-public final class HmUtils {
+public final class HmCommonUtils {
     public static boolean insertIntoPlayer(Inventory inventory, PlayerEntity player, int slot, int maxTransfer) {
         ItemStack slotStack = inventory.getStack(slot);
         ItemStack heldStack = player.getMainHandStack();

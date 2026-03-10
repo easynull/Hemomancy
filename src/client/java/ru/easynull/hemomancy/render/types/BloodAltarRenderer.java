@@ -18,9 +18,8 @@ import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import ru.easynull.hemomancy.HemomancyClient;
-import ru.easynull.hemomancy.api.InventoryBE;
 import ru.easynull.hemomancy.registry.blocks.type.BloodAltarBE;
-import ru.easynull.hemomancy.render.Transform;
+import ru.easynull.hemomancy.api.Transform;
 
 public final class BloodAltarRenderer implements BlockEntityRenderer<BloodAltarBE> {
     private static final ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();

@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.utils.EnergyUtils;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class DesecratedPickaxeItem extends PickaxeItem implements DesecratedTool {
     private final boolean awakened;
@@ -24,7 +24,7 @@ public final class DesecratedPickaxeItem extends PickaxeItem implements Desecrat
         if (!awakened || !state.isIn(BlockTags.PICKAXE_MINEABLE) || player.isSneaking()) {
             return;
         }
-        HmUtils.forEachInCube(pos, 3, p -> {
+        HmCommonUtils.forEachInCube(pos, 3, p -> {
             BlockPos above = p.up();
             BlockState aboveState = world.getBlockState(above);
             if (aboveState.isAir()) return;

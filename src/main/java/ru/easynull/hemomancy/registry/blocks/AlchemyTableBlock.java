@@ -17,7 +17,7 @@ import ru.easynull.hemomancy.api.EntitibleBlock;
 import ru.easynull.hemomancy.api.InventoryBE;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.registry.items.OrbItem;
-import ru.easynull.hemomancy.utils.HmUtils;
+import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class AlchemyTableBlock extends EntitibleBlock {
     private static final VoxelShape SHAPE = VoxelShapes.union(VoxelShapes.cuboid(0.065, 0, 0.065, 0.935, 0.25, 0.935), VoxelShapes.cuboid(0.255, 0.125, 0.255, 0.745, 0.565, 0.745), VoxelShapes.cuboid(0, 0.565, 0, 1, 0.935, 1));
@@ -35,7 +35,7 @@ public final class AlchemyTableBlock extends EntitibleBlock {
                 container.removeStack(1);
                 return ActionResult.SUCCESS;
             }
-            if (handStack.getItem() instanceof OrbItem && HmUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
+            if (handStack.getItem() instanceof OrbItem && HmCommonUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
             if(player.isSneaking() && !container.getFirst().isEmpty()){
                 player.giveItemStack(container.getFirst().copy());
                 container.removeStack(0);

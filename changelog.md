@@ -1,2 +1,7 @@
 - Backport on Fabric 1.20.1
-- Add dagger recipe
+- Add test recipe desecrated tools
+- Add mod-book
+- Add mage progression
+- Add mage statue (For mage progression)
+- Add new features
+- Fixed bugs
