@@ -59,16 +59,32 @@ jobs:
       - name: Build Fabric mod
         run: ./gradlew build --stacktrace --no-daemon
 
-      - name: Find built JAR
+      - name: Find remapped release JAR (exclude dev/sources/etc)
         id: find-jar
         run: |
-          JAR_FILE=$(find build/libs -type f -name "*${{ env.MOD_VERSION }}*.jar" ! -name "*-sources.jar" ! -name "*-javadoc.jar" | head -n 1)
+          set -e
+          echo "Listing build/libs contents:"
+          ls -la build/libs/ || true
+
+          JAR_FILE=$(find build/libs -maxdepth 1 -type f \
+            -name "*${{ env.MOD_VERSION }}*.jar" \
+            ! -name "*-dev*.jar" \
+            ! -name "*-sources*.jar" \
+            ! -name "*-javadoc*.jar" \
+            ! -name "*-all*.jar" \
+            ! -name "*shadow*.jar" \
+            | sort | head -n 1)
+
           if [ -z "$JAR_FILE" ]; then
-            echo "No JAR found in build/libs!"
+            echo "ERROR: No remapped JAR found. Possible reasons:"
+            echo "1. remapJar task did not run or failed silently"
+            echo "2. Naming convention different from expected"
+            echo "Check previous logs for :remapJar task output"
             exit 1
           fi
+
           echo "jar_file=$JAR_FILE" >> $GITHUB_OUTPUT
-          echo "Found JAR: $JAR_FILE"
+          echo "Selected release JAR: $JAR_FILE"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
