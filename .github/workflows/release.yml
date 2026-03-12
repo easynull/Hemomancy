@@ -4,9 +4,7 @@ on:
   workflow_dispatch:
 
   push:
-    branches:
-      - "1.20.1-fabric"
-      - "1.21.4-neo"
+    branches: [ "1.20.1-fabric" ]
     paths:
       - 'build.gradle'
 
