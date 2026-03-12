@@ -16,7 +16,7 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        "project.mod_id" {
+        "hemomancy" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
