@@ -51,11 +51,10 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: ./gradlew modrinth
 
-      - name: Read Modrinth URL
-        id: get_modrinth_url
-        run: |
-          URL=$(cat build/modrinth_url.txt)
-          echo "url=$URL" >> $GITHUB_OUTPUT
+      - name: Build & Publish to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: ./gradlew curseforge
 
       - name: Create GitHub Release
         id: create_release
