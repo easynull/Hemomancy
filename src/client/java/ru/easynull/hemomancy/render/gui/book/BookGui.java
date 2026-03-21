@@ -1,6 +1,7 @@
 package ru.easynull.hemomancy.render.gui.book;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -44,14 +45,13 @@ public final class BookGui extends Screen {
 
     public BookGui(float x, float y) {
         super(Text.empty());
+        if (ResearchManager.getAll().isEmpty() || FabricLoader.getInstance().isDevelopmentEnvironment()) ResearchManager.onInit();
         this.player = MinecraftClient.getInstance().player;
         this.targetMapX = this.pX = this.curMouseX = x;
         this.targetMapY = this.pY = this.curMouseY = y;
     }
 
     private void recalculateBounds() {
-//        boundsLeft = boundsTop = Integer.MAX_VALUE;
-//        boundsRight = boundsBottom = Integer.MIN_VALUE;
         for (Research research : researches) {
             boundsLeft = Math.min(boundsLeft, research.x() - screenX + 48);
             boundsRight = Math.max(boundsRight, research.x() - 24);

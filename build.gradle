@@ -29,14 +29,14 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
-    maven {
+    /*maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
     maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
-    }
+    }*/
     maven {
         url "https://maven.shedaniel.me/" // for rei
     }
@@ -49,7 +49,7 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}"
+    //modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:12.0.625"
 }
 
@@ -71,7 +71,7 @@ modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "${mod_id}"
     uploadFile = remapJar
-    versionName = "${mod_version}"
+    versionName = "${mod_subtitle}"
     versionNumber = "${mod_version}"
     versionType = "${releaseType}"
     gameVersions = ["${minecraft_version}"] as Iterable<? extends String>

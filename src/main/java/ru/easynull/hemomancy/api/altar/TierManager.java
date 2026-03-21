@@ -18,13 +18,13 @@ import java.util.function.Consumer;
 
 import static ru.easynull.hemomancy.utils.HmCommonUtils.rotatePos;
 
-public final class Tier {
+public final class TierManager {
     private static final Map<Byte, List<Component>> TIERS = new HashMap<>();
 
     public static void onInit() {
-        registerTier((byte) 1, components -> {});
+        add((byte) 1, components -> {});
 
-        registerTier((byte) 2, components -> {
+        add((byte) 2, components -> {
             components.accept(Component.of(0, -1, 0));
             addMirrored(components, 1, -1, 0, HmBlocks.RUNE_STAIRS.getDefaultState()
                     .rotate(BlockRotation.CLOCKWISE_90), true);
@@ -36,7 +36,7 @@ public final class Tier {
             addMirrored(components, 2, -1, -2, HmBlocks.RUNE_SLAB.getDefaultState(), false);
         });
 
-        registerTier((byte) 3, components -> {
+        add((byte) 3, components -> {
             addMirrored(components, 2, -1, 0,
                     HmBlocks.BLANK_RUNE.getDefaultState(), true, false);
             addMirrored(components, 2, -1, -2,
@@ -52,7 +52,7 @@ public final class Tier {
             addMirrored(components, 3, 2, -3, Blocks.SHROOMLIGHT.getDefaultState(), false);
         });
 
-        registerTier((byte) 4, components -> {
+        add((byte) 4, components -> {
             addMirrored(components, 3, 3, -3, HmBlocks.RUNE_SLAB.getDefaultState(), false);
             for(int w = -1; w < 2; w++){
                 addMirrored(components, w, -1, -4, HmBlocks.RUNE_SLAB.getDefaultState(), false);
@@ -71,7 +71,7 @@ public final class Tier {
             addMirrored(components, 5, 2, -5, HmBlocks.RUNE_SLAB.getDefaultState(),false);
         });
 
-        registerTier((byte) 5, components -> {
+        add((byte) 5, components -> {
             for(int w = -7; w < -4; w++){
                 addMirrored(components, 0, -1, w, HmBlocks.BLANK_RUNE.getDefaultState(), true, false);
             }
@@ -101,7 +101,7 @@ public final class Tier {
             addMirrored(components, 3, -1, -4, HmBlocks.RUNE_SLAB.getDefaultState(), false);
         });
 
-        registerTier((byte) 6, components -> {
+        add((byte) 6, components -> {
             addMirrored(components, 0, 0, -9, HmBlocks.BLANK_RUNE.getDefaultState(), true, false);
             addMirrored(components, 0, 2, -9, HmBlocks.RUNE_SLAB.getDefaultState(), false);
             addMirrored(components, 7, -1, -7, null, false);
@@ -134,7 +134,7 @@ public final class Tier {
         });
     }
 
-    public static void registerTier(byte tier, Consumer<Consumer<Component>> builder) {
+    public static void add(byte tier, Consumer<Consumer<Component>> builder) {
         if (TIERS.containsKey(tier)) {
             throw new IllegalStateException("Tier already registered!");
         }
@@ -171,15 +171,11 @@ public final class Tier {
         return TIERS;
     }
 
-    public static byte getSize() {
-        return (byte) TIERS.size();
-    }
-
-    public static void addMirrored(Consumer<Component> components, int relX, int relY, int relZ, @Nullable BlockState state, boolean upgrade, boolean rotable) {
+    public static void addMirrored(Consumer<Component> components, int relX, int relY, int relZ, @Nullable BlockState state, boolean universal, boolean rotable) {
         BlockPos basePos = new BlockPos(relX, relY, relZ);
         Component baseComp = new Component(basePos, state, rotable);
-        if (upgrade) {
-            baseComp.upgradeSlot();
+        if (universal) {
+            baseComp.universal();
         }
         components.accept(baseComp);
 
@@ -201,8 +197,8 @@ public final class Tier {
             BlockState rotatedState = rotable ? state != null ? state.rotate(oRot) : null : state;
 
             Component mirroredComp = new Component(rotatedRelPos, rotatedState, rotable);
-            if (upgrade) {
-                mirroredComp.upgradeSlot();
+            if (universal) {
+                mirroredComp.universal();
             }
 
             components.accept(mirroredComp);
@@ -217,7 +213,7 @@ public final class Tier {
         public final BlockPos pos;
         public final BlockState state;
         public final boolean stateble;
-        private boolean upgrade;
+        private boolean universal;
 
         public Component(BlockPos pos, @Nullable BlockState state, boolean stateble) {
             this.pos = pos;
@@ -233,13 +229,13 @@ public final class Tier {
             return new Component(new BlockPos(x, y, z), null, false);
         }
 
-        public Component upgradeSlot() {
-            this.upgrade = true;
+        public Component universal() {
+            this.universal = true;
             return this;
         }
 
-        public boolean isUpgrade() {
-            return upgrade;
+        public boolean isUniversal() {
+            return universal;
         }
 
         @Override

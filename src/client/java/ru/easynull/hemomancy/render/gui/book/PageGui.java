@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.mage.ResearchManager.Research;
 
 import java.util.List;
@@ -149,8 +150,20 @@ public final class PageGui extends Screen {
     @Override
     public boolean mouseScrolled(double mx, double my, double amount) {
         PageHit hit = getPageHit(mx, my);
-        return hit != null && hit.page.mouseScrolled(hit.relX, hit.relY, amount) ||
-                super.mouseScrolled(mx, my, amount);
+        if(hit == null || !hit.page.mouseScrolled(hit.relX, hit.relY, amount)) {
+            if (amount == 1 && currentPage + 2 < availablePages.size()) {
+                turnPage(2);
+                return true;
+            }
+            if (amount == -1) {
+                if (currentPage > 0) turnPage(-2);
+                else close();
+                return true;
+            }
+        } else {
+            return hit.page.mouseScrolled(hit.relX, hit.relY, amount);
+        }
+        return super.mouseScrolled(mx, my, amount);
     }
 
     @Override
@@ -167,7 +180,12 @@ public final class PageGui extends Screen {
 
     @Override
     public void close() {
-        if (client != null) client.setScreen(new BookGui(guiMapX, guiMapY));
+        if (client != null) {
+//            for (Page page : availablePages) {
+//                page.onClose();
+//            }
+            client.setScreen(new BookGui(guiMapX, guiMapY));
+        }
     }
 
     @Override public boolean shouldPause() { return false; }

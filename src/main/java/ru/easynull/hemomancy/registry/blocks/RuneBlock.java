@@ -5,7 +5,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.world.BlockView;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.registry.HmBlocks;

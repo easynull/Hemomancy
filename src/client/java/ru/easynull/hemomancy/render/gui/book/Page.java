@@ -86,6 +86,12 @@ public record Page(int lvl, String requireMod, PageElement... elements) {
         }
     }
 
+    public void onClose() {
+        for (PageElement element : elements) {
+            element.onClose();
+        }
+    }
+
     @FunctionalInterface
     private interface MouseEventHandler {
         boolean handle(PageElement element, double elemX, double elemY);

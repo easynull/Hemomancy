@@ -31,6 +31,7 @@ import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.registry.items.BookItem;
 import ru.easynull.hemomancy.registry.items.DaggerItem;
 import ru.easynull.hemomancy.registry.items.OrbItem;
+import ru.easynull.hemomancy.registry.items.RitualStaffItem;
 import ru.easynull.hemomancy.registry.items.sigil.EnabledSigilItem;
 import ru.easynull.hemomancy.registry.items.sigil.SigilItem;
 import ru.easynull.hemomancy.registry.items.tool.DesecratedAxeItem;
@@ -51,7 +52,8 @@ public final class HmItems {
     public static final Item MASTER_BLOOD_ORB = registerItem("master_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.UNCOMMON), 4, 1000000, 20));
     public static final Item ARCHMAGE_BLOOD_ORB = registerItem("archmage_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.RARE), 5, 10000000, 45));
     public static final Item TRANSCENDENTAL_BLOOD_ORB = registerItem("transcendental_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), 6, 30000000, 100));
-    public static Item INEXHAUSTIBLE_BLOOD_ORB;
+    public static final Item INEXHAUSTIBLE_BLOOD_ORB = null;//registerItem("inexhaustible_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), Byte.MAX_VALUE, 300000000000000L, 999), "avaritia");
+
     // Glyphs
     public static final Item BLANK_GLYPH = registerItem("blank_glyph", new Item(new Item.Settings()));
     public static final Item FORTIFIED_GLYPH = registerItem("fortified_glyph", new Item(new Item.Settings()));
@@ -60,9 +62,10 @@ public final class HmItems {
     public static final Item DEMONIC_GLYPH = registerItem("demonic_glyph", new Item(new Item.Settings()));
     public static final Item INFERNAL_GLYPH = registerItem("infernal_glyph", new Item(new Item.Settings().rarity(Rarity.RARE)));
 
-    public static final Item CRIMSON_STEEL_INGOT = registerItem("crimson_steel_ingot", new Item(new Item.Settings()));
-
+    // Other
     public static final Item BOOK = registerItem("book", new BookItem(new Item.Settings()));
+    public static final Item RITUAL_STAFF = registerItem("ritual_staff", new RitualStaffItem());
+    public static final Item CRIMSON_STEEL_INGOT = registerItem("crimson_steel_ingot", new Item(new Item.Settings()));
 
     // Sigils
     public static final Item WATER_SIGIL = registerItem("water_sigil", new SigilItem(
@@ -85,7 +88,7 @@ public final class HmItems {
 
     public static final Item DRAINAGE_SIGIL = registerItem("drainage_sigil", new EnabledSigilItem(
             new Item.Settings(),
-            ctx -> HmCommonUtils.forEachInCube(ctx.pos(), 4, p -> {
+            ctx -> HmCommonUtils.forEachInCube(ctx.pos(), 3, p -> {
                 BlockState state = ctx.world().getBlockState(p);
                 if (state.getBlock() instanceof FluidDrainable drain) {
                     if (!drain.tryDrainFluid(ctx.world(), p, state).isEmpty()) {
@@ -248,11 +251,10 @@ public final class HmItems {
     public static final Item AWAKENED_DESECRATED_SWORD = registerItem("awakened_desecrated_sword", new DesecratedSwordItem(new Item.Settings().rarity(Rarity.EPIC), true));
     public static final Item AWAKENED_DESECRATED_SHOVEL = registerItem("awakened_desecrated_shovel", new DesecratedShovelItem(new Item.Settings().rarity(Rarity.EPIC), true));
 
-    public static final RegistryKey<ItemGroup> TAB = registerTab("hemomancy", Text.translatable("tab.hemomancy"),
-            BOOK,
-            BOOK, BLOOD_ALTAR, BLANK_RUNE, SPEED_RUNE, SACRIFICES_RUNE, CAPACITY_RUNE, RESONANT_CAPACITY_RUNE, RELATIONS_RUNE,
+    public static final RegistryKey<ItemGroup> TAB = registerTab("hemomancy", Text.translatable("tab.hemomancy"), BOOK,
+            BOOK, BLOOD_ALTAR, BLANK_RUNE, SPEED_RUNE, SACRIFICES_RUNE, CAPACITY_RUNE, RESONANT_CAPACITY_RUNE, RELATIONS_RUNE, CHIMERIC_RUNE, RITUAL_STAFF, RITUAL_STONE,
             SACRIFICIAL_DAGGER, MAGE_STATUE,
-            WEAK_BLOOD_ORB, APPRENTICE_BLOOD_ORB, MAGICIAN_BLOOD_ORB, MASTER_BLOOD_ORB, ARCHMAGE_BLOOD_ORB, TRANSCENDENTAL_BLOOD_ORB,
+            WEAK_BLOOD_ORB, APPRENTICE_BLOOD_ORB, MAGICIAN_BLOOD_ORB, MASTER_BLOOD_ORB, ARCHMAGE_BLOOD_ORB, TRANSCENDENTAL_BLOOD_ORB, INEXHAUSTIBLE_BLOOD_ORB,
             BLANK_GLYPH, FORTIFIED_GLYPH, CRIMSON_GLYPH, FILLED_GLYPH, DEMONIC_GLYPH, INFERNAL_GLYPH,
             CRIMSON_STEEL_INGOT, CRIMSON_ORNAMENT, TRANSCENDENTAL_CRYSTAL,
             AIR_SIGIL, MAGNETISM_SIGIL, WATER_SIGIL, LAVA_SIGIL, DRAINAGE_SIGIL, RESISTANCE_SIGIL, MOVEMENT_SIGIL, TELEPOSITION_SIGIL, GROW_SIGIL,
@@ -261,9 +263,14 @@ public final class HmItems {
             AWAKENED_DESECRATED_PICKAXE, AWAKENED_DESECRATED_AXE, AWAKENED_DESECRATED_SWORD, AWAKENED_DESECRATED_SHOVEL
     );
 
-    private static <T extends Item> T registerItem(String name, T item) {
+    private static <T extends Item> T registerItem(String name, T item, String requiredMod) {
+        if (requiredMod != null && !FabricLoader.getInstance().isModLoaded(requiredMod)) return null;
         var id = Hemomancy.path(name);
         return Registry.register(Registries.ITEM, id, item);
+    }
+
+    private static <T extends Item> T registerItem(String name, T item) {
+        return registerItem(name, item, null);
     }
 
     private static RegistryKey<ItemGroup> registerTab(String name, Text title, ItemConvertible icon, ItemConvertible... items) {
@@ -280,9 +287,5 @@ public final class HmItems {
         return key;
     }
 
-    public static void onInit() {
-        if (FabricLoader.getInstance().isModLoaded("avaritia")) {
-            INEXHAUSTIBLE_BLOOD_ORB = registerItem("inexhaustible_blood_orb", new OrbItem(new Item.Settings().rarity(Rarity.EPIC), Byte.MAX_VALUE, 300000000000000L, 999));
-        }
-    }
+    public static void onInit() {}
 }

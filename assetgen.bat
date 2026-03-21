@@ -62,7 +62,7 @@ echo }
 
 (
 echo {
-echo   "parent": "%MODID%:state/%BLOCK_ID%"
+echo   "parent": "%MODID%:block/%BLOCK_ID%"
 echo }
 ) > "%ITEM_MODELS_DIR%/%BLOCK_ID%.json"
 

@@ -35,7 +35,7 @@ public final class AltarConstructor {
     }
 
     public boolean isValidMonument(byte checkTier) {
-        var structure = Tier.getTiers().get(checkTier);
+        var structure = TierManager.getTiers().get(checkTier);
         if (structure == null) return false;
 
         BlockPos altarPos = altar.getPos();
@@ -44,7 +44,7 @@ public final class AltarConstructor {
 
         boolean valid = true;
 
-        for (Tier.Component component : structure) {
+        for (TierManager.Component component : structure) {
             BlockPos componentPos = altarPos.add(component.pos.getX(), component.pos.getY(), component.pos.getZ());
             BlockState state = world.getBlockState(componentPos);
 
@@ -80,7 +80,7 @@ public final class AltarConstructor {
 
         BlockPos pos = altar.getPos();
         byte highestValidTier = 1;
-        for (byte t : Tier.getTiers().keySet()) {
+        for (byte t : TierManager.getTiers().keySet()) {
             if (isValidMonument(t)) {
                 highestValidTier = t;
             }
@@ -92,14 +92,14 @@ public final class AltarConstructor {
 
         runes.clear();
 
-        List<Tier.Component> components = getComponents();
-        for (Tier.Component component : components) {
+        List<TierManager.Component> components = getComponents();
+        for (TierManager.Component component : components) {
             BlockPos cPos = pos.add(component.pos);
             BlockState state = world.getBlockState(cPos);
 
             if(component.state != null) {
                 if (component.state.isOf(HmBlocks.BLANK_RUNE) && state.getBlock() instanceof RuneBlock rune) {
-                    if (component.isUpgrade() && rune.getPrimaryType() != RuneBlock.Type.NONE) {
+                    if (component.isUniversal() && rune.getPrimaryType() != RuneBlock.Type.NONE) {
                         for (RuneBlock.Type type : rune.getTypes()) {
                             addUpgrade(type, rune.getTier());
                         }
@@ -159,8 +159,8 @@ public final class AltarConstructor {
         }
     }
 
-    public List<Tier.Component> getComponents() {
-        return Tier.getTiers().get(tier);
+    public List<TierManager.Component> getComponents() {
+        return TierManager.getTiers().get(tier);
     }
 
     public byte getTier() {

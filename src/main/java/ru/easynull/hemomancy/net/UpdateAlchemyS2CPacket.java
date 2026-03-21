@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import ru.easynull.hemomancy.Hemomancy;
 
 public record UpdateAlchemyS2CPacket(BlockPos pos, long progress, long needLP, boolean crafting) implements FabricPacket {
-    public static final PacketType<UpdateAlchemyS2CPacket> ID = PacketType.create(Hemomancy.path("update_alchemy"), UpdateAlchemyS2CPacket::read);
+    public static final PacketType<UpdateAlchemyS2CPacket> ID = PacketType.create(Hemomancy.path("update_alchemy_packet"), UpdateAlchemyS2CPacket::read);
 
     @Override
     public void write(PacketByteBuf buf) {

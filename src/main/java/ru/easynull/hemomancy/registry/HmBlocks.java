@@ -23,7 +23,9 @@ public final class HmBlocks {
     public static final Block CAPACITY_RUNE = registerBlock("capacity_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1500, RuneBlock.Type.CAPACITY));
     public static final Block RESONANT_CAPACITY_RUNE = registerBlock("resonant_capacity_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1f, RuneBlock.Type.RESONANT_CAPACITY));
     public static final Block RELATIONS_RUNE = registerBlock("relations_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 1.5f, RuneBlock.Type.RELATIONS));
-    public static Block CHIMERIC_RUNE;
+    public static final Block CHIMERIC_RUNE = null;//registerBlock("chimeric_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 4.5f, RuneBlock.Type.values()), new Item.Settings().rarity(Rarity.EPIC), "avaritia");
+
+    public static final Block RITUAL_STONE = registerBlock("ritual_stone", new RitualStoneBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 
     public static final Block CRIMSON_ORNAMENT = registerBlock("crimson_ornament", new Block(AbstractBlock.Settings.copy(Blocks.COPPER_BLOCK)));
     public static final Block TRANSCENDENTAL_CRYSTAL = registerBlock("transcendental_crystal", new Block(AbstractBlock.Settings.copy(Blocks.AMETHYST_BLOCK)));
@@ -33,7 +35,8 @@ public final class HmBlocks {
 
     public static final Block MAGE_STATUE = registerBlock("mage_statue", new MageStatueBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 
-    private static <T extends Block> T registerBlock(String name, T block, Item.Settings itemSettings) {
+    private static <T extends Block> T registerBlock(String name, T block, Item.Settings itemSettings, String requiredMod) {
+        if (requiredMod != null && !FabricLoader.getInstance().isModLoaded(requiredMod)) return null;
         RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Hemomancy.path(name));
         Registry.register(Registries.BLOCK, blockKey, block);
 
@@ -43,13 +46,13 @@ public final class HmBlocks {
         return block;
     }
 
-    private static <T extends Block> T registerBlock(String name, T block) {
-        return registerBlock(name, block, new Item.Settings());
+    private static <T extends Block> T registerBlock(String name, T block, String requiredMod) {
+        return registerBlock(name, block, new Item.Settings(), requiredMod);
     }
 
-    public static void onInit() {
-        if (FabricLoader.getInstance().isModLoaded("avaritia")) {
-            CHIMERIC_RUNE = registerBlock("chimeric_rune", new RuneBlock(AbstractBlock.Settings.copy(Blocks.STONE), 4.5f, RuneBlock.Type.values()), new Item.Settings().rarity(Rarity.EPIC));
-        }
+    private static <T extends Block> T registerBlock(String name, T block) {
+        return registerBlock(name, block, null);
     }
+
+    public static void onInit() {}
 }

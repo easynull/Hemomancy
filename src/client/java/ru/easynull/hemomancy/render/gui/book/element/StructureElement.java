@@ -14,12 +14,13 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
 import ru.easynull.hemomancy.Hemomancy;
-import ru.easynull.hemomancy.api.altar.Tier;
+import ru.easynull.hemomancy.api.altar.TierManager;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import java.util.List;
@@ -27,23 +28,30 @@ import java.util.List;
 import static ru.easynull.hemomancy.utils.HmClientUtils.getCyclingItem;
 
 public final class StructureElement implements PageElement {
-    private final List<Tier.Component> components;
+    private final List<TierManager.Component> components;
     private final BlockState zeroState;
     private final int height;
 
+    private final float offsetY;
     private float rotationYaw = -10;
     private float rotationPitch = 20;
     private float panX = 0;
     private float panY = 0;
     private float zoom = 1.5f;
+    private Identifier tagId = Hemomancy.path("runes");
 
     private static final float MIN_ZOOM = 0.5f;
     private static final float MAX_ZOOM = 3.5f;
 
-    public StructureElement(List<Tier.Component> blocks, BlockState zeroState, int height) {
+    public StructureElement(List<TierManager.Component> blocks, BlockState zeroState, int height, float offsetY) {
         this.components = blocks;
         this.zeroState = zeroState;
         this.height = height;
+        this.offsetY = offsetY;
+    }
+
+    public StructureElement(List<TierManager.Component> blocks, BlockState zeroState, int height) {
+        this(blocks, zeroState, height, 0);
     }
 
     @Override
@@ -66,7 +74,7 @@ public final class StructureElement implements PageElement {
         float centerY = y + height / 2.4f;
         viewMatrices.translate(centerX, centerY, 100f);
 
-        viewMatrices.translate(panX, panY, 0);
+        viewMatrices.translate(panX, offsetY + panY, 0);
 
         float scale = 10.0f * zoom;
         viewMatrices.scale(scale, -scale, scale);
@@ -78,13 +86,13 @@ public final class StructureElement implements PageElement {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        for (Tier.Component comp : components) {
+        for (TierManager.Component comp : components) {
             viewMatrices.push();
             viewMatrices.translate(comp.pos.getX(), comp.pos.getY(), comp.pos.getZ());
             BlockState state = comp.state == null ? Blocks.POLISHED_DEEPSLATE.getDefaultState() :
-                    comp.isUpgrade() ?
+                    comp.isUniversal() ?
                             Block.getBlockFromItem(getCyclingItem(MinecraftClient.getInstance().world,
-                                    TagKey.of(RegistryKeys.ITEM, Hemomancy.path("runes")), 80)).getDefaultState() :
+                                    TagKey.of(RegistryKeys.ITEM, tagId), 80)).getDefaultState() :
                             comp.state;
             renderBlock(viewMatrices, state);
             viewMatrices.pop();
@@ -127,6 +135,11 @@ public final class StructureElement implements PageElement {
         for (BakedQuad quad : quads) {
             consumer.quad(entry, quad, 1f, 1f, 1f, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
         }
+    }
+
+    public StructureElement setUniversalTag(Identifier tagId){
+        this.tagId = tagId;
+        return this;
     }
 
     @Override

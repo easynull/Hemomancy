@@ -27,4 +27,6 @@ public interface PageElement {
     default ItemStack getTooltipStack(int relX, int relY){
         return null;
     }
+
+    default void onClose(){}
 }

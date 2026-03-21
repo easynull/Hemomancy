@@ -140,6 +140,9 @@ public final class MageQuestManager {
 
     public static void add(Identifier id, int lvlDiff, Task... tasks) {
         Quest quest = new Quest(id, lvlDiff, List.of(tasks));
+        if (QUESTS.containsKey(id)) {
+            throw new IllegalStateException("Quest already registered!");
+        }
         QUESTS.put(quest.id(), quest);
     }
 

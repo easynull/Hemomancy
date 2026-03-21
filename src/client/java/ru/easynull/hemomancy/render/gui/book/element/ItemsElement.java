@@ -41,8 +41,8 @@ public record ItemsElement(List<Item> items) implements PageElement {
         for (int i = 0; i < count; i++) {
             int itemX = firstIconX + i * SLOT_STEP;
             int slotX = itemX - ICON_OFFSET;
-            context.drawItem(items.get(i).getDefaultStack(), itemX, y + 2);
             context.drawTexture(BOOK, slotX, y, 0, 190, SLOT_WIDTH, SLOT_HEIGHT, 512, 512);
+            context.drawItem(items.get(i).getDefaultStack(), itemX, y + 2);
         }
     }
 

@@ -26,7 +26,7 @@ public final class BookHud {
     private static final int HUD_Y = 10;
     private static final Identifier BAR_TEXTURE = Hemomancy.path("textures/gui/bloodbar.png");
 
-    public static void onRenderControllerHud(DrawContext ctx) {
+    public static void onRender(DrawContext ctx) {
         PlayerEntity player = client.player;
         if (player == null) return;
 
