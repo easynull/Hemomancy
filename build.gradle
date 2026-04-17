@@ -1,22 +1,27 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
-    id 'java-library'
-    id 'net.neoforged.moddev' version '1.0.21'
+    id 'fabric-loom' version '1.10.+'
     id 'com.modrinth.minotaur' version "2.+"
     id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.name
 }
 
-tasks.named('wrapper', Wrapper).configure {
-    distributionType = Wrapper.DistributionType.BIN
-}
+loom {
+    splitEnvironmentSourceSets()
 
-version = mod_version
-group = mod_group
+    mods {
+        "hemomancy" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
 
 repositories {
     mavenLocal()
@@ -24,106 +29,84 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
-    maven {
+    /*maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
     maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
+    }*/
+    maven {
+        url "https://maven.shedaniel.me/" // for rei
     }
 }
 
-base {
-    archivesName = name + "-${minecraft_version}"
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    //modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:12.0.625"
 }
 
-neoForge {
-    version = neo_version
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
-    }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
-    runs {
-        configureEach {
-            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
-        }
-        client {
-            client()
-        }
-    }
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
-    }
-}
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+    filteringCharset "UTF-8"
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
+    filesMatching("fabric.mod.json") {
+        expand  "mod_id": project.mod_id,
+        "version": project.version,
+        "minecraft_version": project.minecraft_version,
+        "loader_version": project.loader_version
+    }
 }
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "${mod_id}"
-    uploadFile = jar
-    versionName = "${minecraft_version}-${mod_version}"
+    uploadFile = remapJar
+    versionName = "${mod_subtitle}"
     versionNumber = "${mod_version}"
     versionType = "${releaseType}"
     gameVersions = ["${minecraft_version}"] as Iterable<? extends String>
-    loaders = ["neoforge"]
-    changelog = rootProject.file("changelog.md").text
-    dependencies {
-        required.version "nullcore", "${nullcore_version}"
-    }
+    loaders = ["fabric"]
+    changelog = rootProject.file("CHANGELOG.md").text
 }
 
 tasks.register('curseforge', TaskPublishCurseForge) {
     apiToken = System.getenv("CURSEFORGE_TOKEN")
-    def mainFile = upload(curseforge_id, jar)
-    mainFile.changelog = rootProject.file('changelog.md').text
+    def mainFile = upload(curseforge_id, remapJar)
+    mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.addGameVersion(minecraft_version)
     mainFile.releaseType = "${releaseType}"
-    mainFile.displayName = "${minecraft_version}-${mod_version}"
-    mainFile.addModLoader("NeoForge")
+    mainFile.displayName = "${mod_version}"
+    mainFile.addModLoader("Fabric")
 }
 
-dependencies {
-    implementation "maven.modrinth:nullcore:${nullcore_version}"
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    compileOnly files("libs/AvaritiaNeo-1.21.4-1.0.4.jar")
-}
-
-tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            neo_version_range      : neo_version_range,
-            loader_version_range   : loader_version_range,
-            mod_id                 : mod_id,
-            mod_name               : project.name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            nullcore_version       : nullcore_version,
-            mod_authors            : mod_authors,
-            mod_description        : mod_description
-    ]
-    inputs.properties replaceProperties
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties
+def targetJavaVersion = 17
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        it.options.release.set(targetJavaVersion)
     }
 }
 
-idea {
-    module {
-        downloadSources = false
-        downloadJavadoc = true
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    withSourcesJar()
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}" }
     }
 }

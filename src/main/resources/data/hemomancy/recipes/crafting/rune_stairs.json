@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "hemomancy:blank_glyph"
+    },
+    "O": {
+      "tag": "hemomancy:orbs"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "S  ",
+    "GS ",
+    "OGS"
+  ],
+  "result": {
+    "item": "hemomancy:rune_stairs",
+    "count": 2
+  }
+}

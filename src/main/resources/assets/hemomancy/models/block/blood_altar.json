@@ -1,9 +1,0 @@
-{
-  "parent": "block/block",
-  "loader": "neoforge:obj",
-  "flip_v": true, 
-  "model": "hemomancy:models/block/blood_altar.obj",
-  "textures": {
-    "particle": "hemomancy:block/blank_rune"
-  }
-}

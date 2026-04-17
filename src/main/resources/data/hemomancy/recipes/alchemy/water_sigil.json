@@ -1,0 +1,16 @@
+{
+  "type": "hemomancy:bloody_alchemy",
+  "ingredients": [
+    {"item": "minecraft:water_bucket"},
+    {"item": "minecraft:water_bucket"},
+    {"item": "minecraft:kelp"},
+    {"item": "minecraft:kelp"},
+    {"item": "minecraft:heart_of_the_sea"},
+    {"item": "minecraft:potion"},
+    {"item": "hemomancy:crimson_glyph"}
+  ],
+  "result": {
+    "item": "hemomancy:water_sigil"
+  },
+  "lp": 6000
+}

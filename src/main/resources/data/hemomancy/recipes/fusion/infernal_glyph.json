@@ -1,0 +1,13 @@
+{
+  "type": "hemomancy:bloody_fusion",
+  "ingredient": [
+    {
+      "item": "hemomancy:demonic_glyph"
+    }
+  ],
+  "result": {
+    "item": "hemomancy:infernal_glyph"
+  },
+  "lp": 20000,
+  "tier": 6
+}

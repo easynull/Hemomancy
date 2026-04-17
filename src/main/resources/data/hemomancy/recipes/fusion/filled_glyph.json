@@ -1,0 +1,13 @@
+{
+  "type": "hemomancy:bloody_fusion",
+  "ingredient": [
+    {
+      "item": "hemomancy:crimson_glyph"
+    }
+  ],
+  "result": {
+    "item": "hemomancy:filled_glyph"
+  },
+  "lp": 5000,
+  "tier": 4
+}

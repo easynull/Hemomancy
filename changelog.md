@@ -1,7 +1,0 @@
-- Added JEI recipes
-- Added desecrated tools
-- Added awakened desecrated tools
-- Added altar recipes
-- Added alchemy recipes
-- Rewrited textures
-- View ported [elements](https://github.com/easynull/Hemomancy/blob/1.21.4-neo/src/main/java/com/easynull/hemomancy/registers/HcElements.java#L24)

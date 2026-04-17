@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Hemomancy",
+  "description": "",
+  "authors": ["easynull"],
+  "contact": {},
+  "license": "CC-BY-2.0",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": ["ru.easynull.hemomancy.HemomancyClient"],
+    "main": ["ru.easynull.hemomancy.Hemomancy"]
+  },
+  "mixins": [
+    "hemomancy.mixins.json"
+    ,{
+      "config": "hemomancy.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
