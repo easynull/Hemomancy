@@ -6,7 +6,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import ru.easynull.hemomancy.api.mage.MagePlayer;
-import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBE;
+import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBlockEntity;
 import ru.easynull.hemomancy.render.gui.MageStatueGui;
 
 public final class NetHandlerClient {
@@ -18,7 +18,7 @@ public final class NetHandlerClient {
 
     private static void handleUpdateAlchemy(UpdateAlchemyS2CPacket packet, ClientPlayerEntity player, PacketSender sender) {
         BlockEntity be = player.getWorld().getBlockEntity(packet.pos());
-        if (be instanceof AlchemyTableBE alchemy) {
+        if (be instanceof AlchemyTableBlockEntity alchemy) {
             if (alchemy.needLP != packet.needLP()) alchemy.needLP = packet.needLP();
             if (alchemy.progress != packet.progress()) alchemy.progress = packet.progress();
             if (alchemy.crafting != packet.crafting()) alchemy.crafting = packet.crafting();

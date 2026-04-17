@@ -11,9 +11,9 @@ import ru.easynull.hemomancy.proxy.ClientProxy;
 import ru.easynull.hemomancy.proxy.MainProxy;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.registry.HmBlocks;
-import ru.easynull.hemomancy.render.huds.BookHud;
-import ru.easynull.hemomancy.render.types.AlchemyTableRenderer;
-import ru.easynull.hemomancy.render.types.BloodAltarRenderer;
+import ru.easynull.hemomancy.render.hud.BookHud;
+import ru.easynull.hemomancy.render.type.AlchemyTableRenderer;
+import ru.easynull.hemomancy.render.type.BloodAltarRenderer;
 
 public final class HemomancyClient implements ClientModInitializer {
     public static int tickClient;

@@ -6,6 +6,4 @@ public final class RitualStoneBlock extends Block {
     public RitualStoneBlock(Settings settings) {
         super(settings);
     }
-
-
 }

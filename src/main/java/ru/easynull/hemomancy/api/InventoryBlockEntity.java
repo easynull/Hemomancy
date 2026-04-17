@@ -17,30 +17,39 @@ import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 import ru.easynull.hemomancy.utils.HmCommonUtils;
 
-public abstract class InventoryBE extends BlockEntity implements SidedInventory {
+public abstract class InventoryBlockEntity extends BlockEntity implements SidedInventory {
     public final SimpleInventory inventory;
     public final int maxInSlot;
 
-    public InventoryBE(BlockEntityType<?> type, BlockPos pos, BlockState state, SimpleInventory inventory, int maxInSlot) {
+    public InventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, SimpleInventory inventory, int maxInSlot) {
         super(type, pos, state);
         this.inventory = inventory;
         this.maxInSlot = maxInSlot;
     }
 
-    public InventoryBE(BlockEntityType<?> type, BlockPos pos, BlockState state, int slots, int maxInSlot) {
-        this(type, pos, state, new SimpleInventory(slots), maxInSlot);
+    public InventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int slots, int maxInSlot) {
+        super(type, pos, state);
+        inventory = new SimpleInventory(slots) {
+            @Override
+            public void markDirty() {
+                super.markDirty();
+                HmCommonUtils.syncBlockEntity(InventoryBlockEntity.this);
+            }
+        };
+        this.maxInSlot = maxInSlot;
     }
 
-    public InventoryBE(BlockEntityType<?> type, BlockPos pos, BlockState state, int slots) {
+    public InventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int slots) {
         this(type, pos, state, slots, 1);
     }
 
-    public InventoryBE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public InventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         this(type, pos, state, 1, 1);
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
+        inventory.clear();
         Inventories.readNbt(nbt, inventory.stacks);
     }
 
@@ -84,22 +93,17 @@ public abstract class InventoryBE extends BlockEntity implements SidedInventory 
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
-        ItemStack stack = inventory.removeStack(slot, amount);
-        HmCommonUtils.updateBlockEntity(this);
-        return stack;
+        return inventory.removeStack(slot, amount);
     }
 
     @Override
     public ItemStack removeStack(int slot) {
-        var stack = inventory.removeStack(slot);
-        HmCommonUtils.updateBlockEntity(this);
-        return stack;
+        return inventory.removeStack(slot);
     }
 
     @Override
     public void setStack(int slot, ItemStack stack) {
         inventory.setStack(slot, stack);
-        HmCommonUtils.updateBlockEntity(this);
     }
 
     @Override
@@ -114,7 +118,6 @@ public abstract class InventoryBE extends BlockEntity implements SidedInventory 
     @Override
     public void clear() {
         inventory.clear();
-        HmCommonUtils.updateBlockEntity(this);
     }
 
     @Override

@@ -26,8 +26,8 @@ public class EntitibleBlock extends BlockWithEntity {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return type == this.type.get() ? ((world1, pos, state1, be) -> {
+        return ((world1, pos, state1, be) -> {
             if (be instanceof Tickable tick) tick.onTick();
-        }) : null;
+        });
     }
 }

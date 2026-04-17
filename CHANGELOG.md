@@ -1,6 +1,2 @@
-- Add ritual stone, ritual staff - WIP
-- Add commands for Mage Level
-- Fixed invisible recipes in book
-- Fixed translate book
-- Fixed sync client/server
-- Fixed other bugs
+- Updated loader version
+- Fixed items on alchemy table

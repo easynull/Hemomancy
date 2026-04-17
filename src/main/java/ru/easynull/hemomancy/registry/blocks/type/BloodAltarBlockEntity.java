@@ -9,7 +9,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.api.InventoryBE;
+import ru.easynull.hemomancy.api.InventoryBlockEntity;
 import ru.easynull.hemomancy.api.Tickable;
 import ru.easynull.hemomancy.api.altar.AltarConstructor;
 import ru.easynull.hemomancy.api.energy.LpElement;
@@ -22,12 +22,12 @@ import ru.easynull.hemomancy.utils.EnergyUtils;
 
 import java.util.Optional;
 
-public final class BloodAltarBE extends InventoryBE implements Tickable, LpElement, Tierable, Wandable {
+public final class BloodAltarBlockEntity extends InventoryBlockEntity implements Tickable, LpElement, Tierable, Wandable {
     private final AltarConstructor constructor;
     private long lp, progress;
     private boolean crafting;
 
-    public BloodAltarBE(BlockPos pos, BlockState state) {
+    public BloodAltarBlockEntity(BlockPos pos, BlockState state) {
         super(HmBlockEntities.BLOOD_ALTAR, pos, state, 1, 64);
         this.constructor = new AltarConstructor(this);
     }

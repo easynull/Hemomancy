@@ -1,4 +1,4 @@
-package ru.easynull.hemomancy.render.types;
+package ru.easynull.hemomancy.render.type;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -18,16 +18,16 @@ import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import ru.easynull.hemomancy.HemomancyClient;
-import ru.easynull.hemomancy.registry.blocks.type.BloodAltarBE;
+import ru.easynull.hemomancy.registry.blocks.type.BloodAltarBlockEntity;
 import ru.easynull.hemomancy.api.Transform;
 
-public final class BloodAltarRenderer implements BlockEntityRenderer<BloodAltarBE> {
+public final class BloodAltarRenderer implements BlockEntityRenderer<BloodAltarBlockEntity> {
     private static final ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();
 
     public BloodAltarRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(BloodAltarBE altar, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(BloodAltarBlockEntity altar, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         renderMagicItem(altar.getFirst(), matrices, vertexConsumers, tickDelta, light, overlay, altar.getWorld());
 
         float level = (float) altar.getLp(altar) / altar.getMaxLp();

@@ -83,11 +83,11 @@ public final class HmCommonUtils {
         }
     }
 
-    public static void updateBlockEntity(BlockEntity be) {
+    public static void syncBlockEntity(BlockEntity be) {
         World world = be.getWorld();
         if (world != null && !world.isClient) {
-            be.markDirty();
             world.updateListeners(be.getPos(), be.getCachedState(), be.getCachedState(), 3);
+            be.markDirty();
         }
     }
 

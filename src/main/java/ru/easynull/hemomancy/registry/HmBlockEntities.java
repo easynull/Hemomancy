@@ -16,8 +16,8 @@ import java.util.List;
 
 public final class HmBlockEntities {
 
-    public static final BlockEntityType<BloodAltarBE> BLOOD_ALTAR = registerBlockEntity("blood_altar", BloodAltarBE::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, BloodAltarBlock.class));
-    public static final BlockEntityType<AlchemyTableBE> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBE::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, AlchemyTableBlock.class));
+    public static final BlockEntityType<BloodAltarBlockEntity> BLOOD_ALTAR = registerBlockEntity("blood_altar", BloodAltarBlockEntity::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, BloodAltarBlock.class));
+    public static final BlockEntityType<AlchemyTableBlockEntity> ALCHEMY_TABLE = registerBlockEntity("alchemy_table", AlchemyTableBlockEntity::new, HmCommonUtils.getElementsClasses(Registries.BLOCK, AlchemyTableBlock.class));
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String name, FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory, List<Block> blocks) {
         Identifier id = Hemomancy.path(name);

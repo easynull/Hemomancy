@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.api.InventoryBE;
+import ru.easynull.hemomancy.api.InventoryBlockEntity;
 import ru.easynull.hemomancy.api.Tickable;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
@@ -24,11 +24,11 @@ import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 import java.util.Optional;
 
-public final class AlchemyTableBE extends InventoryBE implements Tickable, LpElement, Tierable {
+public final class AlchemyTableBlockEntity extends InventoryBlockEntity implements Tickable, LpElement, Tierable {
     public long progress, needLP;
     public boolean crafting;
 
-    public AlchemyTableBE(BlockPos pos, BlockState state) {
+    public AlchemyTableBlockEntity(BlockPos pos, BlockState state) {
         super(HmBlockEntities.ALCHEMY_TABLE, pos, state, 16, 64);
     }
 
@@ -70,7 +70,7 @@ public final class AlchemyTableBE extends InventoryBE implements Tickable, LpEle
         this.progress = progress;
         this.crafting = crafting;
         this.needLP = needLP;
-        HmCommonUtils.updateBlockEntity(this);
+        HmCommonUtils.syncBlockEntity(this);
         ((ServerWorld)world).getChunkManager().threadedAnvilChunkStorage
                 .getPlayersWatchingChunk(new ChunkPos(getPos()), false)
                 .forEach(player -> ServerPlayNetworking.send(player, new UpdateAlchemyS2CPacket(getPos(), progress, needLP, crafting)));

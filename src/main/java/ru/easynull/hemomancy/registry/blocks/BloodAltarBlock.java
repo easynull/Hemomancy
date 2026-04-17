@@ -13,7 +13,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import ru.easynull.hemomancy.api.EntitibleBlock;
-import ru.easynull.hemomancy.api.InventoryBE;
+import ru.easynull.hemomancy.api.InventoryBlockEntity;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 import ru.easynull.hemomancy.utils.HmCommonUtils;
 
@@ -25,7 +25,7 @@ public final class BloodAltarBlock extends EntitibleBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        if (world.getBlockEntity(pos) instanceof InventoryBE container) {
+        if (world.getBlockEntity(pos) instanceof InventoryBlockEntity container) {
             if (HmCommonUtils.insertIntoPlayer(container, player, 0, 64)) return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;

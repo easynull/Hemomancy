@@ -36,7 +36,7 @@ public interface LpElement {
             NbtCompound nbt = be.createNbt();
             nbt.putLong("LP", newAmount);
             be.readNbt(nbt);
-            HmCommonUtils.updateBlockEntity(be);
+            HmCommonUtils.syncBlockEntity(be);
         }
 
         return newAmount != getMaxLp();

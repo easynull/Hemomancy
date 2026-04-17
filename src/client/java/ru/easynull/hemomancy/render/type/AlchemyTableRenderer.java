@@ -1,4 +1,4 @@
-package ru.easynull.hemomancy.render.types;
+package ru.easynull.hemomancy.render.type;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -12,22 +12,22 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
 import org.joml.Quaternionf;
 import ru.easynull.hemomancy.HemomancyClient;
-import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBE;
+import ru.easynull.hemomancy.registry.blocks.type.AlchemyTableBlockEntity;
 import ru.easynull.hemomancy.api.Transform;
 
-public final class AlchemyTableRenderer implements BlockEntityRenderer<AlchemyTableBE> {
+public final class AlchemyTableRenderer implements BlockEntityRenderer<AlchemyTableBlockEntity> {
 
     public AlchemyTableRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(AlchemyTableBE alchemy, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(AlchemyTableBlockEntity alchemy, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         Transform.create(matrices, t -> {
             t.move(0.5f, 0.0f, 0.5f);
 
             boolean crafting = alchemy.isCrafting();
             float progress = crafting ? (float) alchemy.progress / alchemy.needLP : 0f;
-            float speed = 0.1f + progress * 0.04f;
-            float time = (HemomancyClient.tickClient + tickDelta) * speed;
+            float speed = 0.1f + progress * 0.00360f;
+            float time = (HemomancyClient.tickClient + tickDelta) * speed % 360;
             float radiusFactor = 1f - progress * progress;
             float baseRadius = crafting ? 0.9f * radiusFactor : 0.9f;
 

@@ -1,4 +1,4 @@
-package ru.easynull.hemomancy.render.huds;
+package ru.easynull.hemomancy.render.hud;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
