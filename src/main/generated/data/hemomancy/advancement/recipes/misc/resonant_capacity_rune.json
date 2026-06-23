@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_capacity_rune": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hemomancy:capacity_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hemomancy:resonant_capacity_rune"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_capacity_rune"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hemomancy:resonant_capacity_rune"
+    ]
+  }
+}

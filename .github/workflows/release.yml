@@ -3,7 +3,7 @@ name: Release Mod
 on:
   workflow_dispatch:
   push:
-    branches: [ "1.20.1-fabric" ]
+    branches: [ "1.21.1-fabric" ]
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3

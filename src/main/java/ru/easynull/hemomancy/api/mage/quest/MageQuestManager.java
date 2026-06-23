@@ -2,14 +2,14 @@ package ru.easynull.hemomancy.api.mage.quest;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.mage.MagePlayer;
 import ru.easynull.hemomancy.api.mage.quest.task.CollectorTask;
@@ -20,33 +20,33 @@ import ru.easynull.hemomancy.net.UpdateMageS2CPacket;
 import java.util.*;
 
 public final class MageQuestManager {
-    private static final Map<Identifier, Quest> QUESTS = new HashMap<>();
+    private static final Map<ResourceLocation, Quest> QUESTS = new HashMap<>();
 
     public static void onInit() {
         MagePlayer.onInit();
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            if (source.getAttacker() instanceof ServerPlayerEntity player) {
+            if (source.getEntity() instanceof ServerPlayer player) {
                 handleKillEntity(player, entity);
             }
         });
 
         add(Hemomancy.path("spider_silk_hunt"), 0,
-                new KillerTask(Identifier.of("minecraft", "spider"), 12),
-                new CollectorTask(Identifier.of("minecraft", "string"), 32));
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "spider"), 12),
+                new CollectorTask(ResourceLocation.tryBuild("minecraft", "string"), 32));
 
         add(Hemomancy.path("creeper_powder"), 1,
-                new KillerTask(Identifier.of("minecraft", "creeper"), 10),
-                new CollectorTask(Identifier.of("minecraft", "gunpowder"), 48));
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "creeper"), 10),
+                new CollectorTask(ResourceLocation.tryBuild("minecraft", "gunpowder"), 48));
 
         add(Hemomancy.path("zombie_plague"), 2,
-                new KillerTask(Identifier.of("minecraft", "zombie"), 25));
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "zombie"), 25));
 
         add(Hemomancy.path("blank_glyph_stockpile"), 3,
                 new CollectorTask(Hemomancy.path("blank_glyph"), 64));
 
         add(Hemomancy.path("skeleton_bone_harvest"), 3,
-                new KillerTask(Identifier.of("minecraft", "skeleton"), 20),
-                new CollectorTask(Identifier.of("minecraft", "bone"), 40));
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "skeleton"), 20),
+                new CollectorTask(ResourceLocation.tryBuild("minecraft", "bone"), 40));
 
         add(Hemomancy.path("fortified_glyph_forge"), 4,
                 new CollectorTask(Hemomancy.path("fortified_glyph"), 32));
@@ -83,10 +83,10 @@ public final class MageQuestManager {
                 new CollectorTask(Hemomancy.path("transcendental_blood_orb"), 1));
 
         add(Hemomancy.path("dragon_eternal_conquest"), 10,
-                new KillerTask(Identifier.of("minecraft", "ender_dragon"), 1),
-                new CollectorTask(Identifier.of("minecraft", "dragon_egg"), 1),
-                new CollectorTask(Identifier.of("minecraft", "chorus_fruit"), 128),
-                new KillerTask(Identifier.of("minecraft", "enderman"), 100));
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "ender_dragon"), 1),
+                new CollectorTask(ResourceLocation.tryBuild("minecraft", "dragon_egg"), 1),
+                new CollectorTask(ResourceLocation.tryBuild("minecraft", "chorus_fruit"), 128),
+                new KillerTask(ResourceLocation.tryBuild("minecraft", "enderman"), 100));
 
         add(Hemomancy.path("magnetism_sigil_collection"), 4,
                 new CollectorTask(Hemomancy.path("magnetism_sigil"), 1));
@@ -138,7 +138,7 @@ public final class MageQuestManager {
                 new CollectorTask(Hemomancy.path("crimson_ornament"), 32));
     }
 
-    public static void add(Identifier id, int lvlDiff, Task... tasks) {
+    public static void add(ResourceLocation id, int lvlDiff, Task... tasks) {
         Quest quest = new Quest(id, lvlDiff, List.of(tasks));
         if (QUESTS.containsKey(id)) {
             throw new IllegalStateException("Quest already registered!");
@@ -146,7 +146,7 @@ public final class MageQuestManager {
         QUESTS.put(quest.id(), quest);
     }
 
-    public static Quest get(Identifier id) {
+    public static Quest get(ResourceLocation id) {
         return QUESTS.get(id);
     }
 
@@ -170,7 +170,7 @@ public final class MageQuestManager {
         return candidates.get(random.nextInt(candidates.size()));
     }
 
-    private static void handleKillEntity(PlayerEntity player, LivingEntity target) {
+    private static void handleKillEntity(Player player, LivingEntity target) {
         MagePlayer.Data data = MagePlayer.of(player);
         Quest quest = data.getCurrentQuest();
         if (quest == null) return;
@@ -184,16 +184,16 @@ public final class MageQuestManager {
         }
         if (updated) {
             data.updateQuest(quest);
-            ServerPlayNetworking.send((ServerPlayerEntity) player, new UpdateMageS2CPacket(data.getCurrentQuest().toNbt()));
+            ServerPlayNetworking.send((ServerPlayer) player, new UpdateMageS2CPacket(data.getCurrentQuest().toNbt()));
         }
     }
 
-    public record Quest(Identifier id, int lvlDiff, List<Task> tasks) {
-        public NbtCompound toNbt() {
-            NbtCompound nbt = new NbtCompound();
+    public record Quest(ResourceLocation id, int lvlDiff, List<Task> tasks) {
+        public CompoundTag toNbt() {
+            CompoundTag nbt = new CompoundTag();
             nbt.putString("Id", id.toString());
             nbt.putInt("Diff", lvlDiff);
-            NbtList list = new NbtList();
+            ListTag list = new ListTag();
             for (Task task : tasks) {
                 list.add(task.toNbt());
             }
@@ -201,10 +201,10 @@ public final class MageQuestManager {
             return nbt;
         }
 
-        public static Quest fromNbt(NbtCompound nbt) {
-            Identifier id = Identifier.tryParse(nbt.getString("Id"));
+        public static Quest fromNbt(CompoundTag nbt) {
+            ResourceLocation id = ResourceLocation.tryParse(nbt.getString("Id"));
             int lvlDiff = nbt.getInt("Diff");
-            NbtList list = nbt.getList("Tasks", 10);
+            ListTag list = nbt.getList("Tasks", 10);
             List<Task> tasks = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 tasks.add(Task.fromNbt(list.getCompound(i)));
@@ -212,26 +212,26 @@ public final class MageQuestManager {
             return new Quest(id, lvlDiff, tasks);
         }
 
-        public boolean isCompleted(PlayerEntity player) {
+        public boolean isCompleted(Player player) {
             for (Task task : tasks) {
                 if (task.getType() == Task.Type.KILLER && !task.isCompleted()) return false;
                 if (task.getType() == Task.Type.COLLECTOR) {
                     CollectorTask collect = (CollectorTask) task;
-                    if (player.getInventory().count(Registries.ITEM.get(collect.getTarget())) < collect.getRequired())
+                    if (player.getInventory().countItem(BuiltInRegistries.ITEM.get(collect.getTarget())) < collect.getRequired())
                         return false;
                 }
             }
             return true;
         }
 
-        public boolean tryComplete(PlayerEntity player) {
+        public boolean tryComplete(Player player) {
             if (!isCompleted(player)) return false;
 
             for (Task task : tasks) {
                 if (task.getType() == Task.Type.COLLECTOR) {
                     CollectorTask collect = (CollectorTask) task;
-                    Item item = Registries.ITEM.get(collect.getTarget());
-                    player.getInventory().removeStack(player.getInventory().getSlotWithStack(item.getDefaultStack()), collect.getRequired());
+                    Item item = BuiltInRegistries.ITEM.get(collect.getTarget());
+                    player.getInventory().removeItem(player.getInventory().findSlotMatchingItem(item.getDefaultInstance()), collect.getRequired());
                 }
             }
             return true;

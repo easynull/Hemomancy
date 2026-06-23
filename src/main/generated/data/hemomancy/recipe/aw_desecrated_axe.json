@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "hemomancy:desecrated_axe"
+  },
+  "lp": 210000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:awakened_desecrated_axe"
+  },
+  "tier": 6
+}

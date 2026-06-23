@@ -1,13 +1,12 @@
 package ru.easynull.hemomancy.render.gui.book;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.glfw.GLFW;
-import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.mage.ResearchManager.Research;
 
 import java.util.List;
@@ -35,11 +34,11 @@ public final class PageGui extends Screen {
     private final float guiMapX, guiMapY;
 
     public PageGui(Research research, float guiMapX, float guiMapY) {
-        super(Text.empty());
+        super(Component.empty());
         this.guiMapX = guiMapX;
         this.guiMapY = guiMapY;
         this.availablePages = research.pages().stream()
-                .filter(p -> p.isUnlocked(MinecraftClient.getInstance().player))
+                .filter(p -> p.isUnlocked(Minecraft.getInstance().player))
                 .filter(p -> p.requireMod() == null || FabricLoader.getInstance().isModLoaded(p.requireMod()))
                 .collect(Collectors.toList());
         this.currentPage = 0;
@@ -49,25 +48,24 @@ public final class PageGui extends Screen {
     private int getGuiTop()  { return (height - BOOK_HEIGHT) / 2; }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        renderBackground(context, mouseX, mouseY, delta);
         renderBook(context, mouseX, mouseY, delta);
-        super.render(context, mouseX, mouseY, delta);
     }
 
-    private void renderBook(DrawContext context, int mouseX, int mouseY, float delta) {
+    private void renderBook(GuiGraphics context, int mouseX, int mouseY, float delta) {
         int guiLeft = getGuiLeft();
         int guiTop = getGuiTop();
 
-        context.drawTexture(BOOK, guiLeft, guiTop, 0, 0, BOOK_WIDTH, BOOK_HEIGHT, 512, 512);
+        context.blit(BOOK, guiLeft, guiTop, 0, 0, BOOK_WIDTH, BOOK_HEIGHT, 512, 512);
 
         boolean hasNext = currentPage + 2 < availablePages.size();
         int backU = isBackButton(mouseX, mouseY) ? 290 : 280;
-        context.drawTexture(BOOK, guiLeft + BACK_BUTTON_X, guiTop + BUTTON_Y, backU, 0, BUTTON_SIZE, BUTTON_SIZE, 512, 512);
+        context.blit(BOOK, guiLeft + BACK_BUTTON_X, guiTop + BUTTON_Y, backU, 0, BUTTON_SIZE, BUTTON_SIZE, 512, 512);
 
         if (hasNext) {
             int forwardU = isNextButton(mouseX, mouseY) ? 290 : 280;
-            context.drawTexture(BOOK, guiLeft + FORWARD_BUTTON_X, guiTop + BUTTON_Y, forwardU, 10, BUTTON_SIZE, BUTTON_SIZE, 512, 512);
+            context.blit(BOOK, guiLeft + FORWARD_BUTTON_X, guiTop + BUTTON_Y, forwardU, 10, BUTTON_SIZE, BUTTON_SIZE, 512, 512);
         }
 
         int rightPageX = guiLeft + (BOOK_WIDTH / 2 - 6);
@@ -129,7 +127,7 @@ public final class PageGui extends Screen {
         }
         if (isBackButton(mx, my)) {
             if (currentPage > 0) turnPage(-2);
-            else close();
+            else onClose();
             return true;
         }
         return super.mouseClicked(mx, my, button);
@@ -148,22 +146,22 @@ public final class PageGui extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mx, double my, double amount) {
+    public boolean mouseScrolled(double mx, double my, double amount, double g) {
         PageHit hit = getPageHit(mx, my);
-        if(hit == null || !hit.page.mouseScrolled(hit.relX, hit.relY, amount)) {
+        if(hit == null || !hit.page.mouseScrolled(hit.relX, hit.relY, amount, g)) {
             if (amount == 1 && currentPage + 2 < availablePages.size()) {
                 turnPage(2);
                 return true;
             }
             if (amount == -1) {
                 if (currentPage > 0) turnPage(-2);
-                else close();
+                else onClose();
                 return true;
             }
         } else {
-            return hit.page.mouseScrolled(hit.relX, hit.relY, amount);
+            return hit.page.mouseScrolled(hit.relX, hit.relY, amount, g);
         }
-        return super.mouseScrolled(mx, my, amount);
+        return super.mouseScrolled(mx, my, amount, g);
     }
 
     @Override
@@ -174,19 +172,19 @@ public final class PageGui extends Screen {
     }
 
     private void playTurnSound() {
-        if (client != null && client.player != null)
-            client.player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 1f, 1f);
+        if (minecraft != null && minecraft.player != null)
+            minecraft.player.playSound(SoundEvents.BOOK_PAGE_TURN, 1f, 1f);
     }
 
     @Override
-    public void close() {
-        if (client != null) {
+    public void onClose() {
+        if (minecraft != null) {
 //            for (Page page : availablePages) {
 //                page.onClose();
 //            }
-            client.setScreen(new BookGui(guiMapX, guiMapY));
+            minecraft.setScreen(new BookGui(guiMapX, guiMapY));
         }
     }
 
-    @Override public boolean shouldPause() { return false; }
+    @Override public boolean isPauseScreen() { return false; }
 }

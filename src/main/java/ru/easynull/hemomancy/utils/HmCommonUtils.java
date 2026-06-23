@@ -1,24 +1,24 @@
 package ru.easynull.hemomancy.utils;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -26,9 +26,9 @@ import java.util.function.Predicate;
 
 @Deprecated
 public final class HmCommonUtils {
-    public static boolean insertIntoPlayer(Inventory inventory, PlayerEntity player, int slot, int maxTransfer) {
-        ItemStack slotStack = inventory.getStack(slot);
-        ItemStack heldStack = player.getMainHandStack();
+    public static boolean insertIntoPlayer(Container inventory, Player player, int slot, int maxTransfer) {
+        ItemStack slotStack = inventory.getItem(slot);
+        ItemStack heldStack = player.getMainHandItem();
         int actualMax = Math.min(maxTransfer, 64);
 
         if (heldStack.isEmpty()) {
@@ -37,39 +37,39 @@ public final class HmCommonUtils {
             }
 
             int transferAmount = Math.min(slotStack.getCount(), actualMax);
-            player.setStackInHand(Hand.MAIN_HAND, slotStack.copyWithCount(transferAmount));
-            slotStack.decrement(transferAmount);
-            inventory.setStack(slot, slotStack.isEmpty() ? ItemStack.EMPTY : slotStack);
-            inventory.markDirty();
+            player.setItemInHand(InteractionHand.MAIN_HAND, slotStack.copyWithCount(transferAmount));
+            slotStack.shrink(transferAmount);
+            inventory.setItem(slot, slotStack.isEmpty() ? ItemStack.EMPTY : slotStack);
+            inventory.setChanged();
             return true;
         }
 
         if (slotStack.isEmpty()) {
             int transferAmount = Math.min(heldStack.getCount(), actualMax);
             ItemStack insert = heldStack.copyWithCount(transferAmount);
-            inventory.setStack(slot, insert);
-            heldStack.decrement(transferAmount);
-            inventory.markDirty();
+            inventory.setItem(slot, insert);
+            heldStack.shrink(transferAmount);
+            inventory.setChanged();
             return true;
         }
 
-        if (ItemStack.areItemsEqual(slotStack, heldStack) && ItemStack.areEqual(slotStack, heldStack)) {
-            int spaceAvailable = Math.min(64, slotStack.getMaxCount()) - slotStack.getCount();
+        if (ItemStack.isSameItem(slotStack, heldStack) && ItemStack.matches(slotStack, heldStack)) {
+            int spaceAvailable = Math.min(64, slotStack.getMaxStackSize()) - slotStack.getCount();
             int transferAmount = Math.min(Math.min(heldStack.getCount(), spaceAvailable), actualMax);
 
             if (transferAmount <= 0) {
                 return false;
             }
 
-            slotStack.increment(transferAmount);
-            heldStack.decrement(transferAmount);
-            inventory.setStack(slot, slotStack);
-            inventory.markDirty();
+            slotStack.grow(transferAmount);
+            heldStack.shrink(transferAmount);
+            inventory.setItem(slot, slotStack);
+            inventory.setChanged();
             return true;
         }
-        inventory.setStack(slot, heldStack.copy());
-        player.setStackInHand(Hand.MAIN_HAND, slotStack.copy());
-        inventory.markDirty();
+        inventory.setItem(slot, heldStack.copy());
+        player.setItemInHand(InteractionHand.MAIN_HAND, slotStack.copy());
+        inventory.setChanged();
         return true;
     }
 
@@ -77,38 +77,30 @@ public final class HmCommonUtils {
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 for (int z = -radius; z <= radius; z++) {
-                    action.accept(center.add(x, y, z));
+                    action.accept(center.offset(x, y, z));
                 }
             }
         }
     }
 
-    public static void syncBlockEntity(BlockEntity be) {
-        World world = be.getWorld();
-        if (world != null && !world.isClient) {
-            world.updateListeners(be.getPos(), be.getCachedState(), be.getCachedState(), 3);
-            be.markDirty();
-        }
+    public static List<LivingEntity> getNearbyLivingEntities(Level level, BlockPos center, double radius) {
+        return level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(center.getCenter(), radius * 2, radius * 2, radius * 2), e -> true);
     }
 
-    public static List<LivingEntity> getNearbyLivingEntities(World world, BlockPos center, double radius) {
-        return world.getEntitiesByClass(LivingEntity.class, Box.of(center.toCenterPos(), radius * 2, radius * 2, radius * 2), e -> true);
-    }
-
-    public static <T extends Entity> void attractEntities(World world, BlockPos center, float radius, float balanced, Class<T> entityClass, Predicate<T> canAttract) {
-        Vec3d playerPos = center.toCenterPos();
-        List<T> entities = world.getEntitiesByClass(entityClass, Box.of(center.toCenterPos(), radius * 2, radius * 2, radius * 2), e -> true);
+    public static <T extends Entity> void attractEntities(Level level, BlockPos center, float radius, float balanced, Class<T> entityClass, Predicate<T> canAttract) {
+        Vec3 playerPos = center.getCenter();
+        List<T> entities = level.getEntitiesOfClass(entityClass, AABB.ofSize(center.getCenter(), radius * 2, radius * 2, radius * 2), e -> true);
 
         for (T e : entities) {
             if (!canAttract.test(e)) continue;
-            Vec3d entityPos = e.getPos();
+            Vec3 entityPos = e.position();
             double dist = playerPos.distanceTo(entityPos);
             if (dist <= 1.0f) continue;
 
             float strange = (float) (dist / (dist * balanced));
             double force = Math.min(strange / (dist * dist), 0.3f);
-            Vec3d dir = playerPos.subtract(entityPos).normalize();
-            e.setVelocity(e.getVelocity().add(dir.multiply(force)));
+            Vec3 dir = playerPos.subtract(entityPos).normalize();
+            e.setDeltaMovement(e.getDeltaMovement().add(dir.scale(force)));
         }
     }
 
@@ -116,10 +108,10 @@ public final class HmCommonUtils {
         return !state.getFluidState().isEmpty();
     }
 
-    public static NbtList fromList(List<Text> texts) {
-        NbtList nbtList = new NbtList();
-        for (Text text : texts) {
-            nbtList.add(NbtString.of(Text.Serializer.toJson(text)));
+    public static ListTag fromList(List<Component> texts, HolderLookup.Provider provider) {
+        ListTag nbtList = new ListTag();
+        for (Component text : texts) {
+            nbtList.add(StringTag.valueOf(Component.Serializer.toJson(text, provider)));
         }
         return nbtList;
     }
@@ -131,21 +123,21 @@ public final class HmCommonUtils {
                 .toList();
     }
 
-    public static boolean breakTree(ServerWorld world, BlockPos startPos, PlayerEntity player) {
-        Set<BlockPos> treeLogs = floodFillLogs(world, startPos);
+    public static boolean breakTree(ServerLevel level, BlockPos startPos, Player player) {
+        Set<BlockPos> treeLogs = floodFillLogs(level, startPos);
 
-        if (!isValidTree(world, treeLogs)) {
+        if (!isValidTree(level, treeLogs)) {
             return false;
         }
 
         for (BlockPos pos : treeLogs) {
-            world.breakBlock(pos, !player.isCreative(), player);
+            level.destroyBlock(pos, !player.isCreative(), player);
         }
 
         return true;
     }
 
-    private static Set<BlockPos> floodFillLogs(ServerWorld world, BlockPos startPos) {
+    private static Set<BlockPos> floodFillLogs(ServerLevel level, BlockPos startPos) {
         Set<BlockPos> logs = new HashSet<>();
         Queue<BlockPos> queue = new LinkedList<>();
         queue.add(startPos);
@@ -160,10 +152,10 @@ public final class HmCommonUtils {
                     for (int dz = -1; dz <= 1; dz++) {
                         if (dx == 0 && dy == 0 && dz == 0) continue;
 
-                        BlockPos neighbor = current.add(dx, dy, dz);
-                        BlockState neighborState = world.getBlockState(neighbor);
+                        BlockPos neighbor = current.offset(dx, dy, dz);
+                        BlockState neighborState = level.getBlockState(neighbor);
 
-                        if (neighborState.isIn(BlockTags.LOGS) && logs.add(neighbor)) {
+                        if (neighborState.is(BlockTags.LOGS) && logs.add(neighbor)) {
                             queue.add(neighbor);
                         }
                     }
@@ -173,7 +165,7 @@ public final class HmCommonUtils {
         return logs;
     }
 
-    private static boolean isValidTree(ServerWorld world, Set<BlockPos> logs) {
+    private static boolean isValidTree(ServerLevel level, Set<BlockPos> logs) {
         if (logs.size() < 4 || logs.size() > 150) {
             return false;
         }
@@ -197,7 +189,7 @@ public final class HmCommonUtils {
         for (BlockPos pos : logs) {
             if (pos.getY() >= topThreshold) {
                 topLogsChecked++;
-                if (hasNearbyLeaves(world, pos)) {
+                if (hasNearbyLeaves(level, pos)) {
                     leavesFound++;
                 }
             }
@@ -205,15 +197,15 @@ public final class HmCommonUtils {
         return topLogsChecked > 0 && (leavesFound * 100 / topLogsChecked) >= 30;
     }
 
-    private static boolean hasNearbyLeaves(ServerWorld world, BlockPos logPos) {
+    private static boolean hasNearbyLeaves(ServerLevel level, BlockPos logPos) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 2; dy++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 
-                    BlockPos neighbor = logPos.add(dx, dy, dz);
-                    BlockState state = world.getBlockState(neighbor);
-                    if (state.isIn(BlockTags.LEAVES)) {
+                    BlockPos neighbor = logPos.offset(dx, dy, dz);
+                    BlockState state = level.getBlockState(neighbor);
+                    if (state.is(BlockTags.LEAVES)) {
                         return true;
                     }
                 }
@@ -222,7 +214,7 @@ public final class HmCommonUtils {
         return false;
     }
 
-    public static BlockPos rotatePos(BlockPos pos, BlockRotation rotation) {
+    public static BlockPos rotatePos(BlockPos pos, Rotation rotation) {
         int x = pos.getX();
         int z = pos.getZ();
         int newX = x;

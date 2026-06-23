@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:barrier"
+  },
+  "lp": 50000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:archmage_blood_orb"
+  },
+  "tier": 5
+}

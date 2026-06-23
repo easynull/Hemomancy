@@ -1,0 +1,31 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    }
+  ],
+  "lp": 120000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:transcendental_crystal"
+  }
+}

@@ -1,31 +1,32 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.random.Random;
-import ru.easynull.hemomancy.Hemomancy;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import ru.easynull.hemomancy.api.altar.TierManager;
+import ru.easynull.hemomancy.data.HmBlockTagsProvider;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import java.util.List;
 
-import static ru.easynull.hemomancy.utils.HmClientUtils.getCyclingItem;
+import static ru.easynull.hemomancy.utils.HmClientUtils.cyclingItem;
 
 public final class StructureElement implements PageElement {
     private final List<TierManager.Component> components;
@@ -38,7 +39,7 @@ public final class StructureElement implements PageElement {
     private float panX = 0;
     private float panY = 0;
     private float zoom = 1.5f;
-    private Identifier tagId = Hemomancy.path("runes");
+    private TagKey<?> tagId = HmBlockTagsProvider.RUNES;
 
     private static final float MIN_ZOOM = 0.5f;
     private static final float MAX_ZOOM = 3.5f;
@@ -60,15 +61,15 @@ public final class StructureElement implements PageElement {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         x = x + 19;
-        context.fill(RenderLayer.getEndGateway(), x - 11, y, x + 98, y + height - 1, 0xFFECE3D6);
+        context.fill(RenderType.endGateway(), x - 11, y, x + 98, y + height - 1, 0xFFECE3D6);
         context.fill(x - 11, y, x + 98, y + height - 1, 0x32FF0000);
-        context.drawBorder(x - 12, y, 111, height, 0xFFB8ADA1);
+        context.renderOutline(x - 12, y, 111, height, 0xFFB8ADA1);
         context.enableScissor(x - 11, y + 1, x + 98, y + height - 1);
-        MatrixStack viewMatrices = RenderSystem.getModelViewStack();
-        viewMatrices.push();
-        viewMatrices.loadIdentity();
+
+        PoseStack viewMatrices = context.pose();
+        viewMatrices.pushPose();
 
         float centerX = x + PageGui.BOOK_WIDTH / 7.2f;
         float centerY = y + height / 2.4f;
@@ -79,65 +80,63 @@ public final class StructureElement implements PageElement {
         float scale = 10.0f * zoom;
         viewMatrices.scale(scale, -scale, scale);
 
-        viewMatrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationYaw));
-        viewMatrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotationPitch));
+        viewMatrices.mulPose(Axis.YP.rotationDegrees(rotationYaw));
+        viewMatrices.mulPose(Axis.XP.rotationDegrees(rotationPitch));
 
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
         for (TierManager.Component comp : components) {
-            viewMatrices.push();
+            viewMatrices.pushPose();
             viewMatrices.translate(comp.pos.getX(), comp.pos.getY(), comp.pos.getZ());
-            BlockState state = comp.state == null ? Blocks.POLISHED_DEEPSLATE.getDefaultState() :
-                    comp.isUniversal() ?
-                            Block.getBlockFromItem(getCyclingItem(MinecraftClient.getInstance().world,
-                                    TagKey.of(RegistryKeys.ITEM, tagId), 80)).getDefaultState() :
-                            comp.state;
-            renderBlock(viewMatrices, state);
-            viewMatrices.pop();
+
+            BlockState state = comp.state == null ? Blocks.POLISHED_DEEPSLATE.defaultBlockState() :
+                    comp.isUniversal() ? Block.byItem(cyclingItem(Minecraft.getInstance().level, tagId, 80)).defaultBlockState() :
+                    comp.state;
+            renderBlock(context, state);
+            viewMatrices.popPose();
         }
 
         if (zeroState != null) {
-            viewMatrices.push();
+            viewMatrices.pushPose();
             viewMatrices.translate(0, 0, 0);
-            renderBlock(viewMatrices, zeroState);
-            viewMatrices.pop();
+            renderBlock(context, zeroState);
+            viewMatrices.popPose();
         }
-        viewMatrices.pop();
+
+        viewMatrices.popPose();
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
         context.disableScissor();
     }
 
-    private static void renderBlock(MatrixStack matrices, BlockState state) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        BlockRenderManager blockRenderer = client.getBlockRenderManager();
-        BakedModel model = blockRenderer.getModel(state);
+    private static void renderBlock(GuiGraphics gg, BlockState state) {
+        Minecraft client = Minecraft.getInstance();
+        BlockRenderDispatcher blockRenderer = client.getBlockRenderer();
+        BakedModel model = blockRenderer.getBlockModel(state);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        VertexConsumer consumer = gg.bufferSource().getBuffer(ItemBlockRenderTypes.getChunkRenderType(state));
 
-        MatrixStack.Entry entry = matrices.peek();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+        PoseStack ps = gg.pose();
+        PoseStack.Pose entry = ps.last();
+        RandomSource random = RandomSource.create();
 
-        Random random = Random.create();
         for (Direction direction : Direction.values()) {
-            renderQuads(entry, buffer, model.getQuads(state, direction, random));
+            renderQuads(entry, consumer, model.getQuads(state, direction, random));
         }
-        renderQuads(entry, buffer, model.getQuads(state, null, random));
+        renderQuads(entry, consumer, model.getQuads(state, null, random));
 
-        Tessellator.getInstance().draw();
+        gg.flush();
     }
 
-    private static void renderQuads(MatrixStack.Entry entry, VertexConsumer consumer, List<BakedQuad> quads) {
+    private static void renderQuads(PoseStack.Pose entry, VertexConsumer consumer, List<BakedQuad> quads) {
         for (BakedQuad quad : quads) {
-            consumer.quad(entry, quad, 1f, 1f, 1f, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+            consumer.putBulkData(entry, quad, 1f, 1f, 1f, 1f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 
-    public StructureElement setUniversalTag(Identifier tagId){
+    public StructureElement setUniversalTag(TagKey<?> tagId) {
         this.tagId = tagId;
         return this;
     }
@@ -156,10 +155,11 @@ public final class StructureElement implements PageElement {
         return false;
     }
 
+    // В 1.21.1 сигнатура метода mouseScrolled изменилась: теперь она принимает horizontalAmount и verticalAmount
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        float factor = amount > 0 ? 1.1f : 0.9f;
-        zoom = MathHelper.clamp(zoom * factor, MIN_ZOOM, MAX_ZOOM);
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        float factor = verticalAmount > 0 ? 1.1f : 0.9f;
+        zoom = Mth.clamp(zoom * factor, MIN_ZOOM, MAX_ZOOM);
         return true;
     }
 }

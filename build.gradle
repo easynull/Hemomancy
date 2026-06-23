@@ -1,6 +1,6 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
-    id 'fabric-loom' version '1.10.+'
+    id 'fabric-loom' version "${loom_version}"
     id 'com.modrinth.minotaur' version "2.+"
     id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
@@ -10,6 +10,12 @@ group = project.maven_group
 
 base {
     archivesName = project.name
+}
+
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
 }
 
 loom {
@@ -29,28 +35,21 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
-    /*maven {
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
-    }
     maven {
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }*/
-    maven {
-        url "https://maven.shedaniel.me/" // for rei
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
     }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    //modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:12.0.625"
+    //modCompileOnly "dev.emi:emi-fabric:${emi_version}:api"
+    //modLocalRuntime "dev.emi:emi-fabric:${emi_version}"
 }
 
 processResources {
@@ -89,7 +88,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
     mainFile.addModLoader("Fabric")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {

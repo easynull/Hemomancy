@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "hemomancy:transcendental_crystal"
+  },
+  "lp": 100000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:transcendental_blood_orb"
+  },
+  "tier": 6
+}

@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "hemomancy:blank_glyph"
+  },
+  "lp": 1500,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:fortified_glyph"
+  },
+  "tier": 2
+}

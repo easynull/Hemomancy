@@ -1,0 +1,22 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "hemomancy:crimson_steel_ingot"
+    },
+    {
+      "item": "hemomancy:crimson_steel_ingot"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    },
+    {
+      "item": "hemomancy:crimson_glyph"
+    }
+  ],
+  "lp": 15000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:resistance_sigil"
+  }
+}

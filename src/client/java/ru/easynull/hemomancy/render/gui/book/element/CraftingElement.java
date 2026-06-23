@@ -1,10 +1,10 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import ru.easynull.hemomancy.HemomancyClient;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
@@ -47,10 +47,10 @@ public final class CraftingElement implements PageElement {
     }
 
     private CraftingRecipe findRecipe() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.world == null) return null;
-        Optional<CraftingRecipe> found = client.world.getRecipeManager().listAllOfType(RecipeType.CRAFTING).stream()
-                .filter(recipe -> recipe.getOutput(null).isOf(resultItem))
+        Minecraft client = Minecraft.getInstance();
+        if (client.level == null) return null;
+        Optional<CraftingRecipe> found = client.level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).stream()
+                .filter(recipe -> recipe.value().getResultItem(null).is(resultItem)).map(RecipeHolder::value)
                 .findFirst();
         return found.orElse(null);
     }
@@ -72,7 +72,7 @@ public final class CraftingElement implements PageElement {
                 for (int col = 0; col < width; col++) {
                     int index = row * width + col;
                     if (index >= ingredients.size()) continue;
-                    ItemStack[] stacks = ingredients.get(index).getMatchingStacks();
+                    ItemStack[] stacks = ingredients.get(index).getItems();
                     if (stacks.length > 0) matrix.get(row).set(col, stacks[HemomancyClient.tickClient / 40 % stacks.length].copy());
                 }
             }
@@ -81,7 +81,7 @@ public final class CraftingElement implements PageElement {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         if (recipe == null) return;
 
         int gridSizePx = GRID_SIZE * ITEM_STEP;
@@ -95,25 +95,25 @@ public final class CraftingElement implements PageElement {
             for (int col = 0; col < GRID_SIZE; col++) {
                 int itemX = startX + col * ITEM_STEP;
                 int itemY = startY + row * ITEM_STEP;
-                context.drawTexture(BOOK, itemX - 4, itemY, 0, 190, SLOT_SIZE, SLOT_HEIGHT, 512, 512);
+                context.blit(BOOK, itemX - 4, itemY, 0, 190, SLOT_SIZE, SLOT_HEIGHT, 512, 512);
                 ItemStack stack = matrix.get(row).get(col);
-                if (!stack.isEmpty()) context.drawItem(stack, itemX + ICON_OFFSET_X, itemY + ICON_OFFSET_Y);
+                if (!stack.isEmpty()) context.renderItem(stack, itemX + ICON_OFFSET_X, itemY + ICON_OFFSET_Y);
             }
         }
 
         int resultX = startX + 14;
         int resultY = startY + ITEM_STEP * 4;
-        context.drawTexture(BOOK, resultX - 4 + 4, resultY - 1 - 10, 22, 189, 29, 28, 512, 512);
-        context.drawTexture(BOOK, resultX - 4 + 15, resultY - 1 - ITEM_STEP, 0, 212, 8, 11, 512, 512);
+        context.blit(BOOK, resultX - 4 + 4, resultY - 1 - 10, 22, 189, 29, 28, 512, 512);
+        context.blit(BOOK, resultX - 4 + 15, resultY - 1 - ITEM_STEP, 0, 212, 8, 11, 512, 512);
 
 
-        ItemStack output = recipe.getOutput(null);
-        context.drawItem(output, resultX + RESULT_OFFSET_X, resultY + RESULT_OFFSET_Y);
+        ItemStack output = recipe.getResultItem(null);
+        context.renderItem(output, resultX + RESULT_OFFSET_X, resultY + RESULT_OFFSET_Y);
         if (output.getCount() > 1) {
-            context.getMatrices().push();
-            context.getMatrices().translate(0, 0, 200f);
-            context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(output.getCount()), resultX + RESULT_COUNT_OFFSET_X, resultY + RESULT_COUNT_OFFSET_Y, 0xFFFFFFFF, true);
-            context.getMatrices().pop();
+            context.pose().pushPose();
+            context.pose().translate(0, 0, 200f);
+            context.drawString(Minecraft.getInstance().font, String.valueOf(output.getCount()), resultX + RESULT_COUNT_OFFSET_X, resultY + RESULT_COUNT_OFFSET_Y, 0xFFFFFFFF, true);
+            context.pose().popPose();
         }
     }
 
@@ -141,7 +141,7 @@ public final class CraftingElement implements PageElement {
         int resultX = offsetX + 14 + RESULT_OFFSET_X;
         int resultY = offsetY + ITEM_STEP * 4 + RESULT_OFFSET_Y;
         if (relX >= resultX && relX < resultX + ICON_SIZE && relY >= resultY && relY < resultY + ICON_SIZE) {
-            return recipe.getOutput(null);
+            return recipe.getResultItem(null);
         }
         return null;
     }

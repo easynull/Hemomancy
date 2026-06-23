@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "item": "hemomancy:crimson_glyph"
+    },
+    "R": {
+      "tag": "hemomancy:orbs"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SAS",
+    "ARA",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:capacity_rune"
+  }
+}

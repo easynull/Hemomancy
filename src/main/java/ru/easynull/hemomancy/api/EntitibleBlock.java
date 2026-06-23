@@ -1,33 +1,51 @@
 package ru.easynull.hemomancy.api;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public class EntitibleBlock extends BlockWithEntity {
-    final Supplier<BlockEntityType<?>> type;
+public class EntitibleBlock extends BaseEntityBlock {
+    protected final Supplier<BlockEntityType<?>> type;
 
-    protected EntitibleBlock(Settings settings, Supplier<BlockEntityType<?>> type) {
-        super(settings);
+    protected EntitibleBlock(Properties properties, Supplier<BlockEntityType<?>> type) {
+        super(properties);
         this.type = type;
     }
 
     @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return type.get().instantiate(pos, state);
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return this.type.get().create(pos, state);
     }
 
     @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return ((world1, pos, state1, be) -> {
-            if (be instanceof Tickable tick) tick.onTick();
-        });
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (type != this.type.get()) {
+            return null;
+        }
+        return (level1, pos, state1, be) -> {
+            if (be instanceof BlockEntityTicker tick) {
+                tick.tick(level1, pos, state1, be);
+            }
+        };
+    }
+
+    @Override
+    protected RenderShape getRenderShape(BlockState blockState) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return simpleCodec(pe -> this);
     }
 }

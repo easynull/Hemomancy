@@ -2,42 +2,45 @@ package ru.easynull.hemomancy.api.mage;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.mage.quest.MageQuestManager.Quest;
 
 public final class MagePlayer {
     public static final AttachmentType<Data> DATA = AttachmentRegistry.<Data>builder()
             .persistent(Data.CODEC)
+            .syncWith(Data.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
             .initializer(Data::new)
             .copyOnDeath()
             .buildAndRegister(Hemomancy.path("blood_mage"));
 
-    public static Data of(PlayerEntity player) {
+    public static Data of(Player player) {
         return player.getAttachedOrCreate(DATA);
     }
 
     public static void onInit(){}
 
     public static final class Data {
-        public static final Codec<Data> CODEC = NbtCompound.CODEC.xmap(
-                Data::new,
-                Data::writeToNbt
-        );
+        public static final Codec<Data> CODEC = CompoundTag.CODEC.xmap(Data::new, Data::writeToNbt);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = ByteBufCodecs.COMPOUND_TAG.<RegistryFriendlyByteBuf>cast().map(Data::new, Data::writeToNbt);
 
-        public final NbtCompound data = new NbtCompound();
+        public final CompoundTag data = new CompoundTag();
 
         public Data() {
             setLevel(0);
         }
 
-        public Data(NbtCompound nbt) {
-            this.data.copyFrom(nbt);
+        public Data(CompoundTag nbt) {
+            this.data.merge(nbt);
         }
 
-        private NbtCompound writeToNbt() {
+        private CompoundTag writeToNbt() {
             return data.copy();
         }
 
@@ -51,7 +54,7 @@ public final class MagePlayer {
 
         public Quest getCurrentQuest() {
             if (!data.contains("Quest")) return null;
-            NbtCompound questNbt = data.getCompound("Quest");
+            CompoundTag questNbt = data.getCompound("Quest");
             return Quest.fromNbt(questNbt);
         }
 
@@ -69,9 +72,9 @@ public final class MagePlayer {
             }
         }
 
-        public void updateData(NbtCompound nbt){
+        public void updateData(CompoundTag nbt){
            if(!nbt.isEmpty()){
-               data.copyFrom(nbt);
+               data.merge(nbt);
            }
         }
     }

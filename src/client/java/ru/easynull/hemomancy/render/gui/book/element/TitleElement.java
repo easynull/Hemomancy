@@ -1,38 +1,39 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import static ru.easynull.hemomancy.render.gui.book.BookGui.BOOK;
 
-public record TitleElement(Text title) implements PageElement {
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+
+public record TitleElement(Component title) implements PageElement {
     private static final int MAX_WIDTH = PageGui.BOOK_WIDTH / 2 - 23;
 
     @Override
     public int getHeight(int maxWidth) {
-        return MinecraftClient.getInstance().textRenderer.fontHeight + 10;
+        return Minecraft.getInstance().font.lineHeight + 10;
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         x = x + 18;
-        context.drawTexture(BOOK, x - 15, y + 7, 0, 180, MAX_WIDTH, 8, 512, 512);
+        context.blit(BOOK, x - 15, y + 7, 0, 180, MAX_WIDTH, 8, 512, 512);
 
-        var textRenderer = MinecraftClient.getInstance().textRenderer;
-        int textWidth = textRenderer.getWidth(title);
+        var textRenderer = Minecraft.getInstance().font;
+        int textWidth = textRenderer.width(title);
         int centerX = x + 43;
 
         if (textWidth <= MAX_WIDTH - 8) {
-            context.drawCenteredTextWithShadow(textRenderer, title, centerX, y, 0xFFD700);
+            context.drawCenteredString(textRenderer, title, centerX, y, 0xFFD700);
         } else {
             float scale = (float) (MAX_WIDTH - 8) / textWidth;
-            context.getMatrices().push();
-            context.getMatrices().translate(centerX, y, 0);
-            context.getMatrices().scale(scale, scale, 1.0f);
-            context.drawCenteredTextWithShadow(textRenderer, title, 0, 0, 0xFFD700);
-            context.getMatrices().pop();
+            context.pose().pushPose();
+            context.pose().translate(centerX, y, 0);
+            context.pose().scale(scale, scale, 1.0f);
+            context.drawCenteredString(textRenderer, title, 0, 0, 0xFFD700);
+            context.pose().popPose();
         }
     }
 }

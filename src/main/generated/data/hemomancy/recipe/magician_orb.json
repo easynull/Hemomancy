@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:netherite_block"
+  },
+  "lp": 15000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:magician_blood_orb"
+  },
+  "tier": 3
+}

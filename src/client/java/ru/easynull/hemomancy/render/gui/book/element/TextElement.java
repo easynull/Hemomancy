@@ -1,42 +1,42 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import java.util.List;
 
 public final class TextElement implements PageElement {
     private static final float SCROLL_SPEED = 0.4f;
-    private static final int PAUSE_DURATION = 320;
+    private static final int PAUSE_DURATION = 160;
     private static final int TEXT_COLOR = 0x3F0000;
     private static final int TEXT_OFFSET_X = -15;
     private static final int SCISSOR_OFFSET_X = -20;
     private static final int WRAP_WIDTH = 110;
 
-    private final Text text;
+    private final Component text;
     private final int displayHeight;
-    private List<OrderedText> wrappedLines;
+    private List<FormattedCharSequence> wrappedLines;
     private int totalHeight;
 
     private float scrollY;
     private int pauseTicks;
     private boolean movingDown;
 
-    public TextElement(Text text, int displayHeight) {
+    public TextElement(Component text, int displayHeight) {
         this.text = text;
         this.displayHeight = displayHeight;
     }
 
     private void wrap() {
         if (wrappedLines != null) return;
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-        wrappedLines = renderer.wrapLines(text, WRAP_WIDTH);
-        totalHeight = wrappedLines.size() * renderer.fontHeight;
+        Font renderer = Minecraft.getInstance().font;
+        wrappedLines = renderer.split(text, WRAP_WIDTH);
+        totalHeight = wrappedLines.size() * renderer.lineHeight;
     }
 
     @Override
@@ -45,23 +45,23 @@ public final class TextElement implements PageElement {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         wrap();
         x = x + 23;
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+        Font renderer = Minecraft.getInstance().font;
         updateScrolling(delta);
 
         float maxScroll = Math.max(0, totalHeight - displayHeight);
-        scrollY = MathHelper.clamp(scrollY, 0, maxScroll);
+        scrollY = Mth.clamp(scrollY, 0, maxScroll);
 
-        int firstLine = (int) (scrollY / renderer.fontHeight);
-        int lastLine = Math.min((int) Math.ceil((scrollY + displayHeight) / renderer.fontHeight) + 1, wrappedLines.size());
+        int firstLine = (int) (scrollY / renderer.lineHeight);
+        int lastLine = Math.min((int) Math.ceil((scrollY + displayHeight) / renderer.lineHeight) + 1, wrappedLines.size());
 
         context.enableScissor(x + SCISSOR_OFFSET_X, y, x + PageGui.BOOK_WIDTH, y + displayHeight);
         for (int i = firstLine; i < lastLine; i++) {
-            OrderedText line = wrappedLines.get(i);
-            int lineY = y + i * renderer.fontHeight - (int) scrollY;
-            context.drawText(renderer, line, x + TEXT_OFFSET_X, lineY, TEXT_COLOR, false);
+            FormattedCharSequence line = wrappedLines.get(i);
+            int lineY = y + i * renderer.lineHeight - (int) scrollY;
+            context.drawString(renderer, line, x + TEXT_OFFSET_X, lineY, TEXT_COLOR, false);
         }
         context.disableScissor();
     }

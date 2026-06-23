@@ -1,53 +1,51 @@
 package ru.easynull.hemomancy.registry.items.sigil;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import ru.easynull.hemomancy.registry.HmDataComponents;
 import ru.easynull.hemomancy.utils.EnergyUtils;
 
 public final class EnabledSigilItem extends SigilItem {
     private final int rollbackTicks, rollbackPayTicks;
 
-    public EnabledSigilItem(Settings settings, Context action, int lpCost, int rollbackTicks, int rollbackPayTicks) {
-        super(settings, action, lpCost);
+    public EnabledSigilItem(Properties settings, Context action, int lpCost, int rollbackTicks, int rollbackPayTicks) {
+        super(settings.component(HmDataComponents.ENABLED, false), action, lpCost);
         this.rollbackTicks = rollbackTicks;
         this.rollbackPayTicks = rollbackPayTicks;
     }
 
-    public EnabledSigilItem(Settings settings, Context action, int lpCost, int rollbackPayTicks) {
+    public EnabledSigilItem(Properties settings, Context action, int lpCost, int rollbackPayTicks) {
         this(settings, action, lpCost, 20, rollbackPayTicks);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (!(entity instanceof PlayerEntity player) || !isEnabled(stack)) return;
-        if (world.getTime() % rollbackTicks == 0) action.perform(new SigilContext(world, player.getBlockPos(), player.getHorizontalFacing(), player, stack, this));
-        if (!world.isClient && consumeLp) {
-            if (world.getTime() % rollbackPayTicks == 0) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        if (!(entity instanceof Player player) || !isEnabled(stack)) return;
+        if (level.getGameTime() % rollbackTicks == 0) action.perform(new SigilContext(level, player.blockPosition(), player.getDirection(), player, stack, this));
+        if (!level.isClientSide && consumeLp) {
+            if (level.getGameTime() % rollbackPayTicks == 0) {
                 EnergyUtils.extractLp(player, lpCost);
             }
         }
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         boolean wasActive = isEnabled(stack);
         setEnabled(stack, !wasActive);
-        return TypedActionResult.consume(stack);
+        return InteractionResultHolder.consume(stack);
     }
 
     public static boolean isEnabled(ItemStack stack) {
-        NbtCompound nbt = stack.getNbt();
-        return nbt != null && nbt.getBoolean("Enabled");
+        return stack.get(HmDataComponents.ENABLED);
     }
 
     public static void setEnabled(ItemStack stack, boolean value) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        nbt.putBoolean("Enabled", value);
+        stack.update(HmDataComponents.ENABLED, false, b -> value);
     }
 }

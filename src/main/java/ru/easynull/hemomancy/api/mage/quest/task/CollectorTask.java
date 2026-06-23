@@ -1,19 +1,19 @@
 package ru.easynull.hemomancy.api.mage.quest.task;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 
 public final class CollectorTask extends Task {
-    public CollectorTask(Identifier itemId, int required) {
+    public CollectorTask(ResourceLocation itemId, int required) {
         super(Type.COLLECTOR, itemId, required);
     }
 
     @Override
-    public Text getDescription() {
-        return Text.translatable("task.hemomancy.collector", Registries.ITEM.get(target).getName(), required);
+    public Component getDescription() {
+        return Component.translatable("task.hemomancy.collector", BuiltInRegistries.ITEM.get(target).getDescription(), required);
     }
 
     @Override
@@ -21,11 +21,11 @@ public final class CollectorTask extends Task {
         return false;
     }
 
-    public boolean tryComplete(PlayerEntity player) {
-        Item item = Registries.ITEM.get(target);
-        int count = player.getInventory().count(item);
+    public boolean tryComplete(Player player) {
+        Item item = BuiltInRegistries.ITEM.get(target);
+        int count = player.getInventory().countItem(item);
         if (count >= required) {
-            player.getInventory().removeStack(player.getInventory().getSlotWithStack(item.getDefaultStack()), required);
+            player.getInventory().removeItem(player.getInventory().findSlotMatchingItem(item.getDefaultInstance()), required);
             return true;
         }
         return false;

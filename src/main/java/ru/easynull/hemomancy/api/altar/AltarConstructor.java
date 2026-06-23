@@ -1,13 +1,14 @@
 package ru.easynull.hemomancy.api.altar;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import ru.easynull.hemomancy.api.SyncBlockEntity;
 import ru.easynull.hemomancy.registry.HmBlocks;
 import ru.easynull.hemomancy.registry.blocks.RuneBlock;
 import ru.easynull.hemomancy.registry.blocks.type.BloodAltarBlockEntity;
@@ -38,15 +39,15 @@ public final class AltarConstructor {
         var structure = TierManager.getTiers().get(checkTier);
         if (structure == null) return false;
 
-        BlockPos altarPos = altar.getPos();
-        World world = altar.getWorld();
-        if (world == null) return false;
+        BlockPos altarPos = altar.getBlockPos();
+        Level level = altar.getLevel();
+        if (level == null) return false;
 
         boolean valid = true;
 
         for (TierManager.Component component : structure) {
-            BlockPos componentPos = altarPos.add(component.pos.getX(), component.pos.getY(), component.pos.getZ());
-            BlockState state = world.getBlockState(componentPos);
+            BlockPos componentPos = altarPos.offset(component.pos.getX(), component.pos.getY(), component.pos.getZ());
+            BlockState state = level.getBlockState(componentPos);
 
             if (component.state != null) {
                 if (component.state.getBlock() == HmBlocks.BLANK_RUNE) {
@@ -75,10 +76,10 @@ public final class AltarConstructor {
     }
 
     public void upgradeAltar() {
-        World world = altar.getWorld();
-        if (world == null || world.isClient || world.getTime() % 40 != 0) return;
+        Level level = altar.getLevel();
+        if (level == null || level.isClientSide || level.getGameTime() % 40 != 0) return;
 
-        BlockPos pos = altar.getPos();
+        BlockPos pos = altar.getBlockPos();
         byte highestValidTier = 1;
         for (byte t : TierManager.getTiers().keySet()) {
             if (isValidMonument(t)) {
@@ -94,11 +95,11 @@ public final class AltarConstructor {
 
         List<TierManager.Component> components = getComponents();
         for (TierManager.Component component : components) {
-            BlockPos cPos = pos.add(component.pos);
-            BlockState state = world.getBlockState(cPos);
+            BlockPos cPos = pos.offset(component.pos);
+            BlockState state = level.getBlockState(cPos);
 
             if(component.state != null) {
-                if (component.state.isOf(HmBlocks.BLANK_RUNE) && state.getBlock() instanceof RuneBlock rune) {
+                if (component.state.is(HmBlocks.BLANK_RUNE) && state.getBlock() instanceof RuneBlock rune) {
                     if (component.isUniversal() && rune.getPrimaryType() != RuneBlock.Type.NONE) {
                         for (RuneBlock.Type type : rune.getTypes()) {
                             addUpgrade(type, rune.getTier());
@@ -139,20 +140,20 @@ public final class AltarConstructor {
         upgradeAltar();
 
         if (sacrifices > 0) {
-            World world = altar.getWorld();
-            if (world == null || world.isClient) return;
+            Level level = altar.getLevel();
+            if (level == null || level.isClientSide) return;
 
-            List<LivingEntity> nearby = HmCommonUtils.getNearbyLivingEntities(world, altar.getPos(), 3.0);
+            List<LivingEntity> nearby = HmCommonUtils.getNearbyLivingEntities(level, altar.getBlockPos(), 3.0);
 
             for (LivingEntity entity : nearby) {
                 if (!entity.isAlive()) {
-                    float healthMultiplier = (entity instanceof PlayerEntity) ? 3f : 1f;
+                    float healthMultiplier = (entity instanceof Player) ? 3f : 1f;
                     long lpGain = (long) (entity.getMaxHealth() * sacrifices * healthMultiplier);
 
                     altar.reduceLp(lpGain, altar);
 
-                    if (world instanceof ServerWorld serverWorld) {
-                        serverWorld.spawnParticles(DustParticleEffect.DEFAULT, entity.getX() + 0.5, entity.getY() + 0.5, entity.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
+                    if (level instanceof ServerLevel serverWorld) {
+                        serverWorld.sendParticles(DustParticleOptions.REDSTONE, entity.getX() + 0.5, entity.getY() + 0.5, entity.getZ() + 0.5, 2, 0.2, 0.0, 0.2, 0.0);
                     }
                 }
             }
@@ -194,49 +195,49 @@ public final class AltarConstructor {
     public void setTier(byte newTier) {
         if (tier != newTier) {
             tier = newTier;
-            HmCommonUtils.syncBlockEntity(altar);
+            SyncBlockEntity.sync(altar);
         }
     }
 
     public void setSpeed(float newSpeed) {
         if (speed != newSpeed) {
             speed = newSpeed;
-            HmCommonUtils.syncBlockEntity(altar);
+            //SyncBlockEntity.sync(altar);
         }
     }
 
     public void setCapacity(long newCapacity) {
         if (capacity != newCapacity) {
             capacity = newCapacity;
-            HmCommonUtils.syncBlockEntity(altar);
+            SyncBlockEntity.sync(altar);
         }
     }
 
     public void setResCapacity(float newResCapacity) {
         if (resCapacity != newResCapacity) {
             resCapacity = newResCapacity;
-            HmCommonUtils.syncBlockEntity(altar);
+            SyncBlockEntity.sync(altar);
         }
     }
 
     public void setSacrifices(int newSacrifices) {
         if (sacrifices != newSacrifices) {
             sacrifices = newSacrifices;
-            HmCommonUtils.syncBlockEntity(altar);
+            //SyncBlockEntity.sync(altar);
         }
     }
 
     public void setCharging(float newCharging) {
         if (charging != newCharging) {
             charging = newCharging;
-            HmCommonUtils.syncBlockEntity(altar);
+            //SyncBlockEntity.sync(altar);
         }
     }
 
     public void setMode(String newMode) {
         if (!mode.equals(newMode)) {
             mode = newMode;
-            HmCommonUtils.syncBlockEntity(altar);
+            SyncBlockEntity.sync(altar);
         }
     }
 
@@ -248,7 +249,7 @@ public final class AltarConstructor {
         runes.merge(type, count, Integer::sum);
     }
 
-    public void load(NbtCompound tag) {
+    public void load(CompoundTag tag) {
         tier = tag.getByte("Tier");
         capacity = tag.getLong("Capacity");
         resCapacity = tag.getFloat("ResonantCapacity");
@@ -258,7 +259,7 @@ public final class AltarConstructor {
         mode = tag.getString("Mode");
     }
 
-    public void save(NbtCompound tag) {
+    public void save(CompoundTag tag) {
         tag.putByte("Tier", tier);
         tag.putLong("Capacity", capacity);
         tag.putFloat("ResonantCapacity", resCapacity);

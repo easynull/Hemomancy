@@ -1,13 +1,6 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.HemomancyClient;
 import ru.easynull.hemomancy.registry.HmRecipes;
@@ -16,6 +9,11 @@ import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import static ru.easynull.hemomancy.render.gui.book.BookGui.BOOK;
 
@@ -52,10 +50,10 @@ public final class AlchemyElement implements PageElement {
     }
 
     private AlchemyRecipe findRecipe() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.world == null) return null;
-        Optional<AlchemyRecipe> found = client.world.getRecipeManager().listAllOfType(HmRecipes.ALCHEMY).stream()
-                .filter(recipe -> recipe.getOutput(null).isOf(resultItem))
+        Minecraft client = Minecraft.getInstance();
+        if (client.level == null) return null;
+        Optional<AlchemyRecipe> found = client.level.getRecipeManager().getAllRecipesFor(HmRecipes.ALCHEMY).stream()
+                .filter(recipe -> recipe.value().getResultItem(null).is(resultItem)).map(RecipeHolder::value)
                 .findFirst();
         return found.orElse(null);
     }
@@ -71,14 +69,14 @@ public final class AlchemyElement implements PageElement {
 //    }
 
     private ItemStack getAnimatedIngredient(Ingredient ing) {
-        ItemStack[] stacks = ing.getMatchingStacks();
+        ItemStack[] stacks = ing.getItems();
         if (stacks.length == 0) return ItemStack.EMPTY;
         int idx = (HemomancyClient.tickClient / 40) % stacks.length;
         return stacks[idx].copy();
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         if (recipe == null) {
             findRecipe();
             return;
@@ -102,11 +100,11 @@ public final class AlchemyElement implements PageElement {
             double angle = 2 * Math.PI * i / count - Math.PI / 2;
             int slotX = (int) (centerX + RADIUS * Math.cos(angle) - (double) SLOT_SIZE / 2);
             int slotY = (int) (centerY + RADIUS * Math.sin(angle) - (double) SLOT_SIZE / 2);
-            context.drawTexture(BOOK, slotX - 1, slotY, 50, 189, SLOT_SIZE + 3, SLOT_SIZE + 2, 512, 512);
+            context.blit(BOOK, slotX - 1, slotY, 50, 189, SLOT_SIZE + 3, SLOT_SIZE + 2, 512, 512);
 
             ItemStack stack = getAnimatedIngredient(ingredients.get(i));
             if (!stack.isEmpty()) {
-                context.drawItem(stack, slotX + 4, slotY + 3);
+                context.renderItem(stack, slotX + 4, slotY + 3);
             }
         }
 
@@ -117,19 +115,19 @@ public final class AlchemyElement implements PageElement {
 //            context.drawTexture(PageGui.BOOK, resultSlotX + 8, resultSlotY - 60, 0, 190, SLOT_SIZE, SLOT_SIZE, 512, 512);
 //        }
 
-        context.drawTexture(BOOK, resultSlotX + 4, resultSlotY + OUTPUT_OFFSET_Y - 5, 22, 189, BIG_SLOT_WIDTH, BIG_SLOT_HEIGHT, 512, 512);
-        context.drawTexture(BOOK, resultSlotX + 15, resultSlotY + OUTPUT_OFFSET_Y - 18, 0, 223, 8, 10, 512, 512);
+        context.blit(BOOK, resultSlotX + 4, resultSlotY + OUTPUT_OFFSET_Y - 5, 22, 189, BIG_SLOT_WIDTH, BIG_SLOT_HEIGHT, 512, 512);
+        context.blit(BOOK, resultSlotX + 15, resultSlotY + OUTPUT_OFFSET_Y - 18, 0, 223, 8, 10, 512, 512);
 
-        var renderer = MinecraftClient.getInstance().textRenderer;
-        context.drawText(renderer, String.format("%s LP", recipe.lp()), resultSlotX, resultSlotY + 6, 0xFFECE3D6, false);
+        var renderer = Minecraft.getInstance().font;
+        context.drawString(renderer, String.format("%s LP", recipe.lp()), resultSlotX, resultSlotY + 6, 0xFFECE3D6, false);
 
-        ItemStack output = recipe.getOutput(null);
-        context.drawItem(output, resultX + OUTPUT_OFFSET_X, resultY + OUTPUT_OFFSET_Y);
+        ItemStack output = recipe.getResultItem(null);
+        context.renderItem(output, resultX + OUTPUT_OFFSET_X, resultY + OUTPUT_OFFSET_Y);
         if (output.getCount() > 1) {
-            context.getMatrices().push();
-            context.getMatrices().translate(0, 0, 200f);
-            context.drawText(renderer, String.valueOf(output.getCount()), resultX + COUNT_OFFSET_X, resultY + OUTPUT_OFFSET_Y + 11, 0xFFFFFFFF, true);
-            context.getMatrices().pop();
+            context.pose().pushPose();
+            context.pose().translate(0, 0, 200f);
+            context.drawString(renderer, String.valueOf(output.getCount()), resultX + COUNT_OFFSET_X, resultY + OUTPUT_OFFSET_Y + 11, 0xFFFFFFFF, true);
+            context.pose().popPose();
         }
     }
 
@@ -175,7 +173,7 @@ public final class AlchemyElement implements PageElement {
         int outIconX = resultX + OUTPUT_OFFSET_X;
         int outIconY = resultY + OUTPUT_OFFSET_Y;
         if (relX >= outIconX && relX < outIconX + ICON_SIZE && relY >= outIconY && relY < outIconY + 22) {
-            return recipe.getOutput(null);
+            return recipe.getResultItem(null);
         }
 
         return null;

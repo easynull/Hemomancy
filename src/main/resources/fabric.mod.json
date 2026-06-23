@@ -11,7 +11,8 @@
   "environment": "*",
   "entrypoints": {
     "client": ["ru.easynull.hemomancy.HemomancyClient"],
-    "main": ["ru.easynull.hemomancy.Hemomancy"]
+    "main": ["ru.easynull.hemomancy.Hemomancy"],
+    "fabric-datagen": ["ru.easynull.hemomancy.data.HemomancyDataGenerator"]
   },
   "mixins": [
     "hemomancy.mixins.json"

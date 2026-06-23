@@ -2,24 +2,25 @@ package ru.easynull.hemomancy.render.gui.book;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import ru.easynull.hemomancy.Hemomancy;
 import ru.easynull.hemomancy.api.mage.ResearchManager;
 import ru.easynull.hemomancy.api.mage.ResearchManager.Research;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public final class BookGui extends Screen {
-    private static final Identifier BACKGROUND = Hemomancy.path("textures/gui/book/background.jpg");
-    public static final Identifier BOOK = Hemomancy.path("textures/gui/book/book.png");
+    private static final ResourceLocation BACKGROUND = Hemomancy.path("textures/gui/book/background.png");
+    public static final ResourceLocation BOOK = Hemomancy.path("textures/gui/book/book.png");
 
     private static final int BG_OFFSET = 16;
     private static final int ICON_OFFSET = 11;
@@ -35,7 +36,7 @@ public final class BookGui extends Screen {
     private boolean mousePressed;
     private boolean dragging;
     private Research induced;
-    private final PlayerEntity player;
+    private final Player player;
 
     public static float lastX = 1000f, lastY = 1000f;
 
@@ -44,9 +45,9 @@ public final class BookGui extends Screen {
     }
 
     public BookGui(float x, float y) {
-        super(Text.empty());
+        super(Component.empty());
         if (ResearchManager.getAll().isEmpty() || FabricLoader.getInstance().isDevelopmentEnvironment()) ResearchManager.onInit();
-        this.player = MinecraftClient.getInstance().player;
+        this.player = Minecraft.getInstance().player;
         this.targetMapX = this.pX = this.curMouseX = x;
         this.targetMapY = this.pY = this.curMouseY = y;
     }
@@ -61,7 +62,7 @@ public final class BookGui extends Screen {
     }
 
     public void updateResearch() {
-        clearChildren();
+        clearWidgets();
         startX = (int) (width * 0.25f);
         startY = (int) (height * 0.2f);
         screenX = width - 2 * startX;
@@ -85,28 +86,28 @@ public final class BookGui extends Screen {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         lastX = pX;
         lastY = pY;
-        super.close();
+        super.onClose();
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        renderBackground(context, mouseX, mouseY, delta);
         handleDragging(mouseX, mouseY);
         clampTargetMap();
 
-        int locX = MathHelper.floor(curMouseX + (pX - curMouseX) * delta);
-        int locY = MathHelper.floor(curMouseY + (pY - curMouseY) * delta);
-        locX = MathHelper.clamp(locX, boundsLeft, boundsRight - 1);
-        locY = MathHelper.clamp(locY, boundsTop, boundsBottom - 1);
+        int locX = Mth.floor(curMouseX + (pX - curMouseX) * delta);
+        int locY = Mth.floor(curMouseY + (pY - curMouseY) * delta);
+        locX = Mth.clamp(locX, boundsLeft, boundsRight - 1);
+        locY = Mth.clamp(locY, boundsTop, boundsBottom - 1);
 
         drawBackground(context, mouseX, mouseY, locX, locY);
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 300);
+        context.pose().pushPose();
+        context.pose().translate(0, 0, 300);
         drawFrame(context, mouseX, mouseY);
-        context.getMatrices().pop();
+        context.pose().popPose();
     }
 
     private void handleDragging(int mouseX, int mouseY) {
@@ -133,8 +134,8 @@ public final class BookGui extends Screen {
     }
 
     private void clampTargetMap() {
-        targetMapX = MathHelper.clamp(targetMapX, boundsLeft, boundsRight - 1);
-        targetMapY = MathHelper.clamp(targetMapY, boundsTop, boundsBottom - 1);
+        targetMapX = Mth.clamp(targetMapX, boundsLeft, boundsRight - 1);
+        targetMapY = Mth.clamp(targetMapY, boundsTop, boundsBottom - 1);
     }
 
     @Override
@@ -152,7 +153,7 @@ public final class BookGui extends Screen {
         }
     }
 
-    private void drawBackground(DrawContext context, int mx, int my, int locX, int locY) {
+    private void drawBackground(GuiGraphics context, int mx, int my, int locX, int locY) {
         context.enableScissor(startX + 10, startY + 10, width - startX - 12, height - startY - 12);
         int bgU = (int) (locX / ZOOM);
         int bgV = (int) (locY / ZOOM);
@@ -165,16 +166,16 @@ public final class BookGui extends Screen {
             if (col >= -24 && row >= -24 && col <= screenX && row <= screenY) {
                 int centerX = startX + col + 8;
                 int centerY = startY + row + 8;
-                context.getMatrices().push();
-                context.getMatrices().translate(centerX - ICON_OFFSET, centerY - ICON_OFFSET, 0);
-                context.getMatrices().scale(1.4f, 1.4f, 1f);
+                context.pose().pushPose();
+                context.pose().translate(centerX - ICON_OFFSET, centerY - ICON_OFFSET, 0);
+                context.pose().scale(1.4f, 1.4f, 1f);
                 drawBookTexture(context, -3, -3, 75, PageGui.BOOK_HEIGHT + 9, 22, 22, 512, 512);
                 if (research.icon() instanceof ItemStack stack) {
-                    context.drawItem(stack, 0, 0);
+                    context.renderItem(stack, 0, 0);
                 } else {
-                    context.drawTexture((Identifier) research.icon(), -3, -3, 16, 16, 0, 0, 16, 16, 16, 16);
+                    context.blit((ResourceLocation) research.icon(), -3, -3, 16, 16, 0, 0, 16, 16, 16, 16);
                 }
-                context.getMatrices().pop();
+                context.pose().popPose();
 
                 if (mx >= startX && my >= startY && mx < startX + screenX && my < startY + screenY && mx >= (centerX - BG_OFFSET) && mx <= (centerX + BG_OFFSET) && my >= (centerY - BG_OFFSET) && my <= (centerY + BG_OFFSET)) {
                     induced = research;
@@ -184,7 +185,7 @@ public final class BookGui extends Screen {
         context.disableScissor();
     }
 
-    private void drawFrame(DrawContext context, int mx, int my) {
+    private void drawFrame(GuiGraphics context, int mx, int my) {
         RenderSystem.enableBlend();
         int delta = startX - 4, deltaT = startY - 4;
         int leftX = -2 + delta, topY = -2 + deltaT;
@@ -210,7 +211,7 @@ public final class BookGui extends Screen {
         drawBookTexture(context, rightX, bottomY, PageGui.BOOK_WIDTH / 2, PageGui.BOOK_HEIGHT, 20, 20, 512, 512);
 
         if (induced != null) {
-            context.drawTooltip(textRenderer, List.of(Text.translatable("research." + induced.id().getNamespace() + "." + induced.id().getPath() + ".name")), mx, my);
+            context.renderTooltip(font, List.of(Component.translatable("research." + induced.id().getNamespace() + "." + induced.id().getPath() + ".name")), Optional.empty(), mx, my);
         }
         RenderSystem.disableBlend();
     }
@@ -218,7 +219,7 @@ public final class BookGui extends Screen {
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
         if (induced != null && induced.isUnlocked(player)) {
-            client.setScreen(new PageGui(induced, pX, pY));
+            minecraft.setScreen(new PageGui(induced, pX, pY));
             return true;
         }
         mousePressed = true;
@@ -235,15 +236,15 @@ public final class BookGui extends Screen {
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
-    private static void drawBookTexture(DrawContext context, int x, int y, int u, int v, int w, int h, int tw, int th) {
-        context.drawTexture(BookGui.BOOK, x, y, u, v, w, h, tw, th);
+    private static void drawBookTexture(GuiGraphics context, int x, int y, int u, int v, int w, int h, int tw, int th) {
+        context.blit(BookGui.BOOK, x, y, u, v, w, h, tw, th);
     }
 
-    private static void drawBackgroundTexture(DrawContext context, int x, int y, int u, int v, int w, int h) {
-        context.drawTexture(BookGui.BACKGROUND, x, y, u + 96, v + 128, w, h, 512, 512);
+    private static void drawBackgroundTexture(GuiGraphics context, int x, int y, int u, int v, int w, int h) {
+        context.blit(BookGui.BACKGROUND, x, y, u + 96, v + 128, w, h, 512, 512);
     }
 }

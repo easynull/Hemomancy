@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crimson_glyph": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hemomancy:crimson_glyph"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hemomancy:capacity_rune"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crimson_glyph"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hemomancy:capacity_rune"
+    ]
+  }
+}

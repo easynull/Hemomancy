@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:barrier"
+  },
+  "lp": 25000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:master_blood_orb"
+  },
+  "tier": 4
+}

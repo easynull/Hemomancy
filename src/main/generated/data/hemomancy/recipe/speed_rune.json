@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:sugar"
+    },
+    "G": {
+      "item": "hemomancy:fortified_glyph"
+    },
+    "R": {
+      "item": "hemomancy:blank_rune"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SGS",
+    "ARA",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:speed_rune"
+  }
+}

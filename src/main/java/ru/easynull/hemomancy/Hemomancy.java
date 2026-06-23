@@ -2,7 +2,8 @@ package ru.easynull.hemomancy;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.easynull.hemomancy.api.altar.TierManager;
@@ -10,10 +11,7 @@ import ru.easynull.hemomancy.api.mage.quest.MageQuestManager;
 import ru.easynull.hemomancy.api.ritual.RitualManager;
 import ru.easynull.hemomancy.net.NetHandler;
 import ru.easynull.hemomancy.proxy.MainProxy;
-import ru.easynull.hemomancy.registry.HmBlockEntities;
-import ru.easynull.hemomancy.registry.HmBlocks;
-import ru.easynull.hemomancy.registry.HmItems;
-import ru.easynull.hemomancy.registry.HmRecipes;
+import ru.easynull.hemomancy.registry.*;
 import ru.easynull.hemomancy.registry.commands.MageCommands;
 
 public final class Hemomancy implements ModInitializer {
@@ -27,6 +25,8 @@ public final class Hemomancy implements ModInitializer {
         HmBlocks.onInit();
         HmBlockEntities.onInit();
         HmRecipes.onInit();
+        HmDataComponents.onInit();
+        HmFluids.onInit();
         NetHandler.onInit();
         TierManager.onInit();
         MageQuestManager.onInit();
@@ -35,10 +35,12 @@ public final class Hemomancy implements ModInitializer {
     }
 
     private static void onEvents(){
+        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.fluidStorage, HmBlockEntities.BLOOD_ALTAR);
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> MageCommands.onInit(dispatcher));
     }
 
-    public static Identifier path(String path) {
-        return Identifier.of(ID, path);
+    public static ResourceLocation path(String path) {
+        return ResourceLocation.tryBuild(ID, path);
     }
 }
