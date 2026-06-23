@@ -1,0 +1,10 @@
+{
+  "values": [
+    "hemomancy:relations_rune",
+    "hemomancy:capacity_rune",
+    "hemomancy:resonant_capacity_rune",
+    "hemomancy:speed_rune",
+    "hemomancy:blank_rune",
+    "hemomancy:sacrifices_rune"
+  ]
+}

@@ -66,6 +66,7 @@
   "tooltip.hemomancy.grow_sigil.desc": "● Bathes flora in fertilizer within a 5-block radius",
   "tooltip.hemomancy.desecrated.owner": "▶ Owner: %s",
   "tooltip.hemomancy.ritual_staff": "Bound ritual: %s",
+  "tooltip.hemomancy.book": "Extended Edition",
 
   "message.hemomancy.mode.change": "▶ Mode changed: %s ◀",
   "message.hemomancy.not_owner": "§cThe blood in this item is not yours — it rejects you",
@@ -73,7 +74,7 @@
   "message.hemomancy.level.set": "Mage Level of player %s successfully set to %s",
   "message.hemomancy.ritual.bound": "Bound ritual",
 
-  "mode.crafting": "Filling",
+  "mode.crafting": "Fusion",
   "mode.dominant": "Dominant",
   "mode.recessive": "Recessive",
 

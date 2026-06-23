@@ -1,17 +1,18 @@
 package ru.easynull.hemomancy.registry.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.item.Item;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.registry.HmBlocks;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 
 public final class RuneBlock extends Block implements Tierable {
     public static final Map<Type, Number> RUNE_VALUES = new HashMap<>();
@@ -19,7 +20,7 @@ public final class RuneBlock extends Block implements Tierable {
     private final List<Type> types;
     private final byte tier;
 
-    public RuneBlock(Settings settings, int tier, Number buff, Type... types) {
+    public RuneBlock(Properties settings, int tier, Number buff, Type... types) {
         super(settings);
         this.tier = (byte) tier;
         this.types = List.of(types);
@@ -29,12 +30,12 @@ public final class RuneBlock extends Block implements Tierable {
         }
     }
 
-    public RuneBlock(Settings settings, Number buff, Type... types) {
+    public RuneBlock(Properties settings, Number buff, Type... types) {
         this(settings, 1, buff, types);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext options) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         if (stack.getItem() == HmBlocks.BLANK_RUNE.asItem()) {
             return;
         }
@@ -50,7 +51,7 @@ public final class RuneBlock extends Block implements Tierable {
                 formattedValue = String.valueOf(value.intValue());
             }
 
-            Text text = Text.translatable("tooltip.hemomancy.rune", formattedValue, Text.translatable("rune.hemomancy." + type.name().toLowerCase())).setStyle(Style.EMPTY.withColor(type.color));
+            Component text = Component.translatable("tooltip.hemomancy.rune", formattedValue, Component.translatable("rune.hemomancy." + type.name().toLowerCase())).setStyle(Style.EMPTY.withColor(type.color));
 
             tooltip.add(text);
         }

@@ -1,47 +1,46 @@
 package ru.easynull.hemomancy.registry.items;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
-import ru.easynull.hemomancy.Hemomancy;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.state.BlockState;
 import ru.easynull.hemomancy.api.ritual.RitualManager;
 
 import java.util.List;
 
 public final class RitualStaffItem extends Item {
     public RitualStaffItem() {
-        super(new Settings().maxCount(1));
+        super(new Properties().component(DataComponents.CUSTOM_DATA, CustomData.EMPTY).stacksTo(1));
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        ItemStack stack = context.getStack();
-        String id = stack.getOrCreateNbt().getString("RitualId");
-        if (id != null && !id.isEmpty() && !context.getWorld().isClient()) {
-            RitualManager.Ritual ritual = RitualManager.get(Identifier.tryParse(id));
+    public InteractionResult useOn(UseOnContext context) {
+        ItemStack stack = context.getItemInHand();
+        String id = stack.get(DataComponents.CUSTOM_DATA).copyTag().getString("RitualId");
+        if (!id.isEmpty() && !context.getLevel().isClientSide()) {
+            RitualManager.Ritual ritual = RitualManager.get(ResourceLocation.tryParse(id));
             if (ritual != null) {
                 for(var component : ritual.components()) {
                     BlockState state = component.state;
-                    BlockPos pos = context.getBlockPos().add(component.pos);
-                    if (context.getWorld().getBlockState(pos).isAir()) context.getWorld().setBlockState(pos, state, 3);
+                    BlockPos pos = context.getClickedPos().offset(component.pos);
+                    if (context.getLevel().getBlockState(pos).isAir()) context.getLevel().setBlock(pos, state, 3);
                 }
-                return ActionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
         }
-        return super.useOnBlock(context);
+        return super.useOn(context);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        String id = stack.getOrCreateNbt().getString("RitualId");
-        if (id != null && !id.isEmpty()) tooltip.add(Text.translatable("tooltip.hemomancy.ritual_staff", Text.translatable(Identifier.tryParse(id).toTranslationKey("ritual", "name"))));
+    public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
+        String id = stack.get(DataComponents.CUSTOM_DATA).copyTag().getString("RitualId");
+        if (!id.isEmpty()) tooltip.add(Component.translatable("tooltip.hemomancy.ritual_staff", Component.translatable(ResourceLocation.tryParse(id).toLanguageKey("ritual", "name"))));
     }
 }

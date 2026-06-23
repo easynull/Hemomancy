@@ -1,0 +1,31 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    },
+    {
+      "item": "hemomancy:filled_glyph"
+    }
+  ],
+  "lp": 16000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:air_sigil"
+  }
+}

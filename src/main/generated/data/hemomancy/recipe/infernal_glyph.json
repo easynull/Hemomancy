@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "hemomancy:demonic_glyph"
+  },
+  "lp": 20000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:infernal_glyph"
+  },
+  "tier": 6
+}

@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:netherite_shovel"
+  },
+  "lp": 100000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:desecrated_shovel"
+  },
+  "tier": 5
+}

@@ -1,14 +1,14 @@
 package ru.easynull.hemomancy.render.gui.book.element;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import ru.easynull.hemomancy.render.gui.book.PageGui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import static ru.easynull.hemomancy.render.gui.book.BookGui.BOOK;
 
@@ -30,7 +30,7 @@ public record ItemsElement(List<Item> items) implements PageElement {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         int count = Math.min(items.size(), MAX_ITEMS);
         if (count == 0) return;
         x = x + 16;
@@ -41,8 +41,8 @@ public record ItemsElement(List<Item> items) implements PageElement {
         for (int i = 0; i < count; i++) {
             int itemX = firstIconX + i * SLOT_STEP;
             int slotX = itemX - ICON_OFFSET;
-            context.drawTexture(BOOK, slotX, y, 0, 190, SLOT_WIDTH, SLOT_HEIGHT, 512, 512);
-            context.drawItem(items.get(i).getDefaultStack(), itemX, y + 2);
+            context.blit(BOOK, slotX, y, 0, 190, SLOT_WIDTH, SLOT_HEIGHT, 512, 512);
+            context.renderItem(items.get(i).getDefaultInstance(), itemX, y + 2);
         }
     }
 
@@ -58,7 +58,7 @@ public record ItemsElement(List<Item> items) implements PageElement {
         for (int i = 0; i < count; i++) {
             int itemX = firstIconX + i * SLOT_STEP;
             if (relX >= itemX && relX < itemX + ICON_SIZE && relY >= 0 && relY < ICON_SIZE) {
-                return items.get(i).getDefaultStack();
+                return items.get(i).getDefaultInstance();
             }
         }
         return null;

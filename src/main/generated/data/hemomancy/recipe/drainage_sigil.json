@@ -1,0 +1,31 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "minecraft:sponge"
+    },
+    {
+      "item": "minecraft:sponge"
+    },
+    {
+      "item": "minecraft:dried_kelp_block"
+    },
+    {
+      "item": "minecraft:dried_kelp_block"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "hemomancy:crimson_glyph"
+    }
+  ],
+  "lp": 12000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:drainage_sigil"
+  }
+}

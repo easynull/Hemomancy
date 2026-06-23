@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:stone"
+  },
+  "lp": 500,
+  "result": {
+    "count": 3,
+    "id": "hemomancy:blank_glyph"
+  },
+  "tier": 1
+}

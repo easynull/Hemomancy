@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:echo_shard"
+    },
+    "G": {
+      "item": "hemomancy:crimson_glyph"
+    },
+    "O": {
+      "tag": "hemomancy:orbs"
+    },
+    "R": {
+      "item": "hemomancy:blank_rune"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SAS",
+    "ORO",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:relations_rune"
+  }
+}

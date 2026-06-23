@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "C": {
+      "item": "hemomancy:blank_rune"
+    },
+    "G": {
+      "item": "hemomancy:fortified_glyph"
+    },
+    "L": {
+      "item": "hemomancy:rune_slab"
+    },
+    "R": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    " R ",
+    "SGB",
+    "LCL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:mage_statue"
+  }
+}

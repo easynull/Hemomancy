@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:diamond"
+  },
+  "lp": 1000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:weak_blood_orb"
+  },
+  "tier": 1
+}

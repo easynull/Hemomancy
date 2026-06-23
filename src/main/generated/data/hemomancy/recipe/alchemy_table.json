@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hemomancy:crimson_steel_ingot"
+    },
+    "D": {
+      "item": "minecraft:raw_gold"
+    },
+    "G": {
+      "item": "hemomancy:filled_glyph"
+    },
+    "R": {
+      "item": "hemomancy:blank_rune"
+    },
+    "S": {
+      "item": "hemomancy:rune_slab"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "DRD",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:alchemy_table"
+  }
+}

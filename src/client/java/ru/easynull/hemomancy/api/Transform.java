@@ -1,23 +1,22 @@
 package ru.easynull.hemomancy.api;
 
-import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Quaternionf;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 
-public record Transform(MatrixStack ms) {
-    public static Transform create(MatrixStack ps, Consumer<Transform> transform) {
+public record Transform(PoseStack ms) {
+    public static Transform create(PoseStack ps, Consumer<Transform> transform) {
         Transform tr = new Transform(ps);
         transform.accept(tr);
         return tr;
     }
 
     public void start() {
-        ms.push();
+        ms.pushPose();
     }
 
     public void stop() {
-        ms.pop();
+        ms.popPose();
     }
 
     public void autoPose(Runnable action) {
@@ -28,7 +27,7 @@ public record Transform(MatrixStack ms) {
 
     public void rotate(float pX, float pY, float pZ, Quaternionf angel) {
         move(pX, pY, pZ);
-        ms.multiply(angel);
+        ms.mulPose(angel);
         move(-pX, -pY, -pZ);
     }
 

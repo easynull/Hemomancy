@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "lp": 750,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:crimson_steel_ingot"
+  },
+  "tier": 2
+}

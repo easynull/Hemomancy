@@ -1,25 +1,26 @@
 package ru.easynull.hemomancy.mixin;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import ru.easynull.hemomancy.registry.HmDataComponents;
 import ru.easynull.hemomancy.registry.items.tool.DesecratedTool;
 
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 @Mixin(Item.class)
 public final class ItemMixin {
-    @Inject(method = "appendTooltip", at = @At("RETURN"))
-    private void addTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context, CallbackInfo ci) {
+    @Inject(method = "appendHoverText", at = @At("RETURN"))
+    private void addTooltip(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag, CallbackInfo ci) {
         if (stack.getItem() instanceof DesecratedTool) {
-            if (stack.hasNbt() && stack.getNbt().contains("Owner")) {
-                tooltip.add(Text.translatable("tooltip.hemomancy.desecrated.owner", stack.getNbt().getString("Owner")));
+            if (stack.has(HmDataComponents.OWNER)) {
+                tooltip.add(Component.translatable("tooltip.hemomancy.desecrated.owner", stack.get(HmDataComponents.OWNER)));
             }
         }
     }

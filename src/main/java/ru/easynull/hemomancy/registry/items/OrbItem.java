@@ -1,14 +1,14 @@
 package ru.easynull.hemomancy.registry.items;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
 import ru.easynull.hemomancy.registry.HmItems;
@@ -22,34 +22,34 @@ public final class OrbItem extends Item implements LpElement, Tierable {
     private final byte tier;
     private final int bonus;
 
-    public OrbItem(Settings settings, int tier, long maxLp, int bonus) {
-        super(settings.maxCount(1));
+    public OrbItem(Properties settings, int tier, long maxLp, int bonus) {
+        super(settings.stacksTo(1));
         this.tier = (byte) tier;
         this.maxLp = maxLp;
         this.bonus = bonus;
     }
 
     public OrbItem(int tier, long maxLp, int bonus) {
-        this(new Settings(), tier, maxLp, bonus);
+        this(new Properties(), tier, maxLp, bonus);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
 
         Random rand = new Random();
         long lp = rand.nextInt(100, 150);
 
-        if (player.isSneaking() && player.isCreative()) {
+        if (player.isShiftKeyDown() && player.isCreative()) {
             lp = getMaxLp();
         }
 
         if (reduceLp(lp * bonus, stack)) {
             EnergyUtils.damageLp(player, lp);
-            return TypedActionResult.consume(stack);
+            return InteractionResultHolder.consume(stack);
         }
 
-        return TypedActionResult.pass(stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     @Override
@@ -69,15 +69,15 @@ public final class OrbItem extends Item implements LpElement, Tierable {
 
     @Override
     public long getLp(Object target) {
-        if (target instanceof ItemStack stack && stack.isOf(HmItems.INEXHAUSTIBLE_BLOOD_ORB)) {
+        if (target instanceof ItemStack stack && stack.is(HmItems.INEXHAUSTIBLE_BLOOD_ORB)) {
             return getMaxLp();
         }
         return LpElement.super.getLp(target);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        String value = stack.isOf(HmItems.INEXHAUSTIBLE_BLOOD_ORB) ? "∞" : String.valueOf(getMaxLp());
-        tooltip.add(Text.translatable("tooltip.hemomancy.orb.desc", value).formatted(Formatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
+        String value = stack.is(HmItems.INEXHAUSTIBLE_BLOOD_ORB) ? "∞" : String.valueOf(getMaxLp());
+        tooltip.add(Component.translatable("tooltip.hemomancy.orb.desc", value).withStyle(ChatFormatting.GRAY));
     }
 }

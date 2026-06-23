@@ -1,9 +1,9 @@
 package ru.easynull.hemomancy.utils;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import ru.easynull.hemomancy.api.energy.LpElement;
 import ru.easynull.hemomancy.api.energy.Tierable;
 
@@ -19,14 +19,14 @@ public final class EnergyUtils {
     public static void damageLp(LivingEntity entity, long lp) {
         if (lp <= 0) return;
         float dm = calculateDamage(entity, lp);
-        entity.damage(entity.getDamageSources().generic(), dm);
-        entity.playSound(SoundEvents.ENTITY_ALLAY_ITEM_THROWN, 1.0f, 1.0f);
+        entity.hurt(entity.damageSources().generic(), dm);
+        entity.playSound(SoundEvents.ALLAY_THROW, 1.0f, 1.0f);
     }
 
-    public static void extractLp(PlayerEntity player, long lp) {
+    public static void extractLp(Player player, long lp) {
         if (lp <= 0) return;
         long remainingLp = lp;
-        for (ItemStack stack : player.getInventory().main) {
+        for (ItemStack stack : player.getInventory().items) {
             if (remainingLp <= 0) break;
             if (stack.getItem() instanceof LpElement le) {
                 long currentLp = le.getLp(stack);
@@ -59,10 +59,10 @@ public final class EnergyUtils {
         return obj instanceof LpElement element ? element : null;
     }
 
-    public static ItemStack getHighestTier(PlayerEntity player) {
+    public static ItemStack getHighestTier(Player player) {
         ItemStack tierStack = ItemStack.EMPTY;
         int tier = 0;
-        for (ItemStack stack : player.getInventory().main) {
+        for (ItemStack stack : player.getInventory().items) {
             if (stack.getItem() instanceof Tierable tierable) {
                 int currentTier = tierable.getTier();
                 if (currentTier > tier) {

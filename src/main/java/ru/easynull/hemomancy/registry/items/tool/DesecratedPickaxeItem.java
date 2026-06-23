@@ -1,42 +1,44 @@
 package ru.easynull.hemomancy.registry.items.tool;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.ToolMaterials;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.Unbreakable;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import ru.easynull.hemomancy.utils.EnergyUtils;
 import ru.easynull.hemomancy.utils.HmCommonUtils;
 
 public final class DesecratedPickaxeItem extends PickaxeItem implements DesecratedTool {
     private final boolean awakened;
 
-    public DesecratedPickaxeItem(Settings settings, boolean awakened) {
-        super(ToolMaterials.NETHERITE, 2, -2.8f, settings);
+    public DesecratedPickaxeItem(Properties settings, boolean awakened) {
+        super(Tiers.NETHERITE/*, 2, -2.8f*/, settings.component(DataComponents.UNBREAKABLE, new Unbreakable(true)));
         this.awakened = awakened;
     }
 
     @Override
-    public void onAbilityMine(ItemStack stack, World world, BlockState state, BlockPos pos, ServerPlayerEntity player) {
-        if (!awakened || !state.isIn(BlockTags.PICKAXE_MINEABLE) || player.isSneaking()) {
+    public void onAbilityMine(ItemStack stack, Level level, BlockState state, BlockPos pos, ServerPlayer player) {
+        if (!awakened || !state.is(BlockTags.MINEABLE_WITH_PICKAXE) || player.isShiftKeyDown()) {
             return;
         }
         HmCommonUtils.forEachInCube(pos, 3, p -> {
-            BlockPos above = p.up();
-            BlockState aboveState = world.getBlockState(above);
+            BlockPos above = p.above();
+            BlockState aboveState = level.getBlockState(above);
             if (aboveState.isAir()) return;
-            if (aboveState.isIn(BlockTags.PICKAXE_MINEABLE)) {
-                world.breakBlock(above, !player.isCreative(), player);
+            if (aboveState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+                level.destroyBlock(above, !player.isCreative(), player);
             }
         });
 
         EnergyUtils.extractLp(player, 100000);
     }
 
-//    public static Optional<SmeltingRecipe> getOreRecipe(World world, ItemStack stack) {
-//        return world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
+//    public static Optional<SmeltingRecipe> getOreRecipe(World level, ItemStack stack) {
+//        return world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), level);
 //    }
 }

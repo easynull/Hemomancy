@@ -1,18 +1,19 @@
 package ru.easynull.hemomancy.render.hud;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import ru.easynull.hemomancy.Hemomancy;
+import ru.easynull.hemomancy.registry.HmDataComponents;
 import ru.easynull.hemomancy.registry.items.BookItem;
 
 public final class BookHud {
-    public static final MinecraftClient client = MinecraftClient.getInstance();
+    public static final Minecraft client = Minecraft.getInstance();
     private static final int UPDATE_INTERVAL = 5;
 
     private static BookItem cachedBook = null;
@@ -24,13 +25,13 @@ public final class BookHud {
 
     private static final int HUD_X = 10;
     private static final int HUD_Y = 10;
-    private static final Identifier BAR_TEXTURE = Hemomancy.path("textures/gui/bloodbar.png");
+    private static final ResourceLocation BAR_TEXTURE = Hemomancy.path("textures/gui/bloodbar.png");
 
-    public static void onRender(DrawContext ctx) {
-        PlayerEntity player = client.player;
+    public static void onRender(GuiGraphics ctx) {
+        Player player = client.player;
         if (player == null) return;
 
-        if (client.world.getTime() % UPDATE_INTERVAL == 0) {
+        if (client.level.getGameTime() % UPDATE_INTERVAL == 0) {
             updateCache(player);
         }
 
@@ -47,31 +48,31 @@ public final class BookHud {
         int x = HUD_X;
         int y = HUD_Y;
 
-        ctx.drawTexture(BAR_TEXTURE, x + 3, y + 3, 0, 0, 21, 48, 48, 48);
-        ctx.drawTexture(BAR_TEXTURE, x + 9, y + 43 - barHeight, 21, 33 - barHeight, 12, barHeight, 48, 48);
+        ctx.blit(BAR_TEXTURE, x + 3, y + 3, 0, 0, 21, 48, 48, 48);
+        ctx.blit(BAR_TEXTURE, x + 9, y + 43 - barHeight, 21, 33 - barHeight, 12, barHeight, 48, 48);
 
         if (displayedItem != null) {
-            ctx.drawItem(new ItemStack(displayedItem), x + 29, y + 10);
+            ctx.renderItem(new ItemStack(displayedItem), x + 29, y + 10);
         }
 
         if (tier > 0) {
-            String tierText = Text.translatable("tooltip.hemomancy.tier", tier).getString();
-            ctx.drawText(client.textRenderer, tierText, x + 26, y + 30, 0xFFFFFFFF, false);
+            String tierText = Component.translatable("tooltip.hemomancy.tier", tier).getString();
+            ctx.drawString(client.font, tierText, x + 26, y + 30, 0xFFFFFFFF, false);
         }
 
         String lpText = String.format("%,d", lp);
-        ctx.drawCenteredTextWithShadow(client.textRenderer, lpText, x + 17, y + 53, 0xFFFF0000);
+        ctx.drawCenteredString(client.font, lpText, x + 17, y + 53, 0xFFFF0000);
     }
 
-    private static void updateCache(PlayerEntity player) {
+    private static void updateCache(Player player) {
         cachedBook = null;
         cachedLp = 0;
         cachedMaxLp = 0;
         cachedDisplayedItem = null;
         cachedTier = 0;
-        DefaultedList<ItemStack> main = player.getInventory().main;
+        NonNullList<ItemStack> main = player.getInventory().items;
         for (ItemStack stack : main) {
-            if (stack.getItem() instanceof BookItem book && stack.hasNbt() && stack.getNbt().getInt("Level") > 1) {
+            if (stack.getItem() instanceof BookItem book && stack.get(HmDataComponents.EXTENDED)) {
                 cachedBook = book;
 
                 cachedLp = book.getCurrentLp();

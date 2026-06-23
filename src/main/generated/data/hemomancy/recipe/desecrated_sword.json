@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:netherite_sword"
+  },
+  "lp": 90000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:desecrated_sword"
+  },
+  "tier": 5
+}

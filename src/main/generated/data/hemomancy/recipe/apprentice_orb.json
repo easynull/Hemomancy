@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:emerald_block"
+  },
+  "lp": 5000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:apprentice_blood_orb"
+  },
+  "tier": 2
+}

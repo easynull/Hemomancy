@@ -66,6 +66,7 @@
   "tooltip.hemomancy.grow_sigil.desc": "● Окутывает флору удобрением в радиусе 5 блоков",
   "tooltip.hemomancy.desecrated.owner": "▶ Владелец: %s",
   "tooltip.hemomancy.ritual_staff": "Привязанный ритуал: %s",
+  "tooltip.hemomancy.book": "Extended Edition",
 
   "message.hemomancy.mode.change": "▶ Режим изменен: %s ◀",
   "message.hemomancy.not_owner": "§cКровь в этом предмете не твоя - он отвергает тебя",

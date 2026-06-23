@@ -1,0 +1,12 @@
+{
+  "type": "hemomancy:fusion",
+  "ingredient": {
+    "item": "minecraft:netherite_axe"
+  },
+  "lp": 100000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:desecrated_axe"
+  },
+  "tier": 5
+}

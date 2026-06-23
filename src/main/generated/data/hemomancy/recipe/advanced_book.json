@@ -1,0 +1,25 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "hemomancy:book"
+    },
+    {
+      "item": "hemomancy:fortified_glyph"
+    },
+    {
+      "item": "hemomancy:crimson_glyph"
+    },
+    {
+      "item": "hemomancy:fortified_glyph"
+    }
+  ],
+  "lp": 15000,
+  "result": {
+    "components": {
+      "hemomancy:extended": true
+    },
+    "count": 1,
+    "id": "hemomancy:book"
+  }
+}

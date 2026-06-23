@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "G": {
+      "item": "hemomancy:fortified_glyph"
+    },
+    "O": {
+      "tag": "hemomancy:orbs"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SGS",
+    "AOA",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:sacrifices_rune"
+  }
+}

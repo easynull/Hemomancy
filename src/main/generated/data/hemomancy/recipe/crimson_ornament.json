@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "O": {
+      "tag": "hemomancy:orbs"
+    },
+    "S": {
+      "item": "hemomancy:crimson_steel_ingot"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SOS",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:crimson_ornament"
+  }
+}

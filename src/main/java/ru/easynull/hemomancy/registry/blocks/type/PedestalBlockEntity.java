@@ -1,11 +1,11 @@
 package ru.easynull.hemomancy.registry.blocks.type;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import ru.easynull.hemomancy.api.InventoryBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import ru.easynull.hemomancy.api.ContainerBlockEntity;
 import ru.easynull.hemomancy.registry.HmBlockEntities;
 
-public final class PedestalBlockEntity extends InventoryBlockEntity {
+public final class PedestalBlockEntity extends ContainerBlockEntity {
     public PedestalBlockEntity(BlockPos pos, BlockState state) {
         super(HmBlockEntities.BLOOD_ALTAR, pos, state, 1, 64);
     }

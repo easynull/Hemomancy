@@ -1,28 +1,24 @@
 package ru.easynull.hemomancy.net;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import ru.easynull.hemomancy.Hemomancy;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public record UpdateNbtC2SPacket(int slot, NbtCompound nbt) implements FabricPacket {
-    public static final PacketType<UpdateNbtC2SPacket> ID = PacketType.create(Hemomancy.path("update_nbt_packet"), UpdateNbtC2SPacket::read);
+public record UpdateNbtC2SPacket(int slot, CompoundTag nbt) implements CustomPacketPayload {
+
+    public static final Type<UpdateNbtC2SPacket> ID = new Type<>(ResourceLocation.fromNamespaceAndPath("hemomancy", "update_nbt_packet"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateNbtC2SPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, UpdateNbtC2SPacket::slot,
+            ByteBufCodecs.COMPOUND_TAG, UpdateNbtC2SPacket::nbt,
+            UpdateNbtC2SPacket::new
+    );
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeInt(slot());
-        buf.writeNbt(nbt());
-    }
-
-    @Override
-    public PacketType<?> getType() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
-    }
-
-    public static UpdateNbtC2SPacket read(PacketByteBuf buf){
-        int slot = buf.readInt();
-        NbtCompound nbt = buf.readNbt();
-        return new UpdateNbtC2SPacket(slot, nbt);
     }
 }

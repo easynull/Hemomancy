@@ -1,0 +1,28 @@
+{
+  "type": "hemomancy:alchemy",
+  "ingredients": [
+    {
+      "item": "minecraft:piston"
+    },
+    {
+      "item": "minecraft:sticky_piston"
+    },
+    {
+      "item": "minecraft:observer"
+    },
+    {
+      "item": "minecraft:slime_ball"
+    },
+    {
+      "item": "minecraft:slime_ball"
+    },
+    {
+      "item": "hemomancy:filled_glyph"
+    }
+  ],
+  "lp": 25000,
+  "result": {
+    "count": 1,
+    "id": "hemomancy:movement_sigil"
+  }
+}

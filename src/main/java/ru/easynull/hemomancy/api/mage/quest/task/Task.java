@@ -1,16 +1,16 @@
 package ru.easynull.hemomancy.api.mage.quest.task;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class Task {
     protected final Type type;
-    protected final Identifier target;
+    protected final ResourceLocation target;
     protected final int required;
     protected int progress;
 
-    protected Task(Type type, Identifier target, int required) {
+    protected Task(Type type, ResourceLocation target, int required) {
         this.type = type;
         this.target = target;
         this.required = required;
@@ -18,10 +18,10 @@ public abstract class Task {
     }
 
     public Type getType() { return type; }
-    public Identifier getTarget() { return target; }
+    public ResourceLocation getTarget() { return target; }
     public int getRequired() { return required; }
     public int getProgress() { return progress; }
-    public abstract Text getDescription();
+    public abstract Component getDescription();
     public void setProgress(int progress) { this.progress = Math.min(progress, required); }
     public boolean isCompleted() { return progress >= required; }
 
@@ -31,8 +31,8 @@ public abstract class Task {
         progress = Math.min(progress + amount, required);
     }
 
-    public NbtCompound toNbt() {
-        NbtCompound nbt = new NbtCompound();
+    public CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putString("Type", type.name());
         nbt.putString("Target", target.toString());
         nbt.putInt("Required", required);
@@ -40,9 +40,9 @@ public abstract class Task {
         return nbt;
     }
 
-    public static Task fromNbt(NbtCompound nbt) {
+    public static Task fromNbt(CompoundTag nbt) {
         Type type = Type.valueOf(nbt.getString("Type"));
-        Identifier target = Identifier.tryParse(nbt.getString("Target"));
+        ResourceLocation target = ResourceLocation.tryParse(nbt.getString("Target"));
         int required = nbt.getInt("Required");
         int progress = nbt.getInt("Progress");
         Task task = switch (type) {

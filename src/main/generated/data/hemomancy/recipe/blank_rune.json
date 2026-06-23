@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "hemomancy:blank_glyph"
+    },
+    "O": {
+      "tag": "hemomancy:orbs"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "GOG",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hemomancy:blank_rune"
+  }
+}
